@@ -1,0 +1,38 @@
+{
+    "name":  "erdnaxelaweb/ibexadesignintegration",
+    "type": "library",
+    "description": "Provides utilities to generate fake data in order to create a static design",
+    "keywords": [],
+    "license": "MIT",
+    "require": {
+        "erdnaxelaweb/staticfakedesignbundle": "dev-main",
+        "novactive/ezstatictemplatesbundle": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3",
+        "symplify/easy-coding-standard": "*"
+    },
+    "suggest": {
+        "ext-dom": "*"
+    },
+    "authors": [
+        {
+            "name": "Florian ALEXANDRE"
+        }
+    ],
+    "scripts": {
+        "check-cs": [
+            "ecs"
+        ],
+        "fix-cs": [
+            "ecs --fix"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "ErdnaxelaWeb\\IbexaDesignIntegrationBundle\\": "bundle",
+            "ErdnaxelaWeb\\IbexaDesignIntegration\\": "lib",
+            "ErdnaxelaWeb\\IbexaDesignIntegration\\Tests\\": "tests"
+        }
+    }
+}

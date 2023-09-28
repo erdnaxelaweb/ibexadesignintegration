@@ -1,0 +1,16 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\DefaultViewController:
+    public: true
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\RichTextGenerator:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\RichTextGenerator
+    lazy: true
+    arguments:
+      $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'

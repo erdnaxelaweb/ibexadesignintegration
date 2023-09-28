@@ -1,0 +1,5 @@
+{% extends 'static/helper/macros.html.twig' %}
+
+{% macro display_content(template, content, parameters, viewType) %}
+    {% include template with {content: content}|merge(parameters) only %}
+{% endmacro %}
