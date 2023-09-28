@@ -5,7 +5,7 @@
     "keywords": [],
     "license": "MIT",
     "require": {
-        "erdnaxelaweb/staticfakedesignbundle": "dev-main",
+        "erdnaxelaweb/staticfakedesign": "dev-main",
         "novactive/ezstatictemplatesbundle": "^3.0"
     },
     "require-dev": {
