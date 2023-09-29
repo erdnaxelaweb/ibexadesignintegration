@@ -2,7 +2,7 @@
 
 {% macro display_content(template, content, parameters, viewType) %}
     {{ render(controller(
-        "ibexa_content:viewAction", 
+        "ibexa_content:viewAction",
         content|merge({
             "viewType": viewType,
             "params": parameters ?? {}
