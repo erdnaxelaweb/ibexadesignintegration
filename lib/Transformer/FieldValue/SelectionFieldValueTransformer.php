@@ -20,10 +20,9 @@ class SelectionFieldValueTransformer implements FieldValueTransformerInterface
         Content         $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    )
-    {
+    ) {
         /** @var \Ibexa\Core\FieldType\Selection\Value $fieldValue */
-        $fieldValue = $content->getFieldValue( $fieldIdentifier );
-        return array_intersect_key( $fieldDefinition->fieldSettings['options'], array_flip( $fieldValue->selection ) );
+        $fieldValue = $content->getFieldValue($fieldIdentifier);
+        return array_intersect_key($fieldDefinition->fieldSettings['options'], array_flip($fieldValue->selection));
     }
 }

@@ -16,19 +16,17 @@ class SearchAdapter extends ContentSearchAdapter
         ContentTransformer $contentTransformer,
         protected $filtersCallback,
         array $languageFilter = []
-    )
-    {
-        parent::__construct( $query, $searchService, $languageFilter );
+    ) {
+        parent::__construct($query, $searchService, $languageFilter);
     }
 
-    public function getSlice( $offset, $length )
+    public function getSlice($offset, $length)
     {
-        $results = parent::getSlice( $offset, $length );
+        $results = parent::getSlice($offset, $length);
         $list = [];
-        foreach ( $results as $result )
-        {
+        foreach ($results as $result) {
             $list[] = [
-                'contentId' => $result->id
+                'contentId' => $result->id,
             ];
         }
         return $list;
@@ -38,5 +36,4 @@ class SearchAdapter extends ContentSearchAdapter
     {
         return ($this->filtersCallback)($this->getAggregations());
     }
-
 }

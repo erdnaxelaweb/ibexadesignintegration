@@ -21,22 +21,16 @@ class ImageFieldValueTransformer implements FieldValueTransformerInterface
     public function __construct(
         protected ImageGenerator $imageGenerator,
         protected ContentService $contentService,
-    )
-    {
+    ) {
     }
 
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    )
-    {
-        return function ( string $variationName ) use ( $content, $fieldIdentifier, $fieldDefinition ) {
-            return $this->imageGenerator->generateImage(
-                $content,
-                $fieldIdentifier,
-                $variationName
-            );
+    ) {
+        return function (string $variationName) use ($content, $fieldIdentifier, $fieldDefinition) {
+            return $this->imageGenerator->generateImage($content, $fieldIdentifier, $variationName);
         };
     }
 }

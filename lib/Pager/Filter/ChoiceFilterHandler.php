@@ -22,16 +22,16 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 abstract class ChoiceFilterHandler implements FilterHandlerInterface
 {
-    public function getCriterion( string $filterName, string $field, $value ): Criterion
+    public function getCriterion(string $filterName, string $field, $value): Criterion
     {
-        $operator = is_array( $value ) ? Operator::IN : Operator::EQ;
-        $criterion = new CustomField( $field, $operator, $value );
-        return new FilterTag( $filterName, $criterion );
+        $operator = is_array($value) ? Operator::IN : Operator::EQ;
+        $criterion = new CustomField($field, $operator, $value);
+        return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName,  string $field ): RawTermAggregation
+    public function getAggregation(string $filterName, string $field): RawTermAggregation
     {
-        return new RawTermAggregation( $filterName, $field, [$filterName] );
+        return new RawTermAggregation($filterName, $field, [$filterName]);
     }
 
     public function addForm(
@@ -39,23 +39,17 @@ abstract class ChoiceFilterHandler implements FilterHandlerInterface
         string               $filterName,
         string               $field,
         AggregationResult    $aggregationResult
-    ): void
-    {
+    ): void {
         $options = $this->getFormOptions();
         $options['label'] = sprintf('searchform.%s', $field);
         $options['required'] = false;
         $options['choices'] = [];
         /** @var \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $value */
-        foreach ( $aggregationResult->getEntries() as $value )
-        {
+        foreach ($aggregationResult->getEntries() as $value) {
             $options['choices'][$value->getKey()] = $value->getKey();
         }
-        $formBuilder->add(
-            $filterName,
-            ChoiceType::class,
-            $options
-        );
+        $formBuilder->add($filterName, ChoiceType::class, $options);
     }
 
-    abstract protected function getFormOptions():array;
+    abstract protected function getFormOptions(): array;
 }

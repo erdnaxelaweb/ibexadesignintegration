@@ -19,12 +19,10 @@ class MigrationGenerator
     public function __construct(
         protected ContentConfigurationManager $contentConfigurationManager,
         protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager
-    )
-    {
+    ) {
     }
 
-
-    public function generate(  )
+    public function generate()
     {
         throw new \Exception('not implemented');
     }

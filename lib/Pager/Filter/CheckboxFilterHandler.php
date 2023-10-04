@@ -11,7 +11,6 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
-
 class CheckboxFilterHandler extends ChoiceFilterHandler
 {
     protected function getFormOptions(): array

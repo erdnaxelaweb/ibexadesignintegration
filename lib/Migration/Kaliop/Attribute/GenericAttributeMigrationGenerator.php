@@ -16,21 +16,19 @@ class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorI
     public function __construct(
         protected string $type,
         protected array  $optionsMap = []
-    )
-    {
+    ) {
     }
 
-    public function generate( string $fieldIdentifier, array $field ): array
+    public function generate(string $fieldIdentifier, array $field): array
     {
         $fieldSettings = [];
-        foreach ( $field['options'] as $option => $value )
-        {
-            if(!isset($this->optionsMap[$option])) {
+        foreach ($field['options'] as $option => $value) {
+            if (! isset($this->optionsMap[$option])) {
                 continue;
             }
             $fieldSettings[$this->optionsMap[$option]] = $value;
         }
-        return array(
+        return [
             'identifier' => $fieldIdentifier,
             'type' => $this->type,
             'name' => $field['name'],
@@ -38,9 +36,9 @@ class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorI
             'required' => $field['required'],
             'searchable' => $field['searchable'],
             'info-collector' => $field['infoCollector'],
-            'disable-translation' => !$field['translatable'],
+            'disable-translation' => ! $field['translatable'],
             'category' => $field['category'],
-            'field-settings' => $fieldSettings
-        );
+            'field-settings' => $fieldSettings,
+        ];
     }
 }

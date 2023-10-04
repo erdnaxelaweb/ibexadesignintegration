@@ -13,11 +13,11 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
 class RadioFilterHandler extends ChoiceFilterHandler
 {
-    protected function getFormOptions():array {
+    protected function getFormOptions(): array
+    {
         return [
             'expanded' => true,
             'multiple' => false,
         ];
     }
 }
-

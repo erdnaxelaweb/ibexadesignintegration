@@ -21,34 +21,33 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class PagerSearchFormBuilder
 {
-    /** @var FilterHandlerInterface[] */
+    /**
+     * @var FilterHandlerInterface[]
+     */
     protected array $filtersHandler;
 
     public function __construct(
         iterable                       $filtersHandler,
-
         protected FormFactoryInterface $formFactory
-    )
-    {
-        foreach ( $filtersHandler as $type => $filterHandler )
-        {
+    ) {
+        foreach ($filtersHandler as $type => $filterHandler) {
             $this->filtersHandler[$type] = $filterHandler;
         }
     }
 
     public function build(
         array                       $configuration,
-                           AggregationResultCollection $aggregationResultCollection,
-                           SearchData                     $searchData
-    )
-    {
-        $builder = $this->formFactory->createBuilder( FormType::class, $searchData, ['method' => 'GET'] );
-        $formFilters = $builder->create( 'filters', FormType::class, [
+        AggregationResultCollection $aggregationResultCollection,
+        SearchData                     $searchData
+    ) {
+        $builder = $this->formFactory->createBuilder(FormType::class, $searchData, [
+            'method' => 'GET',
+        ]);
+        $formFilters = $builder->create('filters', FormType::class, [
             'compound' => true,
-        ] );
+        ]);
 
-        foreach ( $configuration['filters'] as $filterName=>$filter )
-        {
+        foreach ($configuration['filters'] as $filterName => $filter) {
             $filterHandler = $this->filtersHandler[$filter['type']];
             $filterHandler->addForm(
                 $formFilters,
@@ -58,16 +57,15 @@ class PagerSearchFormBuilder
             );
         }
         $builder->add($formFilters);
-        if ( count( $configuration['sorts'] ) > 1 )
-        {
-            $builder->add( 'sort', ChoiceType::class, [
-                'choices' => array_flip( $configuration['sorts'] ),
-            ] );
+        if (count($configuration['sorts']) > 1) {
+            $builder->add('sort', ChoiceType::class, [
+                'choices' => array_flip($configuration['sorts']),
+            ]);
         }
-        $builder->add( 'search', SubmitType::class, [
+        $builder->add('search', SubmitType::class, [
             'label' => 'search',
-        ] );
+        ]);
         return $builder->getForm()
-                       ->createView();
+            ->createView();
     }
 }

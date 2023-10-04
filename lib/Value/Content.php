@@ -16,8 +16,8 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 use DateTime;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
-use Ibexa\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaApiContent;
+use Ibexa\Core\Repository\Values\Content\Content as IbexaContent;
 
 class Content extends IbexaContent
 {
@@ -30,15 +30,14 @@ class Content extends IbexaContent
         ContentFieldsCollection  $fields,
         public readonly string $url,
         public readonly Breadcrumb  $breadcrumb
-    )
-    {
+    ) {
         parent::__construct(
             [
                 'thumbnail' => $innerContent->thumbnail,
                 'versionInfo' => $innerContent->versionInfo,
                 'contentType' => $innerContent->contentType,
                 'internalFields' => [],
-                'prioritizedFieldLanguageCode' => $innerContent->prioritizedFieldLanguageCode
+                'prioritizedFieldLanguageCode' => $innerContent->prioritizedFieldLanguageCode,
             ]
         );
         $this->fields = $fields;
@@ -48,5 +47,4 @@ class Content extends IbexaContent
     {
         return call_user_func_array([$this->innerContent, $name], $arguments);
     }
-
 }

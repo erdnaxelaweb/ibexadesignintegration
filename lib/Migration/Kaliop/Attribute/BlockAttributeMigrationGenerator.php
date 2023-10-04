@@ -15,9 +15,8 @@ use Exception;
 
 class BlockAttributeMigrationGenerator implements AttributeMigrationGeneratorInterface
 {
-    public function generate( string $fieldIdentifier, array $field ): array
+    public function generate(string $fieldIdentifier, array $field): array
     {
         throw new Exception('not implemented');
     }
-
 }

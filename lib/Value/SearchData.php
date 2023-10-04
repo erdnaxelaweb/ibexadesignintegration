@@ -11,21 +11,16 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
-
 class SearchData
 {
     public function __construct(
         public readonly array $filters,
         public readonly ?string $sort,
-    )
-    {
+    ) {
     }
 
-    public static function createFromRequest( array $request ): SearchData
+    public static function createFromRequest(array $request): SearchData
     {
-        return new SearchData(
-            $request['filters'] ??  [],
-            $request['sort'] ??  null
-        );
+        return new SearchData($request['filters'] ?? [], $request['sort'] ?? null);
     }
 }

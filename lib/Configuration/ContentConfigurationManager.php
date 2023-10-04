@@ -16,84 +16,81 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentConfigurationManager extends BaseContentConfigurationManager
 {
-    protected function configureFieldOptions( OptionsResolver $optionsResolver ): void
+    protected function configureFieldOptions(OptionsResolver $optionsResolver): void
     {
-        parent::configureFieldOptions( $optionsResolver );
+        parent::configureFieldOptions($optionsResolver);
 
-        $optionsResolver->define( 'name' )
-                        ->required()
-                        ->allowedTypes( 'string', 'array' );
+        $optionsResolver->define('name')
+            ->required()
+            ->allowedTypes('string', 'array');
 
-        $optionsResolver->define( 'description' )
-                        ->default('')
-                        ->allowedTypes( 'string', 'array' );
+        $optionsResolver->define('description')
+            ->default('')
+            ->allowedTypes('string', 'array');
 
         $optionsResolver->define('searchable')
-                        ->default(false)
-                        ->allowedTypes('bool');
+            ->default(false)
+            ->allowedTypes('bool');
 
         $optionsResolver->define('infoCollector')
-                        ->default(false)
-                        ->allowedTypes('bool');
+            ->default(false)
+            ->allowedTypes('bool');
 
         $optionsResolver->define('translatable')
-                        ->default(true)
-                        ->allowedTypes('bool');
+            ->default(true)
+            ->allowedTypes('bool');
 
         $optionsResolver->define('category')
-                        ->default('content')
-                        ->allowedTypes('string');
+            ->default('content')
+            ->allowedTypes('string');
     }
 
-    protected function configureOptions( OptionsResolver $optionsResolver ): void
+    protected function configureOptions(OptionsResolver $optionsResolver): void
     {
-        parent::configureOptions( $optionsResolver );
+        parent::configureOptions($optionsResolver);
 
-        $optionsResolver->define( 'name' )
-                        ->required()
-                        ->allowedTypes( 'string', 'array' );
+        $optionsResolver->define('name')
+            ->required()
+            ->allowedTypes('string', 'array');
 
-        $optionsResolver->define( 'description' )
-                        ->default('')
-                        ->allowedTypes( 'string', 'array' );
+        $optionsResolver->define('description')
+            ->default('')
+            ->allowedTypes('string', 'array');
 
         $optionsResolver->define('nameSchema')
-                        ->default('')
-                        ->allowedTypes('string');
+            ->default('')
+            ->allowedTypes('string');
 
         $optionsResolver->define('urlAliasSchema')
-                        ->default('')
-                        ->allowedTypes('string');
+            ->default('')
+            ->allowedTypes('string');
 
         $optionsResolver->define('container')
-                        ->default(false)
-                        ->allowedTypes('bool');
+            ->default(false)
+            ->allowedTypes('bool');
 
         $optionsResolver->define('defaultAlwaysAvailable')
-                        ->default(false)
-                        ->allowedTypes('bool');
+            ->default(false)
+            ->allowedTypes('bool');
 
         $optionsResolver->define('defaultSortField')
-                        ->default('published')
-                        ->allowedTypes('string')
-        ->allowedValues(
-            'path',
-'published',
-'modified',
-'section',
-'depth',
-'class_identifier',
-'class_name',
-'priority',
-'name'
-    );
+            ->default('published')
+            ->allowedTypes('string')
+            ->allowedValues(
+                'path',
+                'published',
+                'modified',
+                'section',
+                'depth',
+                'class_identifier',
+                'class_name',
+                'priority',
+                'name'
+            );
 
         $optionsResolver->define('defaultSortOrder')
-                        ->default('desc')
-                        ->allowedTypes('string')
-        ->allowedValues(
-            'desc',
-'asc ',
-        );
+            ->default('desc')
+            ->allowedTypes('string')
+            ->allowedValues('desc', 'asc');
     }
 }

@@ -13,5 +13,5 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute;
 
 interface AttributeMigrationGeneratorInterface
 {
-    public function generate( string $fieldIdentifier, array $field ): array;
+    public function generate(string $fieldIdentifier, array $field): array;
 }

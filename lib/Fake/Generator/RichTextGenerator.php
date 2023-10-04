@@ -22,27 +22,39 @@ use Ibexa\Contracts\FieldTypeRichText\RichText\Converter;
 class RichTextGenerator extends BaseRichTextGenerator
 {
     public const TYPE = 'richtext';
+
     public const P_TAG = 'para';
+
     public const A_TAG = 'link';
+
     public const TABLE_TAG = 'table';
+
     public const THEAD_TAG = 'thead';
+
     public const TBODY_TAG = 'tbody';
+
     public const TR_TAG = 'tr';
+
     public const TD_TAG = 'td';
+
     public const TH_TAG = 'th';
+
     public const UL_TAG = 'itemizedlist';
+
     public const LI_TAG = 'listitem';
+
     public const H_TAG = 'title';
+
     public const B_TAG = 'emphasis';
+
     public const I_TAG = 'emphasis';
 
     public function __construct(
         protected Converter $richTextOutputConverter,
-        FakerGenerator      $fakerGenerator)
-    {
+        FakerGenerator      $fakerGenerator
+    ) {
         parent::__construct($fakerGenerator);
     }
-
 
     public function __invoke(int $maxWidth = 10): string
     {
@@ -64,7 +76,8 @@ version="5.0-variant ezpublish-1.0"></section>'
         $finalDocument = new DOMDocument();
         $finalDocument->loadXml($document->saveXML());
 
-        return $this->richTextOutputConverter->convert($finalDocument)->saveHTML() ?: '';
+        return $this->richTextOutputConverter->convert($finalDocument)
+            ->saveHTML() ?: '';
     }
 
     protected function addRandomSubTree(DOMElement $root, $maxWidth = 10): DOMElement
@@ -116,27 +129,21 @@ version="5.0-variant ezpublish-1.0"></section>'
     protected function addRandomP(DOMElement $element, $maxLength = 10)
     {
         $node = $element->ownerDocument->createElement(static::P_TAG);
-        $node->textContent = $this->fakerGenerator->sentence(
-            $this->fakerGenerator->numberBetween(1, $maxLength)
-        );
+        $node->textContent = $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength));
         $element->appendChild($node);
     }
 
     protected function addRandomA(DOMElement $element, $maxLength = 10)
     {
         $text = $element->ownerDocument->createTextNode(
-            $this->fakerGenerator->sentence(
-                $this->fakerGenerator->numberBetween(1, $maxLength)
-            )
+            $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
         );
         $linkNode = $element->ownerDocument->createElement(static::A_TAG);
         $linkNode->setAttribute('xlink:href', $this->fakerGenerator->url());
         $linkNode->appendChild($text);
 
         $node = $element->ownerDocument->createElement(static::P_TAG);
-        $node->textContent = $this->fakerGenerator->sentence(
-            $this->fakerGenerator->numberBetween(1, $maxLength)
-        );
+        $node->textContent = $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength));
         $node->appendChild($linkNode);
         $element->appendChild($node);
     }
@@ -144,12 +151,10 @@ version="5.0-variant ezpublish-1.0"></section>'
     protected function addRandomH(DOMElement $element, $maxLength = 10)
     {
         $text = $element->ownerDocument->createTextNode(
-            $this->fakerGenerator->sentence(
-                $this->fakerGenerator->numberBetween(1, $maxLength)
-            )
+            $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
         );
         $node = $element->ownerDocument->createElement(static::H_TAG);
-        $node->setAttribute('ezxhtml:level', (string)$this->fakerGenerator->numberBetween(1, 5));
+        $node->setAttribute('ezxhtml:level', (string) $this->fakerGenerator->numberBetween(1, 5));
         $node->appendChild($text);
         $element->appendChild($node);
     }
@@ -157,9 +162,7 @@ version="5.0-variant ezpublish-1.0"></section>'
     protected function addRandomB(DOMElement $element, $maxLength = 10)
     {
         $text = $element->ownerDocument->createTextNode(
-            $this->fakerGenerator->sentence(
-                $this->fakerGenerator->numberBetween(1, $maxLength)
-            )
+            $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
         );
         $node = $element->ownerDocument->createElement(static::B_TAG);
         $node->setAttribute('role', 'strong');
@@ -170,9 +173,7 @@ version="5.0-variant ezpublish-1.0"></section>'
     protected function addRandomI(DOMElement $element, $maxLength = 10)
     {
         $text = $element->ownerDocument->createTextNode(
-            $this->fakerGenerator->sentence(
-                $this->fakerGenerator->numberBetween(1, $maxLength)
-            )
+            $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
         );
         $node = $element->ownerDocument->createElement(static::I_TAG);
         $node->appendChild($text);

@@ -23,12 +23,11 @@ class GenerateMigrationCommand extends Command
     public function __construct(
         protected MigrationGenerator $migrationGeneratorService,
         string                       $name = null
-    )
-    {
-        parent::__construct( $name );
+    ) {
+        parent::__construct($name);
     }
 
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->migrationGeneratorService->generate();
         return Command::SUCCESS;

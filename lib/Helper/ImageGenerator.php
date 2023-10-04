@@ -36,48 +36,28 @@ use ReflectionException;
 
 class ImageGenerator
 {
-
     public function __construct(
         protected VariationHandler $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
         protected ContentService $contentService,
         protected LoggerInterface $imageVariationLogger,
         protected ContentTransformer $contentTransformer
-    )
-    {
+    ) {
     }
 
-    /**
-     * @param Field $field
-     * @param VersionInfo $versionInfo
-     * @param $variationName
-     *
-     * @return Variation|null
-     */
-    protected function getImageVariationIfExist( Field $field, VersionInfo $versionInfo, $variationName ): ?Variation
+    protected function getImageVariationIfExist(Field $field, VersionInfo $versionInfo, $variationName): ?Variation
     {
-        try
-        {
-            return $this->imageVariationService->getVariation(
-                $field,
-                $versionInfo,
-                $variationName
-            );
-        }
-        catch ( SourceImageNotFoundException $e )
-        {
-            if ( isset( $this->imageVariationLogger ) )
-            {
+        try {
+            return $this->imageVariationService->getVariation($field, $versionInfo, $variationName);
+        } catch (SourceImageNotFoundException $e) {
+            if (isset($this->imageVariationLogger)) {
                 $this->imageVariationLogger->error(
                     "Couldn't create variation '{$variationName}' for image with id {$field->value->id} 
                         because source image can't be found"
                 );
             }
-        }
-        catch ( InvalidArgumentException|InvalidVariationException|ReflectionException $e )
-        {
-            if ( isset( $this->imageVariationLogger ) )
-            {
+        } catch (InvalidArgumentException|InvalidVariationException|ReflectionException $e) {
+            if (isset($this->imageVariationLogger)) {
                 $this->imageVariationLogger->error(
                     "Couldn't create variation '{$variationName}' for image with id {$field->value->id} 
                         because an image could not be created from the given input"
@@ -88,41 +68,27 @@ class ImageGenerator
         return null;
     }
 
-    public function generateImage(
-        IbexaContent $content,
-        string       $fieldIdentifier,
-        string       $variationName
-    )
+    public function generateImage(IbexaContent $content, string $fieldIdentifier, string $variationName)
     {
-        $fieldValue = $content->getFieldValue( $fieldIdentifier );
-        if ( $fieldValue instanceof ImageValue )
-        {
+        $fieldValue = $content->getFieldValue($fieldIdentifier);
+        if ($fieldValue instanceof ImageValue) {
             return $this->getImage(
                 ($this->contentTransformer)($content),
-                $content->getField( $fieldIdentifier ),
+                $content->getField($fieldIdentifier),
                 $variationName
             );
         }
-        if ( $fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId )
-        {
-            $relatedContent = $this->contentService->loadContent( $fieldValue->destinationContentId );
-            return $this->generateImage(
-                $relatedContent,
-                'image',
-                $variationName
-            );
+        if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
+            $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
+            return $this->generateImage($relatedContent, 'image', $variationName);
         }
     }
 
-    protected function getImage(
-        Content $content,
-        Field        $field,
-        string       $variationName = 'original'
-    ): ?Image
+    protected function getImage(Content $content, Field $field, string $variationName = 'original'): ?Image
     {
         /** @var ImageValue $imageFieldValue */
         $imageFieldValue = $field->value;
-        $sources = $this->getImageSources( $field, $content->getVersionInfo(), $variationName );
+        $sources = $this->getImageSources($field, $content->getVersionInfo(), $variationName);
 
         return new Image(
             $imageFieldValue->alternativeText,
@@ -132,48 +98,37 @@ class ImageGenerator
         );
     }
 
-    protected function getImageSources( Field $field, VersionInfo $versionInfo, string $variationName ): array
+    protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
-        $variationConfig = $this->imageConfiguration->getVariationConfig( $variationName );
+        $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
 
         $sources = [];
-        foreach ( $variationConfig as $sourceReqs )
-        {
+        foreach ($variationConfig as $sourceReqs) {
             $sourceVariationName = "{$variationName}_{$sourceReqs['suffix']}";
             $typeVariationNames = [
                 '' => $sourceVariationName,
-                ' 2x' => $sourceVariationName . '_retina'
+                ' 2x' => $sourceVariationName . '_retina',
             ];
             $uris = [];
             $baseVariation = null;
 
-            foreach ( $typeVariationNames as $variationType => $typeVariationName )
-            {
-                try
-                {
-                    $variation = $this->getImageVariationIfExist(
-                        $field,
-                        $versionInfo,
-                        $typeVariationName
-                    );
+            foreach ($typeVariationNames as $variationType => $typeVariationName) {
+                try {
+                    $variation = $this->getImageVariationIfExist($field, $versionInfo, $typeVariationName);
                     $uris[] = $variation->uri . $variationType;
-                    if ( !$baseVariation )
-                    {
+                    if (! $baseVariation) {
                         $baseVariation = $variation;
                     }
-                }
-                catch ( NonExistingFilterException $e )
-                {
+                } catch (NonExistingFilterException $e) {
                     continue;
                 }
             }
-            if ( empty( $uris ) )
-            {
+            if (empty($uris)) {
                 continue;
             }
 
             $source = new ImageSource(
-                implode( ', ', $uris ),
+                implode(', ', $uris),
                 $sourceReqs['media'],
                 $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
                 $baseVariation instanceof ImageVariation ? $baseVariation->height : null,

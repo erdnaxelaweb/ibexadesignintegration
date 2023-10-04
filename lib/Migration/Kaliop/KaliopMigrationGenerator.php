@@ -22,9 +22,10 @@ class KaliopMigrationGenerator extends MigrationGenerator
 {
     protected string $migrationDirectory;
 
-    /** @var AttributeMigrationGeneratorInterface[]  */
+    /**
+     * @var AttributeMigrationGeneratorInterface[]
+     */
     protected array $attributeMigrationGenerators;
-
 
     public function __construct(
         string $kernelProjectDir,
@@ -32,37 +33,33 @@ class KaliopMigrationGenerator extends MigrationGenerator
         ContentConfigurationManager $contentConfigurationManager,
         TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager,
         iterable $attributeMigrationGenerators
-    )
-    {
-        parent::__construct( $contentConfigurationManager, $taxonomyEntryConfigurationManager );
+    ) {
+        parent::__construct($contentConfigurationManager, $taxonomyEntryConfigurationManager);
         $this->migrationDirectory = $kernelProjectDir . '/src/' . $eZMigrationDirectory;
-        foreach ( $attributeMigrationGenerators as $type => $attributeMigrationGenerator )
-        {
+        foreach ($attributeMigrationGenerators as $type => $attributeMigrationGenerator) {
             $this->attributeMigrationGenerators[$type] = $attributeMigrationGenerator;
         }
     }
 
-    protected function configureOptions( OptionsResolver $optionsResolver ): void
+    protected function configureOptions(OptionsResolver $optionsResolver): void
     {
     }
 
     public function generate(): void
     {
         $contentTypes = $this->contentConfigurationManager->getConfigurationsType();
-        foreach ( $contentTypes as $contentType )
-        {
-            $contentTypeConfiguration = $this->contentConfigurationManager->getConfiguration( $contentType );
+        foreach ($contentTypes as $contentType) {
+            $contentTypeConfiguration = $this->contentConfigurationManager->getConfiguration($contentType);
 
             $name = $contentTypeConfiguration['name'];
-            $lang = is_array( $name ) ?  array_key_first( $name ) : 'eng-GB';
-            $attributes = array();
-            foreach ( $contentTypeConfiguration['fields'] as $fieldIdentifier => $field )
-            {
+            $lang = is_array($name) ? array_key_first($name) : 'eng-GB';
+            $attributes = [];
+            foreach ($contentTypeConfiguration['fields'] as $fieldIdentifier => $field) {
                 $attributeMigrationGenerator = $this->attributeMigrationGenerators[$field['type']];
                 $attributes[] = $attributeMigrationGenerator->generate($fieldIdentifier, $field);
             }
 
-            $parameters = array(
+            $parameters = [
                 'type' => 'content_type',
                 'mode' => 'create',
                 'content_type_group' => 'Content',
@@ -76,12 +73,11 @@ class KaliopMigrationGenerator extends MigrationGenerator
                 'default_sort_field' => $contentTypeConfiguration['defaultSortField'],
                 'default_sort_order' => $contentTypeConfiguration['defaultSortOrder'],
                 'lang' => $lang,
-                'attributes' => $attributes
-            );
+                'attributes' => $attributes,
+            ];
             $code = Yaml::dump([$parameters], 5);
             $fileName = date('YmdHis') . '_' . $contentType . '.yml';
             file_put_contents($this->migrationDirectory . '/' . $fileName, $code);
         }
-
     }
 }

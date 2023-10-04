@@ -17,22 +17,19 @@ use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInt
 
 class RichtextFieldValueTransformer implements FieldValueTransformerInterface
 {
-
     public function __construct(
         protected RichTextConverterInterface $richTextOutputConverter,
-    )
-    {
+    ) {
     }
 
     public function transformFieldValue(
         Content $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    )
-    {
+    ) {
         /** @var \Ibexa\FieldTypeRichText\FieldType\RichText\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return $this->richTextOutputConverter->convert($fieldValue->xml)->saveHTML();
+        return $this->richTextOutputConverter->convert($fieldValue->xml)
+            ->saveHTML();
     }
-
 }

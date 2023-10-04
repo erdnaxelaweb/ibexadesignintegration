@@ -30,24 +30,23 @@ class PagerBuilder
         protected SearchService             $searchService,
         protected RequestStack              $requestStack,
         protected ContentTransformer        $contentTransformer
-    )
-    {
+    ) {
     }
 
-    public function build( Location $location, string $type )
+    public function build(Location $location, string $type)
     {
         $request = $this->requestStack->getCurrentRequest();
 
-        $configuration = $this->pagerConfigurationManager->getConfiguration( $type );
-        $searchData = SearchData::createFromRequest( $request->get('form', []) );
+        $configuration = $this->pagerConfigurationManager->getConfiguration($type);
+        $searchData = SearchData::createFromRequest($request->get('form', []));
 
-        $query = $this->pagerQueryBuilder->build( $location, $configuration, $searchData );
+        $query = $this->pagerQueryBuilder->build($location, $configuration, $searchData);
 
         $adapter = new SearchAdapter(
             $query,
             $this->searchService,
             $this->contentTransformer,
-            function ( AggregationResultCollection $aggregationResultCollection ) use ( $configuration, $searchData ) {
+            function (AggregationResultCollection $aggregationResultCollection) use ($configuration, $searchData) {
                 return $this->pagerSearchFormBuilder->build(
                     $configuration,
                     $aggregationResultCollection,
@@ -55,9 +54,9 @@ class PagerBuilder
                 );
             }
         );
-        $pagerFanta = new Pagerfanta( $adapter );
-        $pagerFanta->setMaxPerPage( $configuration['maxPerPage'] );
-        $pagerFanta->setCurrentPage( $request->get( 'page', 1 ) );
+        $pagerFanta = new Pagerfanta($adapter);
+        $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
+        $pagerFanta->setCurrentPage($request->get('page', 1));
         return $pagerFanta;
     }
 }

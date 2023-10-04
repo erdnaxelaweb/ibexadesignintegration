@@ -24,7 +24,9 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ContentTransformer
 {
-    /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface[] */
+    /**
+     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface[]
+     */
     protected array $fieldValueTransformers = [];
 
     public function __construct(
@@ -32,10 +34,8 @@ class ContentTransformer
         protected RouterInterface $router,
         protected BreadcrumbGenerator $breadcrumbGenerator,
         iterable $fieldValueTransformers
-    )
-    {
-        foreach ( $fieldValueTransformers as $type => $fieldValueTransformer )
-        {
+    ) {
+        foreach ($fieldValueTransformers as $type => $fieldValueTransformer) {
             $this->fieldValueTransformers[$type] = $fieldValueTransformer;
         }
     }
@@ -51,11 +51,10 @@ class ContentTransformer
         foreach ($contentConfiguration['fields'] as $fieldIdentifier => $fieldConfiguration) {
             $fieldDefinition = $contentType->getFieldDefinition($fieldIdentifier);
             $fieldValue = null;
-            if($fieldDefinition) {
+            if ($fieldDefinition) {
                 $fieldValueTransformer = $this->fieldValueTransformers[$fieldDefinition->fieldTypeIdentifier];
                 $fieldValue = $fieldValueTransformer->transformFieldValue(
                     $ibexaContent,
-
                     $fieldIdentifier,
                     $fieldDefinition
                 );
@@ -70,7 +69,9 @@ class ContentTransformer
             $ibexaContent->contentInfo->publishedDate,
             $ibexaContent->contentInfo->modificationDate,
             $contentFields,
-            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $ibexaLocation->id] ),
+            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+                'locationId' => $ibexaLocation->id,
+            ]),
             $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation)
         );
     }

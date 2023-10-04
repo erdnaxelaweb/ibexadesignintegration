@@ -19,17 +19,20 @@ use Symfony\Component\Routing\RouterInterface;
 
 class LinkGenerator
 {
-    public function __construct(protected FactoryInterface $factory,
+    public function __construct(
+        protected FactoryInterface $factory,
         protected RouterInterface $router
-    )
-    {
+    ) {
     }
 
-    public function generateLocationLink( Location $location ): ItemInterface
+    public function generateLocationLink(Location $location): ItemInterface
     {
-        $name = $location->getContent()->getName();
+        $name = $location->getContent()
+            ->getName();
         $options = [
-            'uri' => $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, ['locationId' => $location->id] ),
+            'uri' => $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+                'locationId' => $location->id,
+            ]),
             'linkAttributes' => [],
         ];
         return $this->factory->createItem($name, $options);

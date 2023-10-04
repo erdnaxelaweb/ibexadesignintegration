@@ -13,11 +13,11 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
 class DropdownFilterHandler extends ChoiceFilterHandler
 {
-    protected function getFormOptions():array {
+    protected function getFormOptions(): array
+    {
         return [
             'expanded' => false,
             'multiple' => false,
         ];
     }
 }
-

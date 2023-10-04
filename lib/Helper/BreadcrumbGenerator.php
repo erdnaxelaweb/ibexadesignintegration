@@ -20,31 +20,25 @@ class BreadcrumbGenerator
     public function __construct(
         protected LinkGenerator           $linkGenerator,
         protected ConfigResolverInterface $configResolver
-    )
-    {
+    ) {
     }
 
-    public function generateLocationBreadcrumb( Location $location ): Breadcrumb
+    public function generateLocationBreadcrumb(Location $location): Breadcrumb
     {
-        return Breadcrumb::createLazyGhost( function ( Breadcrumb $instance ) use ( $location ) {
-            $rootLocationId = $this->configResolver->getParameter( 'content.tree_root.location_id' );
+        return Breadcrumb::createLazyGhost(function (Breadcrumb $instance) use ($location) {
+            $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
             $currentLocation = $location;
-            $breadcrumbLinks = [
-                $this->linkGenerator->generateLocationLink( $location )
-            ];
-            do
-            {
+            $breadcrumbLinks = [$this->linkGenerator->generateLocationLink($location)];
+            do {
                 $parentLocation = $currentLocation->getParentLocation();
-                $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink( $parentLocation );
+                $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink($parentLocation);
                 $currentLocation = $parentLocation;
-            }
-            while ( $parentLocation->id != $rootLocationId );
+            } while ($parentLocation->id != $rootLocationId);
 
-            $breadcrumbLinks = array_reverse( $breadcrumbLinks );
-            foreach ( $breadcrumbLinks as $link )
-            {
+            $breadcrumbLinks = array_reverse($breadcrumbLinks);
+            foreach ($breadcrumbLinks as $link) {
                 $instance->add($link);
             }
-        } );
+        });
     }
 }

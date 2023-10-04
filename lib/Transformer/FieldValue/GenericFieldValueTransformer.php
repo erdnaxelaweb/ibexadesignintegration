@@ -20,8 +20,7 @@ class GenericFieldValueTransformer implements FieldValueTransformerInterface
         Content $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    )
-    {
+    ) {
         return (string) $content->getFieldValue($fieldIdentifier);
     }
 }

@@ -23,7 +23,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
 {
     public function load(array $configs, ContainerBuilder $container)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
         $loader->load('pager.yaml');
         $loader->load('transformer.yaml');
@@ -34,30 +34,32 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         }
     }
 
-
     public function prepend(ContainerBuilder $container): void
     {
-        $this->addTwigConfiguration( $container );
-        $this->addImageVariationConfig( $container );
+        $this->addTwigConfiguration($container);
+        $this->addImageVariationConfig($container);
     }
-
 
     protected function addImageVariationConfig(ContainerBuilder $container): void
     {
         $variationsConfig = [];
         $breakpoints = $container->getParameter('erdnaxelaweb.static_fake_design.image.breakpoints');
         $variations = $container->getParameter('erdnaxelaweb.static_fake_design.image.variations');
-        foreach ( $variations as $variationName => $variationSizes )
-        {
-            foreach ( $variationSizes as $i=>$variationSize )
-            {
+        foreach ($variations as $variationName => $variationSizes) {
+            foreach ($variationSizes as $i => $variationSize) {
                 $breakpoint = $breakpoints[$i];
                 $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
                 $variationsConfig[$variationFullName] = [
                     'reference' => null,
                     'filters' => [
-                        ['name' => 'focusedThumbnail', 'params'=> [ 'size' => $variationSize, 'focus' => [0,0]]]
-                    ]
+                        [
+                            'name' => 'focusedThumbnail',
+                            'params' => [
+                                'size' => $variationSize,
+                                'focus' => [0, 0],
+                            ],
+                        ],
+                    ],
                 ];
             }
         }
@@ -67,25 +69,22 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
             [
                 'system' => [
                     'site' => [
-                        'image_variations' => $variationsConfig
-                    ]
-                ]
+                        'image_variations' => $variationsConfig,
+                    ],
+                ],
             ]
         );
     }
-    /**
-     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
-     * @return void
-     */
-    private function addTwigConfiguration( ContainerBuilder $container ): void
+
+    private function addTwigConfiguration(ContainerBuilder $container): void
     {
-        if ( !$container->hasExtension( 'twig' ) )
-        {
+        if (! $container->hasExtension('twig')) {
             return;
         }
 
         $path = __DIR__ . '/../Resources/views';
-        $container->prependExtensionConfig( 'twig', [ 'paths' => [ $path ] ] );
+        $container->prependExtensionConfig('twig', [
+            'paths' => [$path],
+        ]);
     }
-
 }
