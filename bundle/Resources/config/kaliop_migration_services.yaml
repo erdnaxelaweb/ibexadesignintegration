@@ -1,0 +1,165 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\KaliopMigrationGenerator:
+        decorates: ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator
+        arguments:
+            $kernelProjectDir: '%kernel.project_dir%'
+            $eZMigrationDirectory: '%ez_migration_bundle.version_directory%'
+            $attributeMigrationGenerators: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', index_by: 'type' }
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.blocks:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\BlockAttributeMigrationGenerator
+        lazy: true
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'blocks'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.boolean:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezboolean'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'boolean'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.content:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezobjectrelationlist'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'content'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.date:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezdate'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'date'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.datetime:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezdatetime'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'datetime'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.email:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezemail'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'email'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.file:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezfile'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'file'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.float:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezfloat'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'float'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.image:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezimageasset'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'image'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.integer:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezinteger'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'integer'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.location:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezgmaplocation'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'location'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.matrix:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezmatrix'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'matrix'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.richtext:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezrichtext'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'richtext'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.selection:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezselection'
+            $optionsMap:
+                options: options
+                isMultiple: isMultiple
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'selection'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.string:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'ezstring'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'string'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.taxonomy_entry:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'eztags'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'taxonomy_entry'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.text:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'eztext'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'text'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.time:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'eztime'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'time'}
+
+    erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.form:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute\GenericAttributeMigrationGenerator
+        lazy: true
+        arguments:
+            $type: 'form'
+        tags:
+            - {name: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', type: 'form'}

@@ -20,3 +20,6 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
     parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateMigrationCommand:

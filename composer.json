@@ -13,7 +13,8 @@
         "symplify/easy-coding-standard": "*"
     },
     "suggest": {
-        "ext-dom": "*"
+        "ext-dom": "*",
+        "tanoconsulting/ibexa-migration-bundle":"^1.0"
     },
     "authors": [
         {

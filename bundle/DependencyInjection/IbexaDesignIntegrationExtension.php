@@ -27,6 +27,11 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('services.yaml');
         $loader->load('pager.yaml');
         $loader->load('transformer.yaml');
+
+        $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
+        if (in_array('eZMigrationBundle', $activatedBundles, true)) {
+            $loader->load('kaliop_migration_services.yaml');
+        }
     }
 
 
