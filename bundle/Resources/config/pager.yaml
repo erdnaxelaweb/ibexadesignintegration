@@ -1,0 +1,24 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder:
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder:
+        arguments:
+            $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerQueryBuilder:
+        arguments:
+            $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\CheckboxFilterHandler:
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'checkbox' }
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\RadioFilterHandler:
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'radio' }
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\DropdownFilterHandler:
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'dropdown' }
