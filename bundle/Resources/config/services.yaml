@@ -21,5 +21,7 @@ services:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
     parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
 
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateParametersCommand:
+
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateMigrationCommand:
