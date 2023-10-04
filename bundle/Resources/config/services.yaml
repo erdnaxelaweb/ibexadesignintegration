@@ -7,6 +7,9 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\DefaultViewController:
     public: true
 
+  ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator:
+  ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator:
+  ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\RichTextGenerator:
