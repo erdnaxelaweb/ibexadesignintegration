@@ -3,15 +3,15 @@
 {% macro display_content(template, content, parameters, viewType) %}
     {# @var content \ErdnaxelaWeb\StaticFakeDesign\Value\Content #}
     {% set template = template|replace({'%type%': content.type}) %}
-    {% include template with {content: content}|merge(parameters) only %}
+    {% include template with {content: content}|merge(parameters|default({})) only %}
 {% endmacro %}
 {% macro display_taxonomy_entry(template, taxonomy_entry, parameters) %}
     {# @var taxonomy_entry \ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry #}
     {% set template = template|replace({'%type%': taxonomy_entry.type}) %}
-    {% include template with {taxonomy_entry: taxonomy_entry}|merge(parameters) only %}
+    {% include template with {taxonomy_entry: taxonomy_entry}|merge(parameters|default({})) only %}
 {% endmacro %}
 {% macro display_block(template, block, parameters) %}
     {# @var block \ErdnaxelaWeb\StaticFakeDesign\Value\Block #}
-    {% set template = template|replace({'%type%': block.type}) %}
-    {% include template with {block: block}|merge(parameters) only %}
+    {% set template = template|replace({'%type%': block.type, '%view%': block.view}) %}
+    {% include template with {block: block}|merge(parameters|default({})) only %}
 {% endmacro %}
