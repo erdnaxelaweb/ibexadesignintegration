@@ -1,0 +1,45 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+        arguments:
+            $fieldValueTransformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
+
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezdate:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezdate' }
+
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezboolean:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezboolean' }
+
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezstring:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezstring' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\RichtextFieldValueTransformer:
+        lazy: true
+        arguments:
+            $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezrichtext' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\SelectionFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezselection' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ImageFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimage' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimageasset' }

@@ -26,10 +26,12 @@ class DefaultViewController extends Controller
     {
     }
 
-    public function viewAction(ContentView $view)
+    public function viewAction( ContentView $view )
     {
         $content = $view->getContent();
-        $view->setContent(($this->contentTransformer)($content));
+        $location = $view->getLocation();
+
+        $contentDecorator = ( $this->contentTransformer )( $content, $location );
 
 
         return $view;

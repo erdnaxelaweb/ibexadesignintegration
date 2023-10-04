@@ -10,10 +10,13 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator:
-  ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\RichTextGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\RichTextGenerator
     lazy: true
     arguments:
       $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
+    parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
