@@ -11,22 +11,19 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\StaticFakeDesign\Value\Coordinates;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class GenericFieldValueTransformer implements FieldValueTransformerInterface
+class LocationFieldValueTransformer implements FieldValueTransformerInterface
 {
-    public function __construct(
-        protected string $propertyName = "value"
-    ) {
-    }
-
     public function transformFieldValue(
-        Content $content,
-        string $fieldIdentifier,
+        Content         $content,
+        string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
     ) {
+        /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return $fieldValue->{$this->propertyName};
+        return new Coordinates($fieldValue->latitude, $fieldValue->longitude, $fieldValue->address);
     }
 }

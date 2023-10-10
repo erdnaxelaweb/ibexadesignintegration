@@ -14,19 +14,21 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class GenericFieldValueTransformer implements FieldValueTransformerInterface
+class MatrixFieldValueTransformer implements FieldValueTransformerInterface
 {
-    public function __construct(
-        protected string $propertyName = "value"
-    ) {
-    }
-
     public function transformFieldValue(
-        Content $content,
-        string $fieldIdentifier,
+        Content         $content,
+        string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
     ) {
+        /** @var \Ibexa\FieldTypeMatrix\FieldType\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return $fieldValue->{$this->propertyName};
+        $rows = [];
+        /** @var \Ibexa\FieldTypeMatrix\FieldType\Value\Row $row */
+        foreach ($fieldValue->getRows() as $row) {
+            $rows[] = $row->getCells();
+        }
+
+        return $rows;
     }
 }
