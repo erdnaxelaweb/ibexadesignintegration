@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Helper;
 
+use eZ\Publish\API\Repository\Values\Content\Content;
 use eZ\Publish\API\Repository\Values\Content\Location;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Knp\Menu\FactoryInterface;
@@ -21,20 +22,29 @@ class LinkGenerator
 {
     public function __construct(
         protected FactoryInterface $factory,
-        protected RouterInterface $router
+        protected RouterInterface  $router
     ) {
     }
 
     public function generateLocationLink(Location $location): ItemInterface
     {
-        $name = $location->getContent()
-            ->getName();
-        $options = [
-            'uri' => $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+        return $this->generateLink(
+            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
                 'locationId' => $location->id,
             ]),
-            'linkAttributes' => [],
-        ];
-        return $this->factory->createItem($name, $options);
+            $location->getContent()
+                ->getName()
+        );
+    }
+
+    public function generateContentLink(Content $content): ItemInterface
+    {
+        return $this->generateLocationLink($content->contentInfo->getMainLocation());
+    }
+
+    public function generateLink(string $url, string $label, array $options): ItemInterface
+    {
+        $options['uri'] = $url;
+        return $this->factory->createItem($label, $options);
     }
 }
