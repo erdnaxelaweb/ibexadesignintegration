@@ -5,8 +5,8 @@
  * @package   ibexadesignbundle
  *
  * @author    florian
- * @copyright 2018 Novactive
- * @license   https://github.com/Novactive/NovaHtmlIntegrationBundle/blob/master/LICENSE
+ * @copyright 2023-present Florian ALEXANDRE
+ * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
@@ -25,19 +25,16 @@ class FieldFilterHandler implements FilterHandlerInterface
     ) {
     }
 
-    public function getCriterion(string $field, $value, bool $isMultiple = false): Criterion
+    public function getCriterion(string $filterName, string $field, $value): Criterion
     {
         $operator = is_array($value) ? Operator::IN : Operator::EQ;
-        $criterion = new CustomField($this->getFieldName($field), $operator, $value);
-        if ($isMultiple) {
-            return new FilterTag($field, $criterion);
-        }
-        return $criterion;
+        $criterion = new CustomField( $this->getFieldName( $filterName), $operator, $value);
+        return new FilterTag( $filterName, $criterion);
     }
 
-    public function getAggregation(string $field): RawTermAggregation
+    public function getAggregation(string $filterName): RawTermAggregation
     {
-        return new RawTermAggregation($field, $this->getFieldName($field), [$field]);
+        return new RawTermAggregation( $filterName, $this->getFieldName( $filterName), [ $filterName]);
     }
 
     protected function getFieldName(string $field)
