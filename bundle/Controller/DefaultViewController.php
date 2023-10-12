@@ -36,7 +36,9 @@ class DefaultViewController extends Controller
         if ($view->hasParameter('pagerType')) {
             $pagerType = $view->getParameter('pagerType');
             $view->addParameters([
-                'pager' => $this->pagerBuilder->build($location, $pagerType),
+                'pager' => $this->pagerBuilder->build($pagerType, [
+                    'location' => $location,
+                ]),
             ]);
         }
 

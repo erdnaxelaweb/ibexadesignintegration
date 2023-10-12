@@ -42,7 +42,7 @@ class LinkGenerator
         return $this->generateLocationLink($content->contentInfo->getMainLocation());
     }
 
-    public function generateLink(string $url, string $label, array $options): ItemInterface
+    public function generateLink(string $url, string $label, array $options = []): ItemInterface
     {
         $options['uri'] = $url;
         return $this->factory->createItem($label, $options);
