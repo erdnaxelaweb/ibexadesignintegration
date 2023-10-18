@@ -56,11 +56,11 @@ class RichTextGenerator extends BaseRichTextGenerator
         parent::__construct($fakerGenerator);
     }
 
-    public function __invoke(int $maxWidth = 10): string
+    public function __invoke(int $maxWidth = 10, array $allowedTags = []): string
     {
-        $document = new DOMDocument();
+        $domDocument = new DOMDocument();
 
-        $document->loadXML(
+        $domDocument->loadXML(
             '<?xml version="1.0" encoding="UTF-8"?>
 <section xmlns="http://docbook.org/ns/docbook" 
 xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -70,58 +70,58 @@ version="5.0-variant ezpublish-1.0"></section>'
         );
 
         /** @var DOMElement $root */
-        $root = $document->firstChild;
-        $this->addRandomSubTree($root);
+        $body = $domDocument->firstChild;
+        $this->addRandomSubTree($body, $maxWidth, $allowedTags);
 
-        $finalDocument = new DOMDocument();
-        $finalDocument->loadXml($document->saveXML());
+        $resultDocument = new DOMDocument();
+        $resultDocument->loadXml($domDocument->saveXML());
 
-        return $this->richTextOutputConverter->convert($finalDocument)
+        return $this->richTextOutputConverter->convert($resultDocument)
             ->saveHTML() ?: '';
     }
 
-    protected function addRandomSubTree(DOMElement $root, $maxWidth = 10): DOMElement
+    protected function addRandomSubTree(DOMElement $root, int $maxWidth = 10, array $allowedTags = []): DOMElement
     {
         $siblings = $this->fakerGenerator->numberBetween(1, $maxWidth);
 
         for ($i = 0; $i < $siblings; ++$i) {
-            $this->addRandomLeaf($root);
+            $this->addRandomLeaf($root, $allowedTags);
         }
 
         return $root;
     }
 
-    protected function addRandomLeaf(DOMElement $node)
+    protected function addRandomLeaf(DOMElement $node, array $allowedTags = [])
     {
-        $rand = $this->fakerGenerator->numberBetween(1, 7);
+        $tag = $this->fakerGenerator->randomElement(! empty($allowedTags) ? $allowedTags : self::ALLOWED_TAGS);
 
-        switch ($rand) {
-            case 1:
-                $this->addRandomP($node);
-                break;
-
-            case 2:
+        switch ($tag) {
+            case 'a':
                 $this->addRandomA($node);
                 break;
 
-            case 3:
+            case 'ul':
                 $this->addRandomUL($node);
                 break;
 
-            case 4:
+            case 'h':
                 $this->addRandomH($node);
                 break;
 
-            case 5:
+            case 'b':
                 $this->addRandomB($node);
                 break;
 
-            case 6:
+            case 'i':
                 $this->addRandomI($node);
                 break;
 
-            case 7:
+            case 'table':
                 $this->addRandomTable($node);
+                break;
+            case 'p':
+            default:
+                $this->addRandomP($node);
                 break;
         }
     }
