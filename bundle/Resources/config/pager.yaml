@@ -23,6 +23,10 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'metadata.publish_date' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\PrioritySortHandler:
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'priority' }
+
     ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\PagerBuildSubscriber:
         arguments:
             $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }

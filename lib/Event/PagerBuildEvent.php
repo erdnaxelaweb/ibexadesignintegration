@@ -13,6 +13,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use eZ\Publish\API\Repository\Values\Content\LocationQuery;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PagerBuildEvent extends Event
@@ -24,7 +25,7 @@ class PagerBuildEvent extends Event
     public function __construct(
         public readonly string     $pagerType,
         public readonly array      $pagerConfiguration,
-        public readonly Query      $pagerQuery,
+        public readonly LocationQuery      $pagerQuery,
         public readonly SearchData $searchData,
         public readonly array      $buildContext,
         public array               $queryFilters = [],

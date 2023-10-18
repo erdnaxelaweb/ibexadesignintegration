@@ -38,6 +38,7 @@ class DefaultViewController extends Controller
             $view->addParameters([
                 'pager' => $this->pagerBuilder->build($pagerType, [
                     'location' => $location,
+                    'sortDirection' => $view->getParameter('sortDirection') ?? null
                 ]),
             ]);
         }

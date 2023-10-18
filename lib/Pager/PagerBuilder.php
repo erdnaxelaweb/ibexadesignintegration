@@ -13,9 +13,10 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
+use eZ\Publish\API\Repository\Values\Content\LocationQuery;
+use eZ\Publish\Core\Pagination\Pagerfanta\LocationSearchAdapter;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
@@ -43,7 +44,7 @@ class PagerBuilder
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
         $searchData = SearchData::createFromRequest($request->get('form', []));
 
-        $query = new Query();
+        $query = new LocationQuery();
         $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $context);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
@@ -51,17 +52,9 @@ class PagerBuilder
         $query->filter = new Criterion\LogicalAnd($event->queryFilters);
         $query->aggregations = $event->queryAggregations;
 
-        $adapter = new SearchAdapter(
+        $adapter = new LocationSearchAdapter(
             $query,
             $this->searchService,
-            $this->contentTransformer,
-            function (AggregationResultCollection $aggregationResultCollection) use ($configuration, $searchData) {
-                return $this->pagerSearchFormBuilder->build(
-                    $configuration,
-                    $aggregationResultCollection,
-                    $searchData
-                );
-            }
         );
         $pagerFanta = new Pagerfanta($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);

@@ -76,13 +76,11 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             $event->queryAggregations[] = $filterHandler->getAggregation($filterName, $field);
         }
 
-        foreach ($configuration['sorts'] as $sortType => $sortConfig) {
-            $sortHandler = $this->sortsHandler[$sortType];
-            if (is_string($sortConfig)) {
-                $sortConfig = [
-                    'sortDirection' => $sortConfig,
-                ];
-            }
+        foreach ($configuration['sorts'] as $sortConfig) {
+            $sortHandler = $this->sortsHandler[$sortConfig];
+            $sortConfig = [
+                'sortDirection' => $eventContext['sortDirection'],
+            ];
             $event->pagerQuery->sortClauses[] = $sortHandler->getSortClause($sortConfig);
         }
     }

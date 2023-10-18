@@ -94,6 +94,11 @@ services:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimage' }
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimageasset' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry_assignment' }
+
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ContentFieldValueTransformer:
         lazy: true
         tags:
