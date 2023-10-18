@@ -85,7 +85,7 @@ version="5.0-variant ezpublish-1.0"></section>'
         $siblings = $this->fakerGenerator->numberBetween(1, $maxWidth);
 
         for ($i = 0; $i < $siblings; ++$i) {
-            $this->addRandomLeaf($root);
+            $this->addRandomLeaf($root, $allowedTags);
         }
 
         return $root;
