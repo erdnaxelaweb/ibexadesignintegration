@@ -9,27 +9,19 @@
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-declare(strict_types=1);
-
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
-use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
-use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
-use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
-use Symfony\Component\Routing\RouterInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry;
+use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 
-class ContentTransformer
+class TaxonomyEntryTransformer
 {
     use FieldValueTransformerTrait;
 
     public function __construct(
-        protected ContentConfigurationManager $contentConfigurationManager,
-        protected RouterInterface $router,
-        protected BreadcrumbGenerator $breadcrumbGenerator,
+        protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager,
         iterable $fieldValueTransformers
     ) {
         foreach ($fieldValueTransformers as $type => $fieldValueTransformer) {
@@ -37,12 +29,12 @@ class ContentTransformer
         }
     }
 
-    public function __invoke(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
+    public function __invoke(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
     {
-        $ibexaLocation = $ibexaLocation ?? $ibexaContent->contentInfo->getMainLocation();
+        $ibexaContent = $ibexaTaxonomyEntry->getContent();
         $contentType = $ibexaContent->getContentType();
         $contentTypeIdentifier = $contentType->identifier;
-        $contentConfiguration = $this->contentConfigurationManager->getConfiguration($contentTypeIdentifier);
+        $contentConfiguration = $this->taxonomyEntryConfigurationManager->getConfiguration($contentTypeIdentifier);
 
         $contentFields = new ContentFieldsCollection();
         foreach ($contentConfiguration['fields'] as $fieldIdentifier => $fieldConfiguration) {
@@ -52,17 +44,13 @@ class ContentTransformer
             );
         }
 
-        return new Content(
-            $ibexaContent,
+        return new TaxonomyEntry(
+            $ibexaTaxonomyEntry->getId(),
             $ibexaContent->getName(),
             $contentTypeIdentifier,
             $ibexaContent->contentInfo->publishedDate,
             $ibexaContent->contentInfo->modificationDate,
             $contentFields,
-            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
-                'locationId' => $ibexaLocation->id,
-            ]),
-            $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation)
         );
     }
 }
