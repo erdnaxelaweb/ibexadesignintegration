@@ -14,10 +14,10 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
-use Ibexa\Core\Pagination\Pagerfanta\ContentSearchAdapter;
+use Ibexa\Core\Pagination\Pagerfanta\LocationSearchAdapter;
 use Symfony\Component\Form\FormView;
 
-class SearchAdapter extends ContentSearchAdapter
+class SearchAdapter extends LocationSearchAdapter
 {
     public function __construct(
         Query $query,
@@ -35,7 +35,7 @@ class SearchAdapter extends ContentSearchAdapter
         $list = [];
         foreach ($results as $result) {
             $list[] = [
-                'contentId' => $result->id,
+                'locationId' => $result->id,
             ];
         }
         return $list;

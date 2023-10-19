@@ -17,7 +17,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
 use Ibexa\Contracts\Core\Repository\SearchService;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Pagerfanta\Pagerfanta;
@@ -43,7 +43,7 @@ class PagerBuilder
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
         $searchData = SearchData::createFromRequest($request->get('form', []));
 
-        $query = new Query();
+        $query = new LocationQuery();
         $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $context);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
