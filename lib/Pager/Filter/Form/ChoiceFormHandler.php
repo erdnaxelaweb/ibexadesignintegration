@@ -9,31 +9,14 @@
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
+namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Form;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
-use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
-use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-abstract class ChoiceFilterHandler implements FilterHandlerInterface
+abstract class ChoiceFormHandler implements FilterFormHandlerInterface
 {
-    public function getCriterion(string $filterName, string $field, $value): Criterion
-    {
-        $operator = is_array($value) ? Operator::IN : Operator::EQ;
-        $criterion = new CustomField($field, $operator, $value);
-        return new FilterTag($filterName, $criterion);
-    }
-
-    public function getAggregation(string $filterName, string $field): RawTermAggregation
-    {
-        return new RawTermAggregation($filterName, $field, [$filterName]);
-    }
-
     public function addForm(
         FormBuilderInterface $formBuilder,
         string               $filterName,
@@ -41,7 +24,7 @@ abstract class ChoiceFilterHandler implements FilterHandlerInterface
         AggregationResult    $aggregationResult
     ): void {
         $options = $this->getFormOptions();
-        $options['label'] = sprintf('searchform.%s', $field);
+        $options['label'] = sprintf('searchform.%s', $filterName);
         $options['required'] = false;
         $options['choices'] = [];
         /** @var \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $value */

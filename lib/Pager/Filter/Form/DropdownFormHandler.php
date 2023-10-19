@@ -9,9 +9,9 @@
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
+namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Form;
 
-class DropdownFilterHandler extends ChoiceFilterHandler
+class DropdownFormHandler extends ChoiceFormHandler
 {
     protected function getFormOptions(): array
     {

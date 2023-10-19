@@ -6,26 +6,11 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder:
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder:
-        arguments:
-            $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }
-
-    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\CheckboxFilterHandler:
-        tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'checkbox' }
-    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\RadioFilterHandler:
-        tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'radio' }
-    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\DropdownFilterHandler:
-        tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'dropdown' }
-
-    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\PublishDateSortHandler:
-        tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'metadata.publish_date' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\PagerBuildSubscriber:
-        arguments:
-            $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }
-            $sortsHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', index_by: 'type' }
         tags:
             - { name: kernel.event_subscriber }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Configuration\PagerConfigurationManager:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager
+        parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager

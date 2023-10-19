@@ -12,33 +12,18 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\FilterHandlerInterface;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterCriterionHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
 use Ibexa\Contracts\Core\Persistence\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PagerBuildSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var FilterHandlerInterface[]
-     */
-    protected array $filtersHandler;
-
-    /**
-     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\SortHandlerInterface[]
-     */
-    protected array $sortsHandler;
-
     public function __construct(
-        iterable                           $filtersHandler,
-        iterable                           $sortsHandler,
+        protected ChainFilterCriterionHandler                           $criterionHandler,
+        protected ChainSortHandler                           $sortHandler,
     ) {
-        foreach ($filtersHandler as $type => $filterHandler) {
-            $this->filtersHandler[$type] = $filterHandler;
-        }
-        foreach ($sortsHandler as $type => $sortHandler) {
-            $this->sortsHandler[$type] = $sortHandler;
-        }
     }
 
     public static function getSubscribedEvents(): array
@@ -65,25 +50,23 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         foreach ($configuration['filters'] as $filterName => $filter) {
             $field = $filter['field'];
 
-            $filterHandler = $this->filtersHandler[$filter['type']];
             if (isset($searchData->filters[$filterName]) && ! empty($searchData->filters[$filterName])) {
-                $event->queryFilters[] = $filterHandler->getCriterion(
+                $event->queryFilters[] = $this->criterionHandler->getCriterion(
+                    $filter['criterionType'],
                     $filterName,
                     $field,
                     $searchData->filters[$filterName]
                 );
             }
-            $event->queryAggregations[] = $filterHandler->getAggregation($filterName, $field);
+            $event->queryAggregations[] = $this->criterionHandler->getAggregation(
+                $filter['criterionType'],
+                $filterName,
+                $field
+            );
         }
 
-        foreach ($configuration['sorts'] as $sortType => $sortConfig) {
-            $sortHandler = $this->sortsHandler[$sortType];
-            if (is_string($sortConfig)) {
-                $sortConfig = [
-                    'sortDirection' => $sortConfig,
-                ];
-            }
-            $event->pagerQuery->sortClauses[] = $sortHandler->getSortClause($sortConfig);
-        }
+        $sortIdentifier = $searchData->sort ?? array_key_first($configuration['sorts']);
+        $sortConfig = $configuration['sorts'][$sortIdentifier];
+        $this->sortHandler->addSortClause($event->pagerQuery, $sortConfig['type'], $sortConfig['options']);
     }
 }

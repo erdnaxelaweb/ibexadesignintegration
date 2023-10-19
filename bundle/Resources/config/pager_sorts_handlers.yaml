@@ -1,0 +1,128 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.id:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\ContentId
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.id' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.name:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\ContentName
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.name' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.translated_name:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\ContentTranslatedName
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.translated_name' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.date_modified:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\DateModified
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.date_modified' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.date_published:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\DatePublished
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.date_published' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.score:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Score
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'score' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.section_identifier:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\SectionIdentifier
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.section_identifier' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.section_name:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\SectionName
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.section_name' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.content.depth:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Location\Depth
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'content.depth' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.location.id:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Location\Id
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'location.id' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.location.is_main:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Location\IsMainLocation
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'location.is_main' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.location.priority:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Location\Priority
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'location.priority' }
+
+    erdnaxelaweb.ibexa_design_integration.pager.sort_handler.location.visibility:
+        lazy: true
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\IbexaSortHandler
+        arguments:
+            $sortClauseClass: Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause\Location\Visibility
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'location.visibility' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\FieldSortHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'field' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\CustomFieldSortHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'custom_field' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\AggregateSortHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', type: 'aggregate' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler:
+        arguments:
+            $sortsHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.sort_handler', index_by: 'type' }

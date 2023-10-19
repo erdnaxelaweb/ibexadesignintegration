@@ -11,12 +11,13 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
+use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause;
 
-class PublishDateSortHandler implements SortHandlerInterface
+class CustomFieldSortHandler implements SortHandlerInterface
 {
-    public function getSortClause(array $sortConfig): SortClause
+    public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void
     {
-        return new SortClause\DatePublished(...$sortConfig);
+        $pagerQuery->sortClauses[] = new SortClause\CustomField(...$sortOptions);
     }
 }

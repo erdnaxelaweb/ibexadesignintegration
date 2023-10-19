@@ -1,0 +1,14 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterCriterionHandler:
+        arguments:
+            $criterionsHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_criterion_handler', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Criterion\RawCriterionHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_criterion_handler', type: 'raw' }

@@ -12,8 +12,12 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause;
 
-interface SortHandlerInterface
+class FieldSortHandler implements SortHandlerInterface
 {
-    public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void;
+    public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void
+    {
+        $pagerQuery->sortClauses[] = new SortClause\Field(...$sortOptions);
+    }
 }

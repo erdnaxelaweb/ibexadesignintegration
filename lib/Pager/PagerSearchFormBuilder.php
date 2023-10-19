@@ -11,7 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\FilterHandlerInterface;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterFormHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -21,18 +21,10 @@ use Symfony\Component\Form\FormFactoryInterface;
 
 class PagerSearchFormBuilder
 {
-    /**
-     * @var FilterHandlerInterface[]
-     */
-    protected array $filtersHandler;
-
     public function __construct(
-        iterable                       $filtersHandler,
+        protected ChainFilterFormHandler                           $formHandler,
         protected FormFactoryInterface $formFactory
     ) {
-        foreach ($filtersHandler as $type => $filterHandler) {
-            $this->filtersHandler[$type] = $filterHandler;
-        }
     }
 
     public function build(
@@ -48,9 +40,9 @@ class PagerSearchFormBuilder
         ]);
 
         foreach ($configuration['filters'] as $filterName => $filter) {
-            $filterHandler = $this->filtersHandler[$filter['type']];
-            $filterHandler->addForm(
+            $this->formHandler->addForm(
                 $formFilters,
+                $filter['formType'],
                 $filterName,
                 $filter['field'],
                 $aggregationResultCollection->get($filterName)
@@ -59,7 +51,7 @@ class PagerSearchFormBuilder
         $builder->add($formFilters);
         if (count($configuration['sorts']) > 1) {
             $builder->add('sort', ChoiceType::class, [
-                'choices' => array_flip($configuration['sorts']),
+                'choices' => array_combine(array_keys($configuration['sorts']), array_keys($configuration['sorts'])),
             ]);
         }
         $builder->add('search', SubmitType::class, [

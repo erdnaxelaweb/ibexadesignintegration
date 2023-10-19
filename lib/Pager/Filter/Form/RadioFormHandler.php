@@ -9,15 +9,15 @@
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
+namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Form;
 
-class CheckboxFilterHandler extends ChoiceFilterHandler
+class RadioFormHandler extends ChoiceFormHandler
 {
     protected function getFormOptions(): array
     {
         return [
             'expanded' => true,
-            'multiple' => true,
+            'multiple' => false,
         ];
     }
 }
