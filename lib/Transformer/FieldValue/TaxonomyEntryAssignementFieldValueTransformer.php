@@ -12,12 +12,11 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer;
-use ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
-use Ibexa\Taxonomy\FieldType\TaxonomyEntry\Value as TaxonomyEntryValue;
+use Ibexa\Taxonomy\FieldType\TaxonomyEntryAssignment\Value as TaxonomyEntryAssignmentValue;
 
-class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterface
+class TaxonomyEntryAssignementFieldValueTransformer implements FieldValueTransformerInterface
 {
     public function __construct(
         protected TaxonomyEntryTransformer $taxonomyEntryTransformer
@@ -28,9 +27,13 @@ class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterfa
         Content         $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    ): TaxonomyEntry {
-        /** @var TaxonomyEntryValue $fieldValue */
+    ): array {
+        /** @var TaxonomyEntryAssignmentValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return ($this->taxonomyEntryTransformer)($fieldValue->getTaxonomyEntry());
+        $entries = [];
+        foreach ($fieldValue->getTaxonomyEntries() as $taxonomyEntry) {
+            $entries[] = ($this->taxonomyEntryTransformer)($taxonomyEntry);
+        }
+        return $entries;
     }
 }

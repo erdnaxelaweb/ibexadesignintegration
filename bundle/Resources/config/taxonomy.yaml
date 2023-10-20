@@ -8,7 +8,12 @@ services:
         arguments:
             $fieldValueTransformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
 
-    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryFieldValueTransformer:
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryAssignementFieldValueTransformer:
         lazy: true
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry_assignment' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry' }
