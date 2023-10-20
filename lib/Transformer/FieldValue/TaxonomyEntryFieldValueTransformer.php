@@ -28,9 +28,10 @@ class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterfa
         Content         $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition
-    ): TaxonomyEntry {
+    ): ?TaxonomyEntry {
         /** @var TaxonomyEntryValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return ($this->taxonomyEntryTransformer)($fieldValue->getTaxonomyEntry());
+        $taxonomyEntry = $fieldValue->getTaxonomyEntry();
+        return $taxonomyEntry ? ($this->taxonomyEntryTransformer)($taxonomyEntry) : null;
     }
 }
