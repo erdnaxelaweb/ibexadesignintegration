@@ -19,7 +19,8 @@ class TextFieldValueTransformer
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ) {
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);

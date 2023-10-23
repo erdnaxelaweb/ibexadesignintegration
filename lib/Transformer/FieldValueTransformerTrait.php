@@ -24,18 +24,19 @@ trait FieldValueTransformerTrait
     protected function transformFieldValue(
         IbexaContent $ibexaContent,
         ContentType $contentType,
-        string $fieldIdentifier
+        string $fieldIdentifier,
+        array $fieldConfiguration
     ) {
         $fieldDefinition = $contentType->getFieldDefinition($fieldIdentifier);
-        $fieldValue = null;
         if ($fieldDefinition) {
             $fieldValueTransformer = $this->fieldValueTransformers[$fieldDefinition->fieldTypeIdentifier];
-            $fieldValue = $fieldValueTransformer->transformFieldValue(
+            return $fieldValueTransformer->transformFieldValue(
                 $ibexaContent,
                 $fieldIdentifier,
-                $fieldDefinition
+                $fieldDefinition,
+                $fieldConfiguration
             );
         }
-        return $fieldValue;
+        return null;
     }
 }

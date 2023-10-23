@@ -20,7 +20,8 @@ class LocationFieldValueTransformer implements FieldValueTransformerInterface
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ) {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);

@@ -24,7 +24,8 @@ class GenericFieldValueTransformer implements FieldValueTransformerInterface
     public function transformFieldValue(
         Content $content,
         string $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ) {
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         return $fieldValue->{$this->propertyName};

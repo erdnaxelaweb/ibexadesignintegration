@@ -19,6 +19,7 @@ interface FieldValueTransformerInterface
     public function transformFieldValue(
         Content $content,
         string $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     );
 }

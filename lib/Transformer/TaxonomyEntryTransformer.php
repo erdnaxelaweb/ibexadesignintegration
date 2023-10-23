@@ -40,7 +40,7 @@ class TaxonomyEntryTransformer
         foreach ($contentConfiguration['fields'] as $fieldIdentifier => $fieldConfiguration) {
             $contentFields->set(
                 $fieldIdentifier,
-                $this->transformFieldValue($ibexaContent, $contentType, $fieldIdentifier)
+                $this->transformFieldValue($ibexaContent, $contentType, $fieldIdentifier, $fieldConfiguration)
             );
         }
 

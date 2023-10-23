@@ -27,7 +27,8 @@ class ImageFieldValueTransformer implements FieldValueTransformerInterface
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ) {
         return function (string $variationName) use ($content, $fieldIdentifier, $fieldDefinition) {
             return $this->imageGenerator->generateImage($content, $fieldIdentifier, $variationName);

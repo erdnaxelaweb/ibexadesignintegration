@@ -30,7 +30,8 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
     public function transformFieldValue(
         Content $content,
         string $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ) {
         /** @var \Ibexa\Core\FieldType\BinaryFile\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);

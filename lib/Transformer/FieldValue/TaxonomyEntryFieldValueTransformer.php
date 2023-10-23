@@ -27,7 +27,8 @@ class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterfa
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
-        FieldDefinition $fieldDefinition
+        FieldDefinition $fieldDefinition,
+        array $fieldConfiguration
     ): ?TaxonomyEntry {
         /** @var TaxonomyEntryValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
