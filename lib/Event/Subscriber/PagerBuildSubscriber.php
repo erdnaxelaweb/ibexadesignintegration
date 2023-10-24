@@ -14,7 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterCriterionHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
-use Ibexa\Contracts\Core\Persistence\Content\Location;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
