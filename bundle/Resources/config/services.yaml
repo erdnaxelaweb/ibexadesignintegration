@@ -25,3 +25,7 @@ services:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateMigrationCommand:
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\ChainGenerator:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
+    parent: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator

@@ -1,0 +1,3 @@
+parameters:
+    ibexa_design_integration.default.enable_fake_generation: false
+    ibexa_design_integration.static_group.enable_fake_generation: true

@@ -24,6 +24,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
     public function load(array $configs, ContainerBuilder $container)
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('parameters.yaml');
         $loader->load('services.yaml');
         $loader->load('pager.yaml');
         $loader->load('pager_sorts_handlers.yaml');
