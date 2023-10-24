@@ -56,6 +56,7 @@ class ImageGenerator
                         because source image can't be found"
                 );
             }
+            throw $e;
         } catch (InvalidArgumentException|InvalidVariationException|ReflectionException $e) {
             if (isset($this->imageVariationLogger)) {
                 $this->imageVariationLogger->error(
@@ -63,6 +64,7 @@ class ImageGenerator
                         because an image could not be created from the given input"
                 );
             }
+            throw $e;
         }
 
         return null;
@@ -119,7 +121,7 @@ class ImageGenerator
                     if (! $baseVariation) {
                         $baseVariation = $variation;
                     }
-                } catch (NonExistingFilterException $e) {
+                } catch (NonExistingFilterException|SourceImageNotFoundException $e) {
                     continue;
                 }
             }
