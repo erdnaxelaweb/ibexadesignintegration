@@ -28,8 +28,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('services.yaml');
         $loader->load('pager.yaml');
         $loader->load('pager_sorts_handlers.yaml');
-        $loader->load('pager_filter_criterion_handlers.yaml');
-        $loader->load('pager_filter_form_handlers.yaml');
+        $loader->load('pager_filter_handlers.yaml');
         $loader->load('transformer.yaml');
 
         $activatedBundles = array_keys($container->getParameter('kernel.bundles'));

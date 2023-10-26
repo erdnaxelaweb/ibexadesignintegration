@@ -12,6 +12,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChainSortHandler
 {
@@ -32,6 +33,12 @@ class ChainSortHandler
     {
         $sortHandler = $this->sortsHandler[$sortType];
         $sortClause = $sortHandler->addSortClause($pagerQuery, $sortOptions);
+    }
+
+    public function configureOptions(string $filterType, OptionsResolver $optionsResolver): void
+    {
+        $sortHandler = $this->sortsHandler[$filterType];
+        $sortHandler->configureOptions($optionsResolver);
     }
 
     public function getTypes(): array

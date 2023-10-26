@@ -11,22 +11,23 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CustomFieldSortHandler extends AbstractSortHandler
+abstract class AbstractSortHandler implements SortHandlerInterface
 {
-    public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void
+    protected function resolveOptions(array $options = []): array
     {
-        $pagerQuery->sortClauses[] = new SortClause\CustomField(...$sortOptions);
+        $optionsResolver = new OptionsResolver();
+        $this->configureOptions($optionsResolver);
+
+        return $optionsResolver->resolve($options);
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
-        parent::configureOptions($optionsResolver);
-        $optionsResolver->define('field')
-            ->required()
+        $optionsResolver->define('sortDirection')
+            ->default(Query::SORT_ASC)
             ->allowedTypes('string');
     }
 }

@@ -15,3 +15,7 @@
     {% set template = template|replace({'%type%': block.type, '%view%': block.view}) %}
     {% include template with {block: block}|merge(parameters|default({})) only %}
 {% endmacro %}
+{% macro display_active_filter(item) %}
+    {% import _self as macros %}
+    <a href="{{ item.uri }}"{{ macros.attributes(item.linkAttributes|merge({'class': 'btn btn-primary '})) }}>{{ item.label }}<span class="btn-close btn-close-white ms-3" aria-label="remove"></span></a>
+{% endmacro %}

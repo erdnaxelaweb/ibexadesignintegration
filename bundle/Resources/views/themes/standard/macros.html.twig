@@ -9,3 +9,7 @@
         })
     )) }}
 {% endmacro %}
+{% macro display_active_filter(item) %}
+    {% import _self as macros %}
+    <a href="{{ item.uri }}"{{ macros.attributes(item.linkAttributes|merge({'class': 'btn btn-primary '})) }}>{{ item.extras.filter }}: {{ item.extras.value }}<span class="btn-close btn-close-white ms-3" aria-label="remove"></span></a>
+{% endmacro %}

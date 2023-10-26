@@ -24,6 +24,7 @@ class SearchAdapter extends LocationSearchAdapter
         SearchService $searchService,
         ContentTransformer $contentTransformer,
         protected $filtersCallback,
+        protected $activeFiltersCallback,
         array $languageFilter = []
     ) {
         parent::__construct($query, $searchService, $languageFilter);
@@ -44,5 +45,10 @@ class SearchAdapter extends LocationSearchAdapter
     public function getFilters(): FormView
     {
         return ($this->filtersCallback)($this->getAggregations());
+    }
+
+    public function getActiveFilters(): array
+    {
+        return ($this->activeFiltersCallback)();
     }
 }

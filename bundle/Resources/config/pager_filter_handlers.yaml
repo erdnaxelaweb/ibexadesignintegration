@@ -1,0 +1,25 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler:
+        arguments:
+            $filtersHandler: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\CustomFieldFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'custom_field' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\ContentTypeFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'content_type' }
+
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FulltextFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'fulltext' }

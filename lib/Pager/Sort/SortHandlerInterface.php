@@ -12,8 +12,11 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface SortHandlerInterface
 {
     public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void;
+
+    public function configureOptions(OptionsResolver $optionsResolver): void;
 }

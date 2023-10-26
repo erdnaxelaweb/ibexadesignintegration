@@ -13,7 +13,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 
-class IbexaSortHandler implements SortHandlerInterface
+class IbexaSortHandler extends AbstractSortHandler
 {
     public function __construct(
         protected string $sortClauseClass

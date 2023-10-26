@@ -11,7 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterFormHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -22,30 +22,33 @@ use Symfony\Component\Form\FormFactoryInterface;
 class PagerSearchFormBuilder
 {
     public function __construct(
-        protected ChainFilterFormHandler                           $formHandler,
-        protected FormFactoryInterface $formFactory
+        protected ChainFilterHandler            $filterHandler,
+        protected FormFactoryInterface          $formFactory
     ) {
     }
 
     public function build(
+        string $type,
         array                       $configuration,
         AggregationResultCollection $aggregationResultCollection,
         SearchData                     $searchData
     ) {
-        $builder = $this->formFactory->createBuilder(FormType::class, $searchData, [
+        $builder = $this->formFactory->createNamedBuilder($type, FormType::class, $searchData, [
             'method' => 'GET',
+            'csrf_protection' => false,
         ]);
         $formFilters = $builder->create('filters', FormType::class, [
             'compound' => true,
         ]);
 
         foreach ($configuration['filters'] as $filterName => $filter) {
-            $this->formHandler->addForm(
+            $this->filterHandler->addForm(
+                $filter['type'],
                 $formFilters,
-                $filter['formType'],
                 $filterName,
-                $filter['field'],
-                $aggregationResultCollection->get($filterName)
+                $aggregationResultCollection->has($filterName) ?
+                    $aggregationResultCollection->get($filterName) : null,
+                $filter['options'],
             );
         }
         $builder->add($formFilters);

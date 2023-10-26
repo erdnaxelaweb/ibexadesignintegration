@@ -16,6 +16,7 @@ use eZ\Publish\API\Repository\Values\Content\Location;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
 class LinkGenerator
@@ -29,7 +30,7 @@ class LinkGenerator
     public function generateLocationLink(Location $location): ItemInterface
     {
         return $this->generateLink(
-            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
                 'locationId' => $location->id,
             ]),
             $location->getContent()
@@ -40,6 +41,14 @@ class LinkGenerator
     public function generateContentLink(Content $content): ItemInterface
     {
         return $this->generateLocationLink($content->contentInfo->getMainLocation());
+    }
+
+    public function generateUrl(
+        string $name,
+        array $parameters = [],
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): string {
+        return $this->router->generate($name, $parameters, $referenceType);
     }
 
     public function generateLink(string $url, string $label, array $options = []): ItemInterface

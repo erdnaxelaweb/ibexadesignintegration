@@ -11,46 +11,50 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Configuration;
 
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterCriterionHandler;
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterFormHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager as BasePagerConfigurationManager;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PagerConfigurationManager extends BasePagerConfigurationManager
 {
     public function __construct(
-        protected ChainFilterFormHandler                          $filterFormHandler,
-        protected ChainFilterCriterionHandler                          $filterCriterionHandler,
-        protected ChainSortHandler                          $sortHandler,
-        array $definitions,
-        SearchFormGenerator $searchFormGenerator
+        protected ChainFilterHandler $filterHandler,
+        protected ChainSortHandler   $sortHandler,
+        array                        $definitions,
+        SearchFormGenerator          $searchFormGenerator
     ) {
         parent::__construct($definitions, $searchFormGenerator);
     }
 
     protected function configureFilterOptions(OptionsResolver $optionsResolver): void
     {
-        $optionsResolver->define('field')
-            ->required()
-            ->allowedTypes('string');
-
-        $optionsResolver->define('formType')
+        $optionsResolver->define('type')
             ->required()
             ->allowedTypes('string')
-            ->allowedValues(...$this->filterFormHandler->getTypes());
+            ->allowedValues(...$this->filterHandler->getTypes());
 
-        $optionsResolver->define('criterionType')
-            ->default('raw')
-            ->allowedTypes('string')
-            ->allowedValues(...$this->filterCriterionHandler->getTypes());
+        $optionsResolver->define('options')
+            ->default([])
+            ->normalize(function (Options $options, $fieldDefinitionOptions) {
+                $optionsResolver = new OptionsResolver();
+                $this->filterHandler->configureOptions($options['type'], $optionsResolver);
+                return $this->resolveOptions($options['type'], $optionsResolver, $fieldDefinitionOptions);
+            })
+            ->allowedTypes('array');
     }
 
     protected function configureSortOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->define('options')
             ->default([])
+            ->normalize(function (Options $options, $fieldDefinitionOptions) {
+                $optionsResolver = new OptionsResolver();
+                $this->sortHandler->configureOptions($options['type'], $optionsResolver);
+                return $this->resolveOptions($options['type'], $optionsResolver, $fieldDefinitionOptions);
+            })
             ->allowedTypes('array');
 
         $optionsResolver->define('type')
