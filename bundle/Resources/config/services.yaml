@@ -11,6 +11,9 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator:
 
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\SearchFormGenerator:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator
+
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\RichTextGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\RichTextGenerator
     lazy: true
