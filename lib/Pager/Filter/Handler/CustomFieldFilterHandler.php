@@ -77,5 +77,10 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('expanded')
             ->default(false)
             ->allowedTypes('bool');
+
+        // only used for static
+        $optionsResolver->define('choices')
+            ->default(null)
+            ->allowedTypes('null', 'string[]');
     }
 }
