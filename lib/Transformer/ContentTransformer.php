@@ -14,13 +14,13 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
+use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
-use Symfony\Component\Routing\RouterInterface;
 
 class ContentTransformer
 {
@@ -28,7 +28,7 @@ class ContentTransformer
 
     public function __construct(
         protected ContentConfigurationManager $contentConfigurationManager,
-        protected RouterInterface $router,
+        protected LinkGenerator $linkGenerator,
         protected BreadcrumbGenerator $breadcrumbGenerator,
         iterable $fieldValueTransformers
     ) {
@@ -59,7 +59,7 @@ class ContentTransformer
             $ibexaContent->contentInfo->publishedDate,
             $ibexaContent->contentInfo->modificationDate,
             $contentFields,
-            $this->router->generate(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+            $this->linkGenerator->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
                 'locationId' => $ibexaLocation->id,
             ]),
             $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation)

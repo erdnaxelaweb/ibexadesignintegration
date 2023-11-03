@@ -27,26 +27,31 @@ class LinkGenerator
     ) {
     }
 
-    public function generateLocationLink(Location $location): ItemInterface
-    {
+    public function generateLocationLink(
+        Location $location,
+        array    $parameters = [],
+        int      $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): ItemInterface {
+        $parameters['locationId'] = $location->id;
         return $this->generateLink(
-            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
-                'locationId' => $location->id,
-            ]),
+            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType),
             $location->getContent()
                 ->getName()
         );
     }
 
-    public function generateContentLink(Content $content): ItemInterface
-    {
-        return $this->generateLocationLink($content->contentInfo->getMainLocation());
+    public function generateContentLink(
+        Content $content,
+        array   $parameters = [],
+        int     $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+    ): ItemInterface {
+        return $this->generateLocationLink($content->contentInfo->getMainLocation(), $parameters, $referenceType);
     }
 
     public function generateUrl(
         string $name,
-        array $parameters = [],
-        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+        array  $parameters = [],
+        int    $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): string {
         return $this->router->generate($name, $parameters, $referenceType);
     }
