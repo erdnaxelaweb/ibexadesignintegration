@@ -31,4 +31,6 @@ interface FilterHandlerInterface
     public function getAggregation(string $filterName, array $options = []): ?Aggregation;
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
+
+    public function getFakeFormType(): array;
 }

@@ -11,11 +11,13 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\ValueObject;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -24,6 +26,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CustomFieldFilterHandler extends AbstractFilterHandler
 {
+    public function __construct(
+        protected FakerGenerator $fakerGenerator
+    ) {
+    }
+
     /**
      * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
      */
@@ -39,13 +46,56 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['required'] = false;
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
-        $formOptions['choices'] = [];
+        $formOptions['choices'] = $this->getChoices($aggregationResult);
+
+        $formOptions['choice_value'] = function (?ValueObject $entry): string {
+            return $entry ? $this->getChoiceValue($entry) : '';
+        };
+        $formOptions['choice_label'] = function (?ValueObject $entry): string {
+            return $entry ? $this->getChoiceLabel($entry) : '';
+        };
+        $formOptions['choice_attr'] = function (?ValueObject $entry): array {
+            return $entry ? $this->getChoiceAttributes($entry) : [];
+        };
+        $formBuilder->add($filterName, ChoiceType::class, $formOptions);
+    }
+
+    /**
+     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
+     */
+    protected function getChoiceValue(ValueObject $entry): string
+    {
+        return $entry->getKey();
+    }
+
+    /**
+     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
+     */
+    protected function getChoiceLabel(ValueObject $entry): string
+    {
+        return $entry->getName();
+    }
+
+    /**
+     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
+     */
+    protected function getChoiceAttributes(ValueObject $entry): array
+    {
+        return [];
+    }
+
+    /**
+     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
+     */
+    protected function getChoices(?AggregationResult $aggregationResult = null): array
+    {
+        $choices = [];
         if ($aggregationResult) {
             foreach ($aggregationResult->getEntries() as $entry) {
-                $formOptions['choices'][$entry->getName()] = $entry->getKey();
+                $choices[] = $entry;
             }
         }
-        $formBuilder->add($filterName, ChoiceType::class, $formOptions);
+        return $choices;
     }
 
     public function getCriterion(string $filterName, $value, array $options = []): Criterion
@@ -82,5 +132,17 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('choices')
             ->default(null)
             ->allowedTypes('null', 'string[]');
+    }
+
+    public function getFakeFormType(): array
+    {
+        return [
+            'type' => ChoiceType::class,
+            'options' => [
+                'choices' => array_flip($this->fakerGenerator->words()),
+                'expanded' => false,
+                'multiple' => false,
+            ],
+        ];
     }
 }

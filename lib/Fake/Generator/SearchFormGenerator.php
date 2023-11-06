@@ -11,34 +11,28 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
+use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator as BaseSearchFormGenerator;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormFactoryInterface;
 
 class SearchFormGenerator extends BaseSearchFormGenerator
 {
+    public function __construct(
+        protected ChainFilterHandler $filterHandler,
+        FormFactoryInterface $formFactory,
+        FakerGenerator $fakerGenerator
+    ) {
+        parent::__construct($formFactory, $fakerGenerator);
+    }
+
     public function getFormTypes(): array
     {
-        return [
-            'fulltext' => [
-                'type' => TextType::class,
-            ],
-            'content_type' => [
-                'type' => ChoiceType::class,
-                'options' => [
-                    'choices' => array_flip($this->fakerGenerator->words()),
-                    'expanded' => false,
-                    'multiple' => false,
-                ],
-            ],
-            'custom_field' => [
-                'type' => ChoiceType::class,
-                'options' => [
-                    'choices' => array_flip($this->fakerGenerator->words()),
-                    'expanded' => false,
-                    'multiple' => false,
-                ],
-            ],
-        ];
+        $formTypes = [];
+        foreach ($this->filterHandler->getTypes() as $type) {
+            $formTypes[$type] = $this->filterHandler->getFakeFormType($type);
+        }
+
+        return $formTypes;
     }
 }

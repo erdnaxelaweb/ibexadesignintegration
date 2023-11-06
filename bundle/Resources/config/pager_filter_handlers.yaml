@@ -13,6 +13,11 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'custom_field' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\TaxonomyFieldFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'taxonomy_field' }
+
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\ContentTypeFilterHandler:
         lazy: true
         tags:

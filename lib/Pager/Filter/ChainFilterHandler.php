@@ -65,4 +65,10 @@ class ChainFilterHandler
     {
         return array_keys($this->filtersHandler);
     }
+
+    public function getFakeFormType(string $filterType): array
+    {
+        $filterHandler = $this->filtersHandler[$filterType];
+        return $filterHandler->getFakeFormType();
+    }
 }

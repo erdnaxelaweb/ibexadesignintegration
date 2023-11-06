@@ -34,4 +34,11 @@ class FulltextFilterHandler extends AbstractFilterHandler
     {
         return new Criterion\FullText($value);
     }
+
+    public function getFakeFormType(): array
+    {
+        return [
+            'type' => TextType::class,
+        ];
+    }
 }

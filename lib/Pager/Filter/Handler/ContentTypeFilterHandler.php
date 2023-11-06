@@ -11,21 +11,22 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\ValueObject;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ContentTypeFilterHandler extends AbstractFilterHandler
+class ContentTypeFilterHandler extends CustomFieldFilterHandler
 {
     public function __construct(
-        protected ContentTypeService $contentTypeService
+        protected ContentTypeService $contentTypeService,
+        FakerGenerator $fakerGenerator
     ) {
+        parent::__construct($fakerGenerator);
     }
 
     public function getCriterion(string $filterName, $value, array $options = []): Criterion
@@ -44,39 +45,15 @@ class ContentTypeFilterHandler extends AbstractFilterHandler
         return new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
     }
 
-    /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
-     */
-    public function addForm(
-        FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
-    ): void {
-        $options = $this->resolveOptions($options);
-
-        $formOptions['label'] = sprintf('searchform.%s', $filterName);
-        $formOptions['required'] = false;
-        $formOptions['multiple'] = $options['multiple'];
-        $formOptions['expanded'] = $options['expanded'];
-        $formOptions['choices'] = [];
-        if ($aggregationResult) {
-            foreach ($aggregationResult->getEntries() as $entry) {
-                $contentType = $this->contentTypeService->loadContentType($entry->getKey());
-                $formOptions['choices'][$contentType->getName()] = $contentType->id;
-            }
-        }
-        $formBuilder->add($filterName, ChoiceType::class, $formOptions);
+    protected function getChoiceLabel(ValueObject $entry): string
+    {
+        $contentType = $this->contentTypeService->loadContentType($entry->getKey());
+        return $contentType->getName();
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         parent::configureOptions($optionsResolver);
-        $optionsResolver->define('multiple')
-            ->default(false)
-            ->allowedTypes('bool');
-        $optionsResolver->define('expanded')
-            ->default(false)
-            ->allowedTypes('bool');
+        $optionsResolver->remove('field');
     }
 }
