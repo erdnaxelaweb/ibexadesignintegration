@@ -43,6 +43,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $options = $this->resolveOptions($options);
 
         $formOptions['label'] = sprintf('searchform.%s', $filterName);
+        $formOptions['block_prefix'] = $filterName;
         $formOptions['required'] = false;
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];

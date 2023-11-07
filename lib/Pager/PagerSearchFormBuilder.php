@@ -39,6 +39,7 @@ class PagerSearchFormBuilder
         ]);
         $formFilters = $builder->create('filters', FormType::class, [
             'compound' => true,
+            'block_prefix' => 'filters',
         ]);
 
         foreach ($configuration['filters'] as $filterName => $filter) {
@@ -55,6 +56,7 @@ class PagerSearchFormBuilder
         if (count($configuration['sorts']) > 1) {
             $builder->add('sort', ChoiceType::class, [
                 'choices' => array_combine(array_keys($configuration['sorts']), array_keys($configuration['sorts'])),
+                'block_prefix' => 'sort',
             ]);
         }
         $builder->add('search', SubmitType::class, [

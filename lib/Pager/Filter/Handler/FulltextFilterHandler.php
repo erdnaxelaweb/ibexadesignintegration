@@ -26,6 +26,7 @@ class FulltextFilterHandler extends AbstractFilterHandler
     ): void {
         $options = [];
         $options['label'] = sprintf('searchform.%s', $filterName);
+        $options['block_prefix'] = $filterName;
         $options['required'] = false;
         $formBuilder->add($filterName, TextType::class, $options);
     }
