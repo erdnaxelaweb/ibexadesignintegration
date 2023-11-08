@@ -71,4 +71,13 @@ class ChainFilterHandler
         $filterHandler = $this->filtersHandler[$filterType];
         return $filterHandler->getFakeFormType();
     }
+
+    public function getValuesLabels(
+        string $filterType,
+        array $activeValues,
+        FormBuilderInterface $formBuilder
+    ): array {
+        $filterHandler = $this->filtersHandler[$filterType];
+        return $filterHandler->getValuesLabels($activeValues, $formBuilder);
+    }
 }

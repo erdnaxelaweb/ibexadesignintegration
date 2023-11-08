@@ -12,8 +12,9 @@
 declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle;
+
 use Symfony\Component\HttpKernel\Bundle\Bundle;
+
 class IbexaDesignIntegrationBundle extends Bundle
 {
-
 }

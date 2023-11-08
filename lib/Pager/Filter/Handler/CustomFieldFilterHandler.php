@@ -47,16 +47,18 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['required'] = false;
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
-        $formOptions['choices'] = $this->getChoices($aggregationResult);
+        $choices = $this->getChoices($aggregationResult);
+        ;
+        $formOptions['choices'] = $choices;
 
-        $formOptions['choice_value'] = function (?ValueObject $entry): string {
-            return $entry ? $this->getChoiceValue($entry) : '';
+        $formOptions['choice_value'] = function ($entry): ?string {
+            return $entry instanceof ValueObject ? $this->getChoiceValue($entry) : $entry;
         };
-        $formOptions['choice_label'] = function (?ValueObject $entry): string {
-            return $entry ? $this->getChoiceLabel($entry) : '';
+        $formOptions['choice_label'] = function ($entry): ?string {
+            return $entry instanceof ValueObject ? $this->getChoiceLabel($entry) : $entry;
         };
-        $formOptions['choice_attr'] = function (?ValueObject $entry): array {
-            return $entry ? $this->getChoiceAttributes($entry) : [];
+        $formOptions['choice_attr'] = function ($entry): array {
+            return $entry instanceof ValueObject ? $this->getChoiceAttributes($entry) : [];
         };
         $formBuilder->add($filterName, ChoiceType::class, $formOptions);
     }
@@ -145,5 +147,14 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
                 'multiple' => false,
             ],
         ];
+    }
+
+    public function getValuesLabels(array $activeValues, FormBuilderInterface $formBuilder): array
+    {
+        /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
+        $choices = $formBuilder->getAttribute('choice_list');
+        return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
+            return $this->getChoiceLabel($choices->getChoices()[$activeValue]);
+        }, $activeValues));
     }
 }

@@ -6,6 +6,7 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder:
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder:
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\PagerBuildSubscriber:
         tags:

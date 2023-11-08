@@ -12,6 +12,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFilterHandler implements FilterHandlerInterface
@@ -31,5 +32,10 @@ abstract class AbstractFilterHandler implements FilterHandlerInterface
 
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
+    }
+
+    public function getValuesLabels(array $activeValues, FormBuilderInterface $formBuilder): array
+    {
+        return array_combine($activeValues, $activeValues);
     }
 }

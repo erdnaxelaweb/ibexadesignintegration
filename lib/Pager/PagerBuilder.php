@@ -22,6 +22,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Pagerfanta\Pagerfanta;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,6 +32,7 @@ class PagerBuilder
     public function __construct(
         protected PagerConfigurationManager $pagerConfigurationManager,
         protected PagerSearchFormBuilder    $pagerSearchFormBuilder,
+        protected PagerActiveFiltersListBuilder    $pagerActiveFiltersListBuilder,
         protected SearchService             $searchService,
         protected RequestStack              $requestStack,
         protected ContentTransformer        $contentTransformer,
@@ -72,46 +74,13 @@ class PagerBuilder
                     $searchData
                 );
             },
-            function () use ($searchFormName, $searchData, $request, $type) {
-                $links = [];
-                foreach ($searchData->filters as $filter => $filterValue) {
-                    if (empty($filterValue)) {
-                        continue;
-                    }
-                    $linkGeneraton = function (string $label, array $query, array $options) use ($request) {
-                        return $this->linkGenerator->generateLink(
-                            $this->linkGenerator->generateUrl(
-                                $request->attributes->get('_route'),
-                                array_merge($query, $request->attributes->get('_route_params', []))
-                            ),
-                            $label,
-                            $options
-                        );
-                    };
-                    if (is_array($filterValue)) {
-                        foreach ($filterValue as $value) {
-                            $query = $request->query->all();
-                            $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter]);
-                            unset($query[$searchFormName]['filters'][$filter][$valueKey]);
-                            $links[] = $linkGeneraton($value, $query, [
-                                'extras' => [
-                                    'filter' => $filter,
-                                    'value' => $value,
-                                ],
-                            ]);
-                        }
-                    } else {
-                        $query = $request->query->all();
-                        unset($query[$searchFormName]['filters'][$filter]);
-                        $links[] = $linkGeneraton($filterValue, $query, [
-                            'extras' => [
-                                'filter' => $filter,
-                                'value' => $filterValue,
-                            ],
-                        ]);
-                    }
-                }
-                return $links;
+            function (FormBuilderInterface $filtersFormBuilder) use ($searchFormName, $configuration, $searchData) {
+                return $this->pagerActiveFiltersListBuilder->buildList(
+                    $searchFormName,
+                    $configuration,
+                    $filtersFormBuilder,
+                    $searchData
+                );
             }
         );
         $pagerFanta = new Pagerfanta($adapter);

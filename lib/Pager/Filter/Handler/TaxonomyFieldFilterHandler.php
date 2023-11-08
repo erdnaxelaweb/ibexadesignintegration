@@ -28,7 +28,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
      */
     protected function getChoiceValue(ValueObject $entry): string
     {
-        return $entry->getIdentifier();
+        return $entry->getKey();
     }
 
     /**

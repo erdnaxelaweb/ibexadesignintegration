@@ -17,6 +17,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultColle
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
 class PagerSearchFormBuilder
@@ -28,11 +29,11 @@ class PagerSearchFormBuilder
     }
 
     public function build(
-        string $type,
-        array                       $configuration,
+        string                      $type,
+        array                       $pagerConfiguration,
         AggregationResultCollection $aggregationResultCollection,
-        SearchData                     $searchData
-    ) {
+        SearchData                  $searchData
+    ): FormBuilderInterface {
         $builder = $this->formFactory->createNamedBuilder($type, FormType::class, $searchData, [
             'method' => 'GET',
             'csrf_protection' => false,
@@ -42,7 +43,7 @@ class PagerSearchFormBuilder
             'block_prefix' => 'filters',
         ]);
 
-        foreach ($configuration['filters'] as $filterName => $filter) {
+        foreach ($pagerConfiguration['filters'] as $filterName => $filter) {
             $this->filterHandler->addForm(
                 $filter['type'],
                 $formFilters,
@@ -53,16 +54,19 @@ class PagerSearchFormBuilder
             );
         }
         $builder->add($formFilters);
-        if (count($configuration['sorts']) > 1) {
+        if (count($pagerConfiguration['sorts']) > 1) {
             $builder->add('sort', ChoiceType::class, [
-                'choices' => array_combine(array_keys($configuration['sorts']), array_keys($configuration['sorts'])),
+                'choices' => array_combine(
+                    array_keys($pagerConfiguration['sorts']),
+                    array_keys($pagerConfiguration['sorts'])
+                ),
                 'block_prefix' => 'sort',
             ]);
         }
         $builder->add('search', SubmitType::class, [
             'label' => 'search',
         ]);
-        return $builder->getForm()
-            ->createView();
+
+        return $builder;
     }
 }

@@ -33,4 +33,6 @@ interface FilterHandlerInterface
     public function configureOptions(OptionsResolver $optionsResolver): void;
 
     public function getFakeFormType(): array;
+
+    public function getValuesLabels(array $activeValues, FormBuilderInterface $formBuilder): array;
 }
