@@ -152,12 +152,17 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
                 }
                 $choices = [];
                 foreach ($rawChoices as $rawChoice) {
-                    $choiceOptions = $optionsResolver->resolve($rawChoice);
+                    if ($rawChoice instanceof \stdClass) {
+                        $choice = $rawChoice;
+                    } else {
+                        $choiceOptions = $optionsResolver->resolve($rawChoice);
 
-                    $choice = new \stdClass();
-                    $choice->label = $choiceOptions['label'];
-                    $choice->value = $choiceOptions['value'];
-                    $choice->attr = $choiceOptions['attr'];
+                        $choice = new \stdClass();
+                        $choice->label = $choiceOptions['label'];
+                        $choice->value = $choiceOptions['value'];
+                        $choice->attr = $choiceOptions['attr'];
+                    }
+
                     $choices[] = $choice;
                 }
 
