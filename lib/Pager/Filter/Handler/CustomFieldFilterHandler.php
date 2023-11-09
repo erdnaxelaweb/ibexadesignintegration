@@ -22,6 +22,7 @@ use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class CustomFieldFilterHandler extends AbstractFilterHandler
@@ -134,7 +135,34 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         // only used for static
         $optionsResolver->define('choices')
             ->default(null)
-            ->allowedTypes('null', 'string[]');
+            ->allowedTypes('null', 'array')
+            ->normalize(function (Options $options, $rawChoices) {
+                $optionsResolver = new OptionsResolver();
+                $optionsResolver->define('label')
+                    ->required()
+                    ->allowedTypes('string');
+                $optionsResolver->define('value')
+                    ->required();
+                $optionsResolver->define('attr')
+                    ->default([])
+                    ->allowedTypes('array');
+
+                if (empty($rawChoices)) {
+                    return $rawChoices;
+                }
+                $choices = [];
+                foreach ($rawChoices as $rawChoice) {
+                    $choiceOptions = $optionsResolver->resolve($rawChoice);
+
+                    $choice = new \stdClass();
+                    $choice->label = $choiceOptions['label'];
+                    $choice->value = $choiceOptions['value'];
+                    $choice->attr = $choiceOptions['attr'];
+                    $choices[] = $choice;
+                }
+
+                return $choices;
+            });
     }
 
     public function getFakeFormType(): array
@@ -142,9 +170,24 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         return [
             'type' => ChoiceType::class,
             'options' => [
-                'choices' => array_flip($this->fakerGenerator->words()),
+                'choices' => array_map(function ($word) {
+                    $choice = new \stdClass();
+                    $choice->label = $word;
+                    $choice->value = $word;
+                    $choice->attr = [];
+                    return $choice;
+                }, $this->fakerGenerator->words()),
                 'expanded' => false,
                 'multiple' => false,
+                'choice_value' => function ($entry): ?string {
+                    return is_object($entry) ? $entry->value : $entry;
+                },
+                'choice_label' => function ($entry): ?string {
+                    return is_object($entry) ? $entry->label : $entry;
+                },
+                'choice_attr' => function ($entry): array {
+                    return is_object($entry) ? $entry->attr : [];
+                },
             ],
         ];
     }
