@@ -167,16 +167,17 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
 
     public function getFakeFormType(): array
     {
+        $words = $this->fakerGenerator->words();
         return [
             'type' => ChoiceType::class,
             'options' => [
-                'choices' => array_map(function ($word) {
+                'choices' => array_map(function ($label, $value) {
                     $choice = new \stdClass();
-                    $choice->label = $word;
-                    $choice->value = $word;
+                    $choice->label = $label;
+                    $choice->value = $value;
                     $choice->attr = [];
                     return $choice;
-                }, $this->fakerGenerator->words()),
+                }, $words, range(0, count($words))),
                 'expanded' => false,
                 'multiple' => false,
                 'choice_value' => function ($entry): ?string {

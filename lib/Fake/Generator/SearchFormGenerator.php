@@ -15,15 +15,17 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator as BaseSearchFormGenerator;
 use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class SearchFormGenerator extends BaseSearchFormGenerator
 {
     public function __construct(
+        protected RequestStack $requestStack,
         protected ChainFilterHandler $filterHandler,
         FormFactoryInterface $formFactory,
         FakerGenerator $fakerGenerator
     ) {
-        parent::__construct($formFactory, $fakerGenerator);
+        parent::__construct($requestStack, $formFactory, $fakerGenerator);
     }
 
     public function getFormTypes(): array
