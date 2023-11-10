@@ -39,7 +39,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $configuration = $event->pagerConfiguration;
         $searchData = $event->searchData;
 
-        if ($eventContext['location'] instanceof Location) {
+        if (isset($eventContext['location']) && $eventContext['location'] instanceof Location) {
             $event->queryFilters[] = new Criterion\ParentLocationId($eventContext['location']->id);
         }
 
