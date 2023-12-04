@@ -49,11 +49,18 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $this->addImageVariationConfig($container);
     }
 
+    protected function getParameter(ContainerBuilder $container, string $name, $default)
+    {
+        return $container->hasParameter($name) ? $container->getParameter($name) : $default;
+    }
+
     protected function addImageVariationConfig(ContainerBuilder $container): void
     {
         $variationsConfig = [];
-        $breakpoints = $container->getParameter('erdnaxelaweb.static_fake_design.image.breakpoints');
-        $variations = $container->getParameter('erdnaxelaweb.static_fake_design.image.variations');
+
+        $useRetina = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.use_retina', true);
+        $breakpoints = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.breakpoints', []);
+        $variations = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.variations', []);
         foreach ($variations as $variationName => $variationSizes) {
             foreach ($variationSizes as $i => $variationSize) {
                 $breakpoint = $breakpoints[$i];
@@ -70,6 +77,23 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                         ],
                     ],
                 ];
+                if ($useRetina) {
+                    $variationRetinaFullName = "{$variationFullName}_retina";
+                    $variationsConfig[$variationRetinaFullName] = [
+                        'reference' => null,
+                        'filters' => [
+                            [
+                                'name' => 'focusedThumbnail',
+                                'params' => [
+                                    'size' => array_map(function ($size) {
+                                        return $size * 2;
+                                    }, $variationSize),
+                                    'focus' => [0, 0],
+                                ],
+                            ],
+                        ],
+                    ];
+                }
             }
         }
 
