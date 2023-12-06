@@ -7,6 +7,11 @@ services:
     erdnaxelaweb.ibexa_design_integration.form.field_model:
         class: Ibexa\Contracts\FormBuilder\FieldType\Model\Field
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FormFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezform' }
+
     erdnaxelaweb.ibexa_design_integration.form.field.single_line.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
         arguments:
