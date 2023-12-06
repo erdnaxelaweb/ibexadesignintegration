@@ -19,7 +19,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'single_line'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_single_line'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.multi_line.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -28,7 +28,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'multi_line'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_multi_line'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.number.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -37,7 +37,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'number'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_number'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.checkbox.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -46,7 +46,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'checkbox'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_checkbox'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.checkbox_list.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\ChoiceFormFieldGenerator
@@ -57,7 +57,7 @@ services:
                 expanded: true
                 multiple: true
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'checkbox_list'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_checkbox_list'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.radio.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\ChoiceFormFieldGenerator
@@ -68,7 +68,7 @@ services:
                 expanded: true
                 multiple: false
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'radio'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_radio'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.dropdown.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\ChoiceFormFieldGenerator
@@ -77,7 +77,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'dropdown'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_dropdown'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.email.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -86,7 +86,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'email'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_email'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.date.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -95,7 +95,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'date'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_date'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.url.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -104,7 +104,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'url'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_url'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.file.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -113,7 +113,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'file'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_file'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.button.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -122,7 +122,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'button'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_button'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.hidden.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -131,7 +131,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'hidden'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_hidden'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.paragraph.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -140,7 +140,7 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'paragraph'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_paragraph'}
 
     erdnaxelaweb.ibexa_design_integration.form.field.captcha.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator
@@ -149,5 +149,5 @@ services:
             $formOptions:
                 field: '@erdnaxelaweb.ibexa_design_integration.form.field_model'
         tags:
-            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'captcha'}
+            - {name: 'erdnaxelaweb.static_fake_design.form.field.generator', type: 'ibexa_captcha'}
 
