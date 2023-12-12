@@ -17,6 +17,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
@@ -54,6 +55,7 @@ class ContentTransformer
 
         return new Content(
             $ibexaContent,
+            $ibexaContent->id,
             $ibexaContent->getName(),
             $contentTypeIdentifier,
             $ibexaContent->contentInfo->publishedDate,

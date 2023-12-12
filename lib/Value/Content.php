@@ -23,6 +23,7 @@ class Content extends IbexaContent
 {
     public function __construct(
         protected IbexaApiContent $innerContent,
+        public readonly int $id,
         public readonly string $name,
         public readonly string $type,
         public readonly DateTime $creationDate,
