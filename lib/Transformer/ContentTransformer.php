@@ -61,10 +61,10 @@ class ContentTransformer
             $ibexaContent->contentInfo->publishedDate,
             $ibexaContent->contentInfo->modificationDate,
             $contentFields,
-            $this->linkGenerator->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+            $ibexaLocation ? $this->linkGenerator->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
                 'locationId' => $ibexaLocation->id,
-            ]),
-            $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation)
+            ]) : '',
+            $ibexaLocation ? $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation) : new Breadcrumb()
         );
     }
 }
