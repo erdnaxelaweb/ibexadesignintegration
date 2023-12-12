@@ -25,7 +25,7 @@ class SearchAdapter extends LocationSearchAdapter
     public function __construct(
         Query $query,
         SearchService $searchService,
-        ContentTransformer $contentTransformer,
+        protected ContentTransformer $contentTransformer,
         protected $filtersCallback,
         protected $activeFiltersCallback,
         array $languageFilter = []
@@ -40,6 +40,7 @@ class SearchAdapter extends LocationSearchAdapter
         foreach ($results as $result) {
             $list[] = [
                 'locationId' => $result->id,
+                'content' => ($this->contentTransformer)($result->getContent(), $result),
             ];
         }
         return $list;

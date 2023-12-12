@@ -40,6 +40,10 @@ class ContentTransformer
 
     public function __invoke(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
     {
+        if($ibexaContent instanceof Content) {
+            return $ibexaContent;
+        }
+
         $ibexaLocation = $ibexaLocation ?? $ibexaContent->contentInfo->getMainLocation();
         $contentType = $ibexaContent->getContentType();
         $contentTypeIdentifier = $contentType->identifier;
