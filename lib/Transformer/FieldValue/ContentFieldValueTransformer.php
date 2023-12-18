@@ -36,10 +36,13 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
             $destinationContentIds = $fieldValue->destinationContentIds;
         }
 
-        if ($max === 1 && ! empty($destinationContentIds)) {
-            return [
-                'contentId' => reset($destinationContentIds),
-            ];
+        if ($max === 1) {
+            if (! empty($destinationContentIds)) {
+                return [
+                    'contentId' => reset($destinationContentIds),
+                ];
+            }
+            return null;
         }
         return array_map(function (int $destinationContentId) {
             return [
