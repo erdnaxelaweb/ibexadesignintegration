@@ -37,7 +37,7 @@ class Content extends IbexaContent
                 'thumbnail' => $innerContent->thumbnail,
                 'versionInfo' => $innerContent->versionInfo,
                 'contentType' => $innerContent->contentType,
-                'internalFields' => [],
+                'internalFields' => $innerContent->getFields(),
                 'prioritizedFieldLanguageCode' => $innerContent->prioritizedFieldLanguageCode,
             ]
         );
