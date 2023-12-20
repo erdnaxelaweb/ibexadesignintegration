@@ -1,12 +1,13 @@
 {% extends 'static/helper/macros.html.twig' %}
 
 {% macro display_content(template, content, parameters, viewType) %}
+    {% set viewParameters = getContentViewControllerParameters(content, {
+        "viewType": viewType,
+        "params": parameters ?? {}
+    }) %}
     {{ render(controller(
         "ibexa_content:viewAction",
-        content|merge({
-            "viewType": viewType,
-            "params": parameters ?? {}
-        })
+        viewParameters
     )) }}
 {% endmacro %}
 {% macro display_active_filter(item) %}

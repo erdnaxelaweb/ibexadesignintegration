@@ -32,3 +32,5 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\ChainGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
     parent: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig\Extension:
