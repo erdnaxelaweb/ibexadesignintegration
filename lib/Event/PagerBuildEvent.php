@@ -26,6 +26,7 @@ class PagerBuildEvent extends Event
         public readonly array      $pagerConfiguration,
         public readonly LocationQuery      $pagerQuery,
         public readonly SearchData $searchData,
+        public readonly SearchData $defaultSearchData,
         public readonly array      $buildContext,
         public array               $queryFilters = [],
         public array               $queryAggregations = []
