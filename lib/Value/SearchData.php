@@ -14,8 +14,8 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 class SearchData
 {
     public function __construct(
-        public readonly array $filters,
-        public readonly ?string $sort,
+        public array $filters = [],
+        public ?string $sort = null,
     ) {
     }
 

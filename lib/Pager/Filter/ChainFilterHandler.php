@@ -15,6 +15,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChainFilterHandler
@@ -72,11 +73,8 @@ class ChainFilterHandler
         return $filterHandler->getFakeFormType();
     }
 
-    public function getValuesLabels(
-        string $filterType,
-        array $activeValues,
-        FormBuilderInterface $formBuilder
-    ): array {
+    public function getValuesLabels(string $filterType, array $activeValues, FormInterface $formBuilder): array
+    {
         $filterHandler = $this->filtersHandler[$filterType];
         return $filterHandler->getValuesLabels($activeValues, $formBuilder);
     }

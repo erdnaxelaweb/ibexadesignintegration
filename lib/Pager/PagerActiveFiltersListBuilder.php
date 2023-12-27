@@ -15,7 +15,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Knp\Menu\ItemInterface;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
@@ -31,9 +31,10 @@ class PagerActiveFiltersListBuilder
     public function buildList(
         string     $searchFormName,
         array      $pagerConfiguration,
-        FormBuilderInterface $filtersFormBuilder,
+        FormInterface $filtersFormBuilder,
         SearchData $searchData
     ): array {
+        //        dd($searchData, $pagerConfiguration);
         $links = [];
         foreach ($searchData->filters as $filter => $filterValue) {
             if (empty($filterValue)) {
@@ -48,11 +49,15 @@ class PagerActiveFiltersListBuilder
                     ->get($filter)
             );
 
+            if (! isset($query[$searchFormName])) {
+                continue;
+            }
+
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
                     $query = $this->getRequest()
                         ->query->all();
-                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter]);
+                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? []);
                     unset($query[$searchFormName]['filters'][$filter][$valueKey]);
                     $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
                         'extras' => [

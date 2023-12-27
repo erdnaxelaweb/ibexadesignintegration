@@ -22,6 +22,7 @@ use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -198,12 +199,14 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         ];
     }
 
-    public function getValuesLabels(array $activeValues, FormBuilderInterface $formBuilder): array
+    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array
     {
         /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
-        $choices = $formBuilder->getAttribute('choice_list');
+        $choices = $formBuilder->getConfig()
+            ->getAttribute('choice_list')
+            ->getChoices();
         return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
-            return $this->getChoiceLabel($choices->getChoices()[$activeValue]);
+            return isset($choices[$activeValue]) ? $this->getChoiceLabel($choices[$activeValue]) : '';
         }, $activeValues));
     }
 }
