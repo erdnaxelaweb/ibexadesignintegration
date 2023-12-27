@@ -34,7 +34,6 @@ class PagerActiveFiltersListBuilder
         FormInterface $filtersFormBuilder,
         SearchData $searchData
     ): array {
-        //        dd($searchData, $pagerConfiguration);
         $links = [];
         foreach ($searchData->filters as $filter => $filterValue) {
             if (empty($filterValue)) {
@@ -48,10 +47,6 @@ class PagerActiveFiltersListBuilder
                 $filtersFormBuilder->get('filters')
                     ->get($filter)
             );
-
-            if (! isset($query[$searchFormName])) {
-                continue;
-            }
 
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {

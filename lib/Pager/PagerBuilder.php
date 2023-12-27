@@ -79,12 +79,12 @@ class PagerBuilder
                 $form->handleRequest($this->requestStack->getCurrentRequest());
                 return $form;
             },
-            function (FormInterface $filtersFormBuilder) use ($searchFormName, $configuration) {
+            function (FormInterface $filtersFormBuilder) use ($searchFormName, $configuration, $searchData) {
                 return $this->pagerActiveFiltersListBuilder->buildList(
                     $searchFormName,
                     $configuration,
                     $filtersFormBuilder,
-                    $filtersFormBuilder->getData()
+                    $searchData
                 );
             }
         );
