@@ -23,8 +23,12 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'content_type' }
 
-
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FulltextFilterHandler:
         lazy: true
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'fulltext' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\DateFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'date' }

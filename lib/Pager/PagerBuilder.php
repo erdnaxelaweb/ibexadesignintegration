@@ -22,7 +22,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -30,15 +30,15 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class PagerBuilder
 {
     public function __construct(
-        protected PagerConfigurationManager $pagerConfigurationManager,
-        protected PagerSearchFormBuilder    $pagerSearchFormBuilder,
-        protected PagerActiveFiltersListBuilder    $pagerActiveFiltersListBuilder,
-        protected SearchService             $searchService,
-        protected RequestStack              $requestStack,
-        protected ContentTransformer        $contentTransformer,
-        protected EventDispatcherInterface $eventDispatcher,
-        protected LinkGenerator $linkGenerator,
-        protected TranslatorInterface $translator
+        protected PagerConfigurationManager     $pagerConfigurationManager,
+        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
+        protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+        protected SearchService                 $searchService,
+        protected RequestStack                  $requestStack,
+        protected ContentTransformer            $contentTransformer,
+        protected EventDispatcherInterface      $eventDispatcher,
+        protected LinkGenerator                 $linkGenerator,
+        protected TranslatorInterface           $translator
     ) {
     }
 
@@ -48,10 +48,11 @@ class PagerBuilder
 
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
         $searchData = SearchData::createFromRequest($request->get($type, []));
+        $defaultSearchData = new SearchData();
         $searchFormName = $type;
 
         $query = new LocationQuery();
-        $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $context);
+        $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $defaultSearchData, $context);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
 
@@ -63,18 +64,22 @@ class PagerBuilder
             $this->searchService,
             $this->contentTransformer,
             function (AggregationResultCollection $aggregationResultCollection) use (
+                $defaultSearchData,
                 $searchFormName,
                 $configuration,
-                $searchData
             ) {
-                return $this->pagerSearchFormBuilder->build(
+                $formBuilder = $this->pagerSearchFormBuilder->build(
                     $searchFormName,
                     $configuration,
                     $aggregationResultCollection,
-                    $searchData
+                    $defaultSearchData
                 );
+
+                $form = $formBuilder->getForm();
+                $form->handleRequest($this->requestStack->getCurrentRequest());
+                return $form;
             },
-            function (FormBuilderInterface $filtersFormBuilder) use ($searchFormName, $configuration, $searchData) {
+            function (FormInterface $filtersFormBuilder) use ($searchFormName, $configuration, $searchData) {
                 return $this->pagerActiveFiltersListBuilder->buildList(
                     $searchFormName,
                     $configuration,
@@ -85,7 +90,7 @@ class PagerBuilder
         );
         $pagerFanta = new Pagerfanta($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
-        $pagerFanta->setCurrentPage($request->get('page', 1));
+        $pagerFanta->setCurrentPage((int) $request->get('page', 1));
         return $pagerFanta;
     }
 }

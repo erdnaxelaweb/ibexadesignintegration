@@ -15,6 +15,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface FilterHandlerInterface
@@ -34,5 +35,5 @@ interface FilterHandlerInterface
 
     public function getFakeFormType(): array;
 
-    public function getValuesLabels(array $activeValues, FormBuilderInterface $formBuilder): array;
+    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array;
 }

@@ -15,12 +15,12 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Core\Pagination\Pagerfanta\LocationSearchAdapter;
-use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
 class SearchAdapter extends LocationSearchAdapter
 {
-    private ?FormBuilderInterface $filtersFormBuilder = null;
+    private ?FormInterface $filtersFormBuilder = null;
 
     public function __construct(
         Query $query,
@@ -46,7 +46,7 @@ class SearchAdapter extends LocationSearchAdapter
         return $list;
     }
 
-    protected function getFiltersFormBuilder(): FormBuilderInterface
+    protected function getFiltersFormBuilder(): FormInterface
     {
         if (! $this->filtersFormBuilder) {
             $this->filtersFormBuilder = ($this->filtersCallback)($this->getAggregations());
@@ -57,7 +57,6 @@ class SearchAdapter extends LocationSearchAdapter
     public function getFilters(): FormView
     {
         return $this->getFiltersFormBuilder()
-            ->getForm()
             ->createView();
     }
 
