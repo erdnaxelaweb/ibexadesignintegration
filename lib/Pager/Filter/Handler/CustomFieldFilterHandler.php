@@ -18,6 +18,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Core\Repository\Values\ValueObject;
+use Ibexa\Taxonomy\Persistence\Repository\TaxonomyEntryRepository;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -29,7 +30,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class CustomFieldFilterHandler extends AbstractFilterHandler
 {
     public function __construct(
-        protected FakerGenerator $fakerGenerator
+        protected FakerGenerator $fakerGenerator,
+        protected TaxonomyEntryRepository $taxonomyEntryRepository
     ) {
     }
 
@@ -49,8 +51,8 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['required'] = false;
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
-        $choices = $this->getChoices($aggregationResult);
-        ;
+        $choices = $this->getChoices($aggregationResult, $options['excludeTags'] ?? null);
+
         $formOptions['choices'] = $choices;
 
         $formOptions['choice_value'] = function ($entry): ?string {
@@ -92,7 +94,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
     /**
      * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
      */
-    protected function getChoices(?AggregationResult $aggregationResult = null): array
+    protected function getChoices(?AggregationResult $aggregationResult = null, ?array $excludeTags = null): array
     {
         $choices = [];
         if ($aggregationResult) {

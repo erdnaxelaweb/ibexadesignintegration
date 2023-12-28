@@ -32,3 +32,8 @@ services:
         lazy: true
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'date' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\CountyFieldFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'county' }
