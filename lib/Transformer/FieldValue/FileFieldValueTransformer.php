@@ -35,21 +35,24 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
     ) {
         /** @var \Ibexa\Core\FieldType\BinaryFile\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
+        if (isset($fieldValue->fileName)) {
+            $routeReference = $this->routeReferenceGenerator->generate(
+                ContentDownloadRouteReferenceListener::ROUTE_NAME,
+                [
+                    ContentDownloadRouteReferenceListener::OPT_CONTENT => $content,
+                    ContentDownloadRouteReferenceListener::OPT_VERSION => $content->getVersionInfo()->versionNo,
+                    ContentDownloadRouteReferenceListener::OPT_FIELD_IDENTIFIER => $fieldIdentifier,
+                ]
+            );
+            $downloadUri = $this->router->generate(
+                $routeReference->getRoute(),
+                $routeReference->getParams(),
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
 
-        $routeReference = $this->routeReferenceGenerator->generate(
-            ContentDownloadRouteReferenceListener::ROUTE_NAME,
-            [
-                ContentDownloadRouteReferenceListener::OPT_CONTENT => $content,
-                ContentDownloadRouteReferenceListener::OPT_VERSION => $content->getVersionInfo()->versionNo,
-                ContentDownloadRouteReferenceListener::OPT_FIELD_IDENTIFIER => $fieldIdentifier,
-            ]
-        );
-        $downloadUri = $this->router->generate(
-            $routeReference->getRoute(),
-            $routeReference->getParams(),
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+            return new File($fieldValue->fileName, $fieldValue->fileSize, $fieldValue->mimeType, $downloadUri);
+        }
 
-        return new File($fieldValue->fileName, $fieldValue->fileSize, $fieldValue->mimeType, $downloadUri);
+        return null;
     }
 }
