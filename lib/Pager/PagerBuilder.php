@@ -90,7 +90,11 @@ class PagerBuilder
         );
         $pagerFanta = new Pagerfanta($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
-        $pagerFanta->setCurrentPage((int) $request->get('page', 1));
+
+        $pagerFanta->setCurrentPage(
+            isset($request->get('parameters')['pagePreview']) ? 1 : (int) $request->get('page', 1)
+        );
+
         return $pagerFanta;
     }
 }
