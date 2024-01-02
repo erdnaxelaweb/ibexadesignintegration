@@ -58,6 +58,7 @@ class PagerBuilder
 
         $query->filter = new Criterion\LogicalAnd($event->queryFilters);
         $query->aggregations = $event->queryAggregations;
+        $defaultSearchData = $event->defaultSearchData;
 
         $adapter = new SearchAdapter(
             $query,
