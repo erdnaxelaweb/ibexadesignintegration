@@ -47,8 +47,9 @@ class PagerBuilder
         $request = $this->requestStack->getCurrentRequest();
 
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
-        $searchData = SearchData::createFromRequest($request->get($type, []));
         $defaultSearchData = new SearchData();
+        $rawSearchData = $request->get($type, null);
+        $searchData = $rawSearchData !== null ? SearchData::createFromRequest($rawSearchData) : $defaultSearchData;
         $searchFormName = $type;
 
         $query = new LocationQuery();
