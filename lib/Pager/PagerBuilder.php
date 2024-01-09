@@ -47,8 +47,9 @@ class PagerBuilder
         $request = $this->requestStack->getCurrentRequest();
 
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
-        $searchData = SearchData::createFromRequest($request->get($type, []));
         $defaultSearchData = new SearchData();
+        $rawSearchData = $request->get($type, null);
+        $searchData = $rawSearchData !== null ? SearchData::createFromRequest($rawSearchData) : $defaultSearchData;
         $searchFormName = $type;
 
         $query = new LocationQuery();
@@ -90,7 +91,10 @@ class PagerBuilder
         );
         $pagerFanta = new Pagerfanta($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
-        $pagerFanta->setCurrentPage((int) $request->get('page', 1));
+
+        $page = $request->get('page', 1);
+        $pagerFanta->setCurrentPage(min(is_numeric($page) ? $page : 1, $pagerFanta->getNbPages()));
+
         return $pagerFanta;
     }
 }
