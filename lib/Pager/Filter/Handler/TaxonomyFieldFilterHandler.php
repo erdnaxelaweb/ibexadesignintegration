@@ -20,7 +20,9 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
     public function getAggregation(string $filterName, array $options = []): ?Aggregation
     {
         $options = $this->resolveOptions($options);
-        return new TaxonomyRawTermAggregation($filterName, $options['field'], [$filterName]);
+        $aggregation = new TaxonomyRawTermAggregation($filterName, $options['field'], [$filterName]);
+
+        return $aggregation->setLimit($options['limit']);
     }
 
     /**
