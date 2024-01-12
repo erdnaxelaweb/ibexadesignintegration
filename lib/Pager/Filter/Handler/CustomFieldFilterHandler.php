@@ -117,7 +117,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
     public function getAggregation(string $filterName, array $options = []): ?Aggregation
     {
         $options = $this->resolveOptions($options);
-        return new RawTermAggregation($filterName, $options['field'], [$filterName]);
+        $aggregation = new RawTermAggregation($filterName, $options['field'], [$filterName]);
+        $aggregation->setLimit($options['limit']);
+        return $aggregation;
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void
@@ -132,6 +134,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('expanded')
             ->default(false)
             ->allowedTypes('bool');
+        $optionsResolver->define('limit')
+            ->default(10)
+            ->allowedTypes('integer');
 
         // only used for static
         $optionsResolver->define('choices')
