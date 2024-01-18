@@ -42,7 +42,9 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 
     public function getAggregation(string $filterName, array $options = []): ?Aggregation
     {
-        return new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
+        $aggregation = new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
+        $aggregation->setLimit($options['limit']);
+        return $aggregation;
     }
 
     protected function getChoiceLabel(ValueObject $entry): string

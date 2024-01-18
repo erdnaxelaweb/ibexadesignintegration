@@ -36,7 +36,12 @@ class LinkGenerator
         return $this->generateLink(
             $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType),
             $location->getContent()
-                ->getName()
+                ->getName(),
+            [
+                'extras' => [
+                    'identifier' => $location->getContentInfo()->getContentType()->identifier,
+                ]
+            ]
         );
     }
 
