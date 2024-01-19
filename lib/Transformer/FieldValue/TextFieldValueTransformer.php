@@ -24,10 +24,7 @@ class TextFieldValueTransformer
     ) {
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        if ($fieldValue != "") {
-            return sprintf('<p>%s</p>', nl2br($fieldValue->text));
-        }
 
-        return null;
+        return $fieldValue != "" ? sprintf('<p>%s</p>', nl2br($fieldValue->text)) : null;
     }
 }
