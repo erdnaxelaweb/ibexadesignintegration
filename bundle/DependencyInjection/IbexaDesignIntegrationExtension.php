@@ -63,36 +63,20 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $variations = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.variations', []);
         foreach ($variations as $variationName => $variationSizes) {
             foreach ($variationSizes as $i => $variationSize) {
+                [$variationWidth, $variationHeight] = $variationSize;
                 $breakpoint = $breakpoints[$i];
                 $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
-                $variationsConfig[$variationFullName] = [
-                    'reference' => null,
-                    'filters' => [
-                        [
-                            'name' => 'focusedThumbnail',
-                            'params' => [
-                                'size' => $variationSize,
-                                'focus' => [0, 0],
-                            ],
-                        ],
-                    ],
-                ];
+                $variationsConfig[$variationFullName] = $this->getVariationConfig(
+                    $variationWidth,
+                    $variationHeight
+                );
+
                 if ($useRetina) {
                     $variationRetinaFullName = "{$variationFullName}_retina";
-                    $variationsConfig[$variationRetinaFullName] = [
-                        'reference' => null,
-                        'filters' => [
-                            [
-                                'name' => 'focusedThumbnail',
-                                'params' => [
-                                    'size' => array_map(function ($size) {
-                                        return $size * 2;
-                                    }, $variationSize),
-                                    'focus' => [0, 0],
-                                ],
-                            ],
-                        ],
-                    ];
+                    $variationsConfig[$variationRetinaFullName] = $this->getVariationConfig(
+                        $variationWidth * 2,
+                        $variationHeight * 2
+                    );
                 }
             }
         }
@@ -107,6 +91,44 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ]
         );
+    }
+
+    private function getVariationConfig(?float $width, ?float $height): array
+    {
+        if (! $height && $width) {
+            return [
+                'reference' => null,
+                'filters' => [
+                    [
+                        'name' => 'geometry/scalewidthdownonly',
+                        'params' => [$width],
+                    ],
+                ],
+            ];
+        }
+        if (! $width && $height) {
+            return [
+                'reference' => null,
+                'filters' => [
+                    [
+                        'name' => 'geometry/scaleheightdownonly',
+                        'params' => [$height],
+                    ],
+                ],
+            ];
+        }
+        return [
+            'reference' => null,
+            'filters' => [
+                [
+                    'name' => 'focusedThumbnail',
+                    'params' => [
+                        'size' => [$width, $height],
+                        'focus' => [0, 0],
+                    ],
+                ],
+            ],
+        ];
     }
 
     private function addTwigConfiguration(ContainerBuilder $container): void
