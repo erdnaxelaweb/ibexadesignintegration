@@ -134,6 +134,7 @@ class ImageGenerator
                 $sourceReqs['media'],
                 $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
                 $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
+                $baseVariation instanceof ImageVariation ? $baseVariation->fileSize : null,
                 $baseVariation instanceof FocusedVariation ? new ImageFocusPoint(
                     $baseVariation->focusPoint->getPosX(),
                     $baseVariation->focusPoint->getPosY()
