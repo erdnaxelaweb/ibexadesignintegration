@@ -40,16 +40,16 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $searchData = $event->searchData;
 
         if (isset($eventContext['location']) && $eventContext['location'] instanceof Location) {
-            $event->queryFilters[] = new Criterion\ParentLocationId($eventContext['location']->id);
+            $event->queryFilters['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
         }
 
         if (! empty($configuration['contentTypes'])) {
-            $event->queryFilters[] = new Criterion\ContentTypeIdentifier($configuration['contentTypes']);
+            $event->queryFilters['contentTypes'] = new Criterion\ContentTypeIdentifier($configuration['contentTypes']);
         }
 
         foreach ($configuration['filters'] as $filterName => $filter) {
             if (isset($searchData->filters[$filterName]) && ! empty($searchData->filters[$filterName])) {
-                $event->queryFilters[] = $this->filterHandler->getCriterion(
+                $event->queryFilters[$filterName] = $this->filterHandler->getCriterion(
                     $filter['type'],
                     $filterName,
                     $searchData->filters[$filterName],
@@ -58,7 +58,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             }
             $aggregation = $this->filterHandler->getAggregation($filter['type'], $filterName, $filter['options']);
             if ($aggregation) {
-                $event->queryAggregations[] = $aggregation;
+                $event->queryAggregations[$filterName] = $aggregation;
             }
         }
 
