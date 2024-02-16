@@ -57,6 +57,11 @@ class PagerActiveFiltersListBuilder
 
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
+
+                    if ($labels[$value] === '') {
+                        continue;
+                    }
+
                     $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? []);
                     unset($query[$searchFormName]['filters'][$filter][$valueKey]);
                     $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
