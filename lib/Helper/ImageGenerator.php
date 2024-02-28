@@ -17,6 +17,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Image;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageFocusPoint;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageSource;
+use Ibexa\Bundle\Core\Imagine\IORepositoryResolver;
 use Ibexa\Contracts\Core\Exception\InvalidArgumentException;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidVariationException;
@@ -102,7 +103,16 @@ class ImageGenerator
 
     protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
-        $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
+        if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
+            $variationConfig = [
+                [
+                    'suffix' => $variationName,
+                    'media' => null,
+                ],
+            ];
+        } else {
+            $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
+        }
 
         $sources = [];
         foreach ($variationConfig as $sourceReqs) {
