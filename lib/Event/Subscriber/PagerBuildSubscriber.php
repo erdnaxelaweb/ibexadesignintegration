@@ -40,16 +40,19 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $searchData = $event->searchData;
 
         if (isset($eventContext['location']) && $eventContext['location'] instanceof Location) {
-            $event->queryFilters['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
+            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
         }
 
         if (! empty($configuration['contentTypes'])) {
-            $event->queryFilters['contentTypes'] = new Criterion\ContentTypeIdentifier($configuration['contentTypes']);
+            $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
+                $configuration['contentTypes']
+            );
         }
 
         foreach ($configuration['filters'] as $filterName => $filter) {
+            $criterionType = $filter['criterionType'] === 'query' ? 'queryCriterions' : 'filtersCriterions';
             if (isset($searchData->filters[$filterName]) && ! empty($searchData->filters[$filterName])) {
-                $event->queryFilters[$filterName] = $this->filterHandler->getCriterion(
+                $event->{$criterionType}[$filterName] = $this->filterHandler->getCriterion(
                     $filter['type'],
                     $filterName,
                     $searchData->filters[$filterName],
@@ -58,12 +61,14 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             }
             $aggregation = $this->filterHandler->getAggregation($filter['type'], $filterName, $filter['options']);
             if ($aggregation) {
-                $event->queryAggregations[$filterName] = $aggregation;
+                $event->aggregations[$filterName] = $aggregation;
             }
         }
 
-        $sortIdentifier = $searchData->sort ?? array_key_first($configuration['sorts']);
-        $sortConfig = $configuration['sorts'][$sortIdentifier];
-        $this->sortHandler->addSortClause($event->pagerQuery, $sortConfig['type'], $sortConfig['options']);
+        if (! empty($configuration['sorts'])) {
+            $sortIdentifier = $searchData->sort ?? array_key_first($configuration['sorts']);
+            $sortConfig = $configuration['sorts'][$sortIdentifier];
+            $this->sortHandler->addSortClause($event->pagerQuery, $sortConfig['type'], $sortConfig['options']);
+        }
     }
 }

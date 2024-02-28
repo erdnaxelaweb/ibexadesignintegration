@@ -13,6 +13,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Configuration;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchAdapter;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager as BasePagerConfigurationManager;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator;
 use Symfony\Component\OptionsResolver\Options;
@@ -29,12 +30,27 @@ class PagerConfigurationManager extends BasePagerConfigurationManager
         parent::__construct($definitions, $searchFormGenerator);
     }
 
+    protected function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        $optionsResolver->define('searchType')
+            ->default(SearchAdapter::SEARCH_TYPE_LOCATION)
+            ->allowedTypes('string')
+            ->allowedValues(SearchAdapter::SEARCH_TYPE_LOCATION, SearchAdapter::SEARCH_TYPE_CONTENT);
+
+        parent::configureOptions($optionsResolver);
+    }
+
     protected function configureFilterOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->define('type')
             ->required()
             ->allowedTypes('string')
             ->allowedValues(...$this->filterHandler->getTypes());
+
+        $optionsResolver->define('criterionType')
+            ->default('filter')
+            ->allowedTypes('string')
+            ->allowedValues('filter', 'query');
 
         $optionsResolver->define('options')
             ->default([])

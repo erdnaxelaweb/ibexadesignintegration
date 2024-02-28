@@ -11,7 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ChainSortHandler
@@ -29,7 +29,7 @@ class ChainSortHandler
         }
     }
 
-    public function addSortClause(LocationQuery $pagerQuery, string $sortType, array $sortOptions): void
+    public function addSortClause(Query $pagerQuery, string $sortType, array $sortOptions): void
     {
         $sortHandler = $this->sortsHandler[$sortType];
         $sortClause = $sortHandler->addSortClause($pagerQuery, $sortOptions);

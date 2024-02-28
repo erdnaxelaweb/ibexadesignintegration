@@ -12,7 +12,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
-use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PagerBuildEvent extends Event
@@ -24,12 +24,13 @@ class PagerBuildEvent extends Event
     public function __construct(
         public readonly string     $pagerType,
         public readonly array      $pagerConfiguration,
-        public readonly LocationQuery      $pagerQuery,
+        public readonly Query      $pagerQuery,
         public readonly SearchData $searchData,
         public readonly SearchData $defaultSearchData,
         public readonly array      $buildContext,
-        public array               $queryFilters = [],
-        public array               $queryAggregations = []
+        public array               $queryCriterions = [],
+        public array               $filtersCriterions = [],
+        public array               $aggregations = []
     ) {
     }
 

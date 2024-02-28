@@ -11,7 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AggregateSortHandler extends AbstractSortHandler
@@ -21,7 +21,7 @@ class AggregateSortHandler extends AbstractSortHandler
     ) {
     }
 
-    public function addSortClause(LocationQuery $pagerQuery, array $sortOptions): void
+    public function addSortClause(Query $pagerQuery, array $sortOptions): void
     {
         $sortOptions = $this->resolveOptions($sortOptions);
         foreach ($sortOptions['sorts'] as $sortConfig) {
