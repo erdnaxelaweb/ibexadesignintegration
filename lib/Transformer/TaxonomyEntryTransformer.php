@@ -11,22 +11,17 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager;
-use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
 use ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry;
 use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 
 class TaxonomyEntryTransformer
 {
-    use FieldValueTransformerTrait;
-
     public function __construct(
         protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager,
-        iterable $fieldValueTransformers
+        protected FieldValueTransformer $fieldValueTransformers
     ) {
-        foreach ($fieldValueTransformers as $type => $fieldValueTransformer) {
-            $this->fieldValueTransformers[$type] = $fieldValueTransformer;
-        }
     }
 
     public function __invoke(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
@@ -36,13 +31,12 @@ class TaxonomyEntryTransformer
         $contentTypeIdentifier = $contentType->identifier;
         $contentConfiguration = $this->taxonomyEntryConfigurationManager->getConfiguration($contentTypeIdentifier);
 
-        $contentFields = new ContentFieldsCollection();
-        foreach ($contentConfiguration['fields'] as $fieldIdentifier => $fieldConfiguration) {
-            $contentFields->set(
-                $fieldIdentifier,
-                $this->transformFieldValue($ibexaContent, $contentType, $fieldIdentifier, $fieldConfiguration)
-            );
-        }
+        $contentFields = new ContentFieldsCollection(
+            $ibexaContent,
+            $contentType,
+            $contentConfiguration['fields'],
+            $this->fieldValueTransformers
+        );
 
         return new TaxonomyEntry(
             $ibexaTaxonomyEntry->getId(),
