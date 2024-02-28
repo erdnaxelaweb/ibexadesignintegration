@@ -38,10 +38,10 @@ use ReflectionException;
 class ImageGenerator
 {
     public function __construct(
-        protected VariationHandler $imageVariationService,
+        protected VariationHandler   $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
-        protected ContentService $contentService,
-        protected LoggerInterface $imageVariationLogger,
+        protected ContentService     $contentService,
+        protected LoggerInterface    $imageVariationLogger,
         protected ContentTransformer $contentTransformer
     ) {
     }
@@ -104,12 +104,12 @@ class ImageGenerator
     protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
         if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
-            $variationConfig = [
-                [
-                    'suffix' => $variationName,
-                    'media' => null,
-                ],
-            ];
+            try {
+                $variation = $this->getImageVariationIfExist($field, $versionInfo, $variationName);
+            } catch (SourceImageNotFoundException $e) {
+                return [];
+            }
+            return [$this->getImageVariationSource([$variation->uri], '', $variation, $variationName)];
         } else {
             $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
         }
@@ -139,21 +139,36 @@ class ImageGenerator
                 continue;
             }
 
-            $source = new ImageSource(
-                implode(', ', $uris),
+            $source = $this->getImageVariationSource(
+                $uris,
                 $sourceReqs['media'],
-                $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
-                $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
-                $baseVariation instanceof ImageVariation ? $baseVariation->fileSize : null,
-                $baseVariation instanceof FocusedVariation ? new ImageFocusPoint(
-                    $baseVariation->focusPoint->getPosX(),
-                    $baseVariation->focusPoint->getPosY()
-                ) : null,
-                $baseVariation ? $baseVariation->mimeType : null,
+                $baseVariation,
                 $sourceVariationName
             );
             $sources[$sourceVariationName] = $source;
         }
         return $sources;
+    }
+
+    private function getImageVariationSource(
+        array      $uris,
+        $media,
+        ?Variation $baseVariation,
+        string     $sourceVariationName
+    ): ImageSource {
+        $source = new ImageSource(
+            implode(', ', $uris),
+            $media,
+            $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
+            $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
+            $baseVariation instanceof ImageVariation ? $baseVariation->fileSize : null,
+            $baseVariation instanceof FocusedVariation ? new ImageFocusPoint(
+                $baseVariation->focusPoint->getPosX(),
+                $baseVariation->focusPoint->getPosY()
+            ) : null,
+            $baseVariation ? $baseVariation->mimeType : null,
+            $sourceVariationName
+        );
+        return $source;
     }
 }
