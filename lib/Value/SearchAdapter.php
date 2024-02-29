@@ -14,17 +14,23 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
-use Ibexa\Core\Pagination\Pagerfanta\LocationSearchAdapter;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
+use Ibexa\Core\Pagination\Pagerfanta\AbstractSearchResultAdapter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-class SearchAdapter extends LocationSearchAdapter
+class SearchAdapter extends AbstractSearchResultAdapter
 {
+    public const SEARCH_TYPE_LOCATION = 'location';
+
+    public const SEARCH_TYPE_CONTENT = 'content';
+
     private ?FormInterface $filtersFormBuilder = null;
 
     public function __construct(
         Query $query,
         SearchService $searchService,
+        protected string $searchType,
         protected ContentTransformer $contentTransformer,
         protected $filtersCallback,
         protected $activeFiltersCallback,
@@ -35,13 +41,22 @@ class SearchAdapter extends LocationSearchAdapter
 
     public function getSlice($offset, $length)
     {
-        $results = parent::getSlice($offset, $length);
+        $searchHits = parent::getSlice($offset, $length);
         $list = [];
-        foreach ($results as $result) {
-            $list[] = [
-                'locationId' => $result->id,
-                'content' => ($this->contentTransformer)($result->getContent(), $result),
-            ];
+        foreach ($searchHits as $searchHit) {
+            $result = $searchHit->valueObject;
+            if ($result instanceof \Ibexa\Core\Repository\Values\Content\Location) {
+                $list[] = [
+                    'locationId' => $result->id,
+                    'content' => ($this->contentTransformer)($result->getContent(), $result),
+                ];
+            }
+            if ($result instanceof \Ibexa\Core\Repository\Values\Content\Content) {
+                $list[] = [
+                    'locationId' => $result->contentInfo->mainLocationId,
+                    'content' => ($this->contentTransformer)($result),
+                ];
+            }
         }
         return $list;
     }
@@ -63,5 +78,13 @@ class SearchAdapter extends LocationSearchAdapter
     public function getActiveFilters(): array
     {
         return ($this->activeFiltersCallback)($this->getFiltersFormBuilder());
+    }
+
+    protected function executeQuery(SearchService $searchService, Query $query, array $languageFilter): SearchResult
+    {
+        if ($this->searchType === self::SEARCH_TYPE_CONTENT) {
+            return $searchService->findContent($query, $languageFilter);
+        }
+        return $searchService->findLocations($query, $languageFilter);
     }
 }

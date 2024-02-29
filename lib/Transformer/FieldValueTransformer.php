@@ -14,14 +14,22 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
 
-trait FieldValueTransformerTrait
+class FieldValueTransformer
 {
     /**
      * @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface[]
      */
     protected array $fieldValueTransformers = [];
 
-    protected function transformFieldValue(
+    public function __construct(
+        iterable $transformers
+    ) {
+        foreach ($transformers as $type => $fieldValueTransformer) {
+            $this->fieldValueTransformers[$type] = $fieldValueTransformer;
+        }
+    }
+
+    public function transform(
         IbexaContent $ibexaContent,
         ContentType $contentType,
         string $fieldIdentifier,

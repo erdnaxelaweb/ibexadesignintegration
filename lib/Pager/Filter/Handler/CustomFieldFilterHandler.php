@@ -78,7 +78,12 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
      */
     protected function getChoiceLabel(ValueObject $entry): string
     {
-        return $entry->getName();
+        return $this->getValueLabel($entry->getName());
+    }
+
+    protected function getValueLabel(string $value): string
+    {
+        return $value;
     }
 
     /**
@@ -210,8 +215,13 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $choices = $formBuilder->getConfig()
             ->getAttribute('choice_list')
             ->getChoices();
-        return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
-            return isset($choices[$activeValue]) ? $this->getChoiceLabel($choices[$activeValue]) : '';
+
+        $labels = array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
+            return isset($choices[$activeValue]) ? $this->getChoiceLabel($choices[$activeValue]) : $this->getValueLabel(
+                $activeValue
+            );
         }, $activeValues));
+
+        return $labels;
     }
 }

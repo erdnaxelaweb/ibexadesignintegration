@@ -17,6 +17,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Image;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageFocusPoint;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageSource;
+use Ibexa\Bundle\Core\Imagine\IORepositoryResolver;
 use Ibexa\Contracts\Core\Exception\InvalidArgumentException;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidVariationException;
@@ -37,10 +38,10 @@ use ReflectionException;
 class ImageGenerator
 {
     public function __construct(
-        protected VariationHandler $imageVariationService,
+        protected VariationHandler   $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
-        protected ContentService $contentService,
-        protected LoggerInterface $imageVariationLogger,
+        protected ContentService     $contentService,
+        protected LoggerInterface    $imageVariationLogger,
         protected ContentTransformer $contentTransformer
     ) {
     }
@@ -102,7 +103,16 @@ class ImageGenerator
 
     protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
-        $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
+        if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
+            try {
+                $variation = $this->getImageVariationIfExist($field, $versionInfo, $variationName);
+            } catch (SourceImageNotFoundException $e) {
+                return [];
+            }
+            return [$this->getImageVariationSource([$variation->uri], '', $variation, $variationName)];
+        } else {
+            $variationConfig = $this->imageConfiguration->getVariationConfig($variationName);
+        }
 
         $sources = [];
         foreach ($variationConfig as $sourceReqs) {
@@ -129,21 +139,36 @@ class ImageGenerator
                 continue;
             }
 
-            $source = new ImageSource(
-                implode(', ', $uris),
+            $source = $this->getImageVariationSource(
+                $uris,
                 $sourceReqs['media'],
-                $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
-                $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
-                $baseVariation instanceof ImageVariation ? $baseVariation->fileSize : null,
-                $baseVariation instanceof FocusedVariation ? new ImageFocusPoint(
-                    $baseVariation->focusPoint->getPosX(),
-                    $baseVariation->focusPoint->getPosY()
-                ) : null,
-                $baseVariation ? $baseVariation->mimeType : null,
+                $baseVariation,
                 $sourceVariationName
             );
             $sources[$sourceVariationName] = $source;
         }
         return $sources;
+    }
+
+    private function getImageVariationSource(
+        array      $uris,
+        $media,
+        ?Variation $baseVariation,
+        string     $sourceVariationName
+    ): ImageSource {
+        $source = new ImageSource(
+            implode(', ', $uris),
+            $media,
+            $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
+            $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
+            $baseVariation instanceof ImageVariation ? $baseVariation->fileSize : null,
+            $baseVariation instanceof FocusedVariation ? new ImageFocusPoint(
+                $baseVariation->focusPoint->getPosX(),
+                $baseVariation->focusPoint->getPosY()
+            ) : null,
+            $baseVariation ? $baseVariation->mimeType : null,
+            $sourceVariationName
+        );
+        return $source;
     }
 }

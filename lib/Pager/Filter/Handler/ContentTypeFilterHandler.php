@@ -49,7 +49,12 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 
     protected function getChoiceLabel(ValueObject $entry): string
     {
-        $contentType = $this->contentTypeService->loadContentType($entry->getKey());
+        return $this->getValueLabel($entry->getKey());
+    }
+
+    protected function getValueLabel(string $value): string
+    {
+        $contentType = $this->contentTypeService->loadContentType($value);
         return $contentType->getName();
     }
 

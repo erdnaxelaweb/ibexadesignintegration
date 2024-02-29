@@ -5,8 +5,10 @@ services:
         public: false
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer:
         arguments:
-            $fieldValueTransformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
+            $transformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezboolean:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer

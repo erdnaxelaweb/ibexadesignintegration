@@ -19,6 +19,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Pagerfanta\Pagerfanta;
@@ -52,17 +53,29 @@ class PagerBuilder
         $searchData = $rawSearchData !== null ? SearchData::createFromRequest($rawSearchData) : $defaultSearchData;
         $searchFormName = $type;
 
-        $query = new LocationQuery();
+        $query = $configuration['searchType'] === SearchAdapter::SEARCH_TYPE_LOCATION ? new LocationQuery() : new Query();
         $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $defaultSearchData, $context);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
 
-        $query->filter = new Criterion\LogicalAnd($event->queryFilters);
-        $query->aggregations = $event->queryAggregations;
+        if (! empty($event->queryCriterions)) {
+            $query->query = count($event->queryCriterions) > 1 ? new Criterion\LogicalAnd(
+                $event->queryCriterions
+            ) : reset($event->queryCriterions);
+        }
+        if (! empty($event->filtersCriterions)) {
+            $query->filter = count($event->filtersCriterions) > 1 ? new Criterion\LogicalAnd(
+                $event->filtersCriterions
+            ) : reset($event->filtersCriterions);
+        }
+        if (! empty($event->aggregations)) {
+            $query->aggregations = $event->aggregations;
+        }
 
         $adapter = new SearchAdapter(
             $query,
             $this->searchService,
+            $configuration['searchType'],
             $this->contentTransformer,
             function (AggregationResultCollection $aggregationResultCollection) use (
                 $defaultSearchData,

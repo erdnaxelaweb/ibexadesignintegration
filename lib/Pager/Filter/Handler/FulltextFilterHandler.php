@@ -13,8 +13,10 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Novactive\EzSolrSearchExtra\Query\Content\Criterion\MultipleFieldsFullText;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FulltextFilterHandler extends AbstractFilterHandler
 {
@@ -33,7 +35,8 @@ class FulltextFilterHandler extends AbstractFilterHandler
 
     public function getCriterion(string $filterName, $value, array $options = []): Criterion
     {
-        return new Criterion\FullText($value);
+        $options = $this->resolveOptions($options);
+        return new MultipleFieldsFullText($value, $options);
     }
 
     public function getFakeFormType(): array
@@ -41,5 +44,24 @@ class FulltextFilterHandler extends AbstractFilterHandler
         return [
             'type' => TextType::class,
         ];
+    }
+
+    public function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        $optionsResolver->define('fuzziness')
+            ->default(1.)
+            ->allowedTypes('float');
+
+        $optionsResolver->define('boost')
+            ->default([])
+            ->allowedTypes('array');
+
+        $optionsResolver->define('metaBoost')
+            ->default([])
+            ->allowedTypes('array');
+
+        $optionsResolver->define('boostPublishDate')
+            ->default(false)
+            ->allowedTypes('boolean');
     }
 }
