@@ -51,9 +51,7 @@ class PagerActiveFiltersListBuilder
             $query = $this->getRequest()
                 ->query->all();
 
-            if (empty($query)) {
-                $query[$searchFormName]['search'] = '';
-            }
+            $query[$searchFormName]['search'] = '';
 
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
