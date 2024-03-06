@@ -39,6 +39,15 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $configuration = $event->pagerConfiguration;
         $searchData = $event->searchData;
 
+        if (!empty($event->defaultSearchData->filters)) {
+            $searchDataFilters = $searchData->filters;
+            $eventDefaultSearchDataFilters = $event->defaultSearchData->filters;
+            $mergedFilters = array_merge_recursive($searchDataFilters, $eventDefaultSearchDataFilters);
+            $searchData->filters = array_map(function($value) {
+                return is_array($value) ? array_unique($value) : $value;
+            }, $mergedFilters);
+        }
+
         if (isset($eventContext['location']) && $eventContext['location'] instanceof Location) {
             $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
         }
