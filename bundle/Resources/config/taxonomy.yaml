@@ -15,3 +15,8 @@ services:
         lazy: true
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\TaxonomyFieldFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'taxonomy_field' }
