@@ -32,5 +32,7 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\ChainGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
     parent: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
+    calls:
+      - ['setConfigResolver', ['@Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface']]
 
   ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig\Extension:
