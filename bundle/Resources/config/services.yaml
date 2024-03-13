@@ -36,3 +36,9 @@ services:
       - ['setConfigResolver', ['@Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface']]
 
   ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig\Extension:
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Twig\Renderer:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
+    parent: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
+    arguments:
+      $renderTemplate: '%erdnaxelaweb.static_fake_design.display_functions_render_template%'

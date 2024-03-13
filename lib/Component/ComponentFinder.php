@@ -1,8 +1,8 @@
 <?php
 
-namespace ErdnaxelaWeb\IbexaDesignIntegration\Showroom;
+namespace ErdnaxelaWeb\IbexaDesignIntegration\Component;
 
-use ErdnaxelaWeb\StaticFakeDesign\Showroom\ComponentFinder as BaseComponentFinder;
+use ErdnaxelaWeb\StaticFakeDesign\Component\ComponentFinder as BaseComponentFinder;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Component;
 use Ibexa\DesignEngine\DesignAwareTrait;
 use Symfony\Component\Finder\Finder;

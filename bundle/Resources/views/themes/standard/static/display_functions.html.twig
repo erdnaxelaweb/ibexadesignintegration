@@ -1,0 +1,35 @@
+{% use '@StaticFakeDesign/static/display_functions.html.twig' %}
+
+{% block display_content %}
+    {% set viewParameters = getContentViewControllerParameters(content, {
+        "viewType": viewType,
+        "params": parameters ?? {}
+    }) %}
+    {% if isEsi|default(false) %}
+        {{ render_esi(controller(
+            "ibexa_content:viewAction",
+            viewParameters
+        )) }}
+    {% else %}
+        {{ render(controller(
+            "ibexa_content:viewAction",
+            viewParameters
+        )) }}
+    {% endif %}
+{% endblock %}
+
+{% block display_include %}
+    {% if controllerAction %}
+        {% if isEsi|default(true) %}
+            {{ render_esi(controller(
+                controllerAction,
+                parameters
+            )) }}
+        {% else %}
+            {{ render(controller(
+                controllerAction,
+                parameters
+            )) }}
+        {% endif %}
+    {% endif %}
+{% endblock %}

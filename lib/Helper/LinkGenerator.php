@@ -39,8 +39,10 @@ class LinkGenerator
                 ->getName(),
             [
                 'extras' => [
-                    'identifier' => $location->getContentInfo()->getContentType()->identifier,
-                ]
+                    'identifier' => $location->getContentInfo()
+                        ->getContentType()
+->identifier,
+                ],
             ]
         );
     }

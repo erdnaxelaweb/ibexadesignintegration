@@ -1,3 +1,5 @@
 parameters:
     ibexa_design_integration.default.enable_fake_generation: false
     ibexa_design_integration.static_group.enable_fake_generation: true
+
+    ibexa_design_integration.display_functions_render_template: '@@ibexadesign/static/display_functions.html.twig'
