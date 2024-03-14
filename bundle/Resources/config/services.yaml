@@ -41,4 +41,4 @@ services:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
     parent: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
     arguments:
-      $renderTemplate: '%erdnaxelaweb.static_fake_design.display_functions_render_template%'
+      $renderTemplate: '%ibexa_design_integration.display_functions_render_template%'
