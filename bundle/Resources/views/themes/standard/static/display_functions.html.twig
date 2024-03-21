@@ -18,7 +18,7 @@
     {% endif %}
 {% endblock %}
 
-{% block display_include %}
+{% block display_component %}
     {% if controllerAction %}
         {% if isEsi|default(true) %}
             {{ render_esi(controller(
@@ -31,5 +31,7 @@
                 parameters
             )) }}
         {% endif %}
+    {% else %}
+        {% include template with parameters only %}
     {% endif %}
 {% endblock %}
