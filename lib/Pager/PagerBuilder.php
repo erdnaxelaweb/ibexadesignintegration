@@ -17,6 +17,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
@@ -102,7 +103,7 @@ class PagerBuilder
                 );
             }
         );
-        $pagerFanta = new Pagerfanta($adapter);
+        $pagerFanta = new Pager($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
 
         $page = $request->get('page', 1);

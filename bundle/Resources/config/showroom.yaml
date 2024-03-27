@@ -7,3 +7,7 @@ services:
             $templatePathsMap: '%ibexa.design.templates.path_map%'
         calls:
             - ['setConfigResolver', ['@Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface']]
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Component\ComponentBuilder:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Component\ComponentBuilder
+        parent: ErdnaxelaWeb\StaticFakeDesign\Component\ComponentBuilder
