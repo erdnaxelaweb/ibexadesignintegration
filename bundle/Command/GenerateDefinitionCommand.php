@@ -119,7 +119,10 @@ class GenerateDefinitionCommand extends Command
         ],
         "ezlandingpage" => [
             "type" => "block",
-            "options" => [],
+            "options" => [
+                'layout' => null,
+                'allowedTypes' => [],
+            ],
         ],
         "novaseometas" => [
             "type" => null,

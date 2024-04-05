@@ -42,6 +42,9 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         if (in_array('IbexaFormBuilderBundle', $activatedBundles, true)) {
             $loader->load('form_builder.yaml');
         }
+        if (in_array('IbexaFieldTypePageBundle', $activatedBundles, true)) {
+            $loader->load('page_builder.yaml');
+        }
     }
 
     public function prepend(ContainerBuilder $container): void
