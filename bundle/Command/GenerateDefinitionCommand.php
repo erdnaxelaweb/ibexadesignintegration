@@ -23,7 +23,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class GenerateDefinitionCommand extends Command
 {
-    protected static $defaultName = "erdnaxelaweb:static_fake_design:generate_definition";
+    protected static $defaultName = "erdnaxelaweb:ibexa_design:generate_definition";
 
     protected static array $typesMapping = [
         "ezboolean" => [
