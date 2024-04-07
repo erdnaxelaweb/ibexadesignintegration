@@ -188,6 +188,8 @@ class GenerateDefinitionCommand extends Command
             $sheet = $spreadsheet->getSheetByName($sheetName);
             $io->info($sheetName);
 
+            $identifier = trim($sheet->getCell('B3')->getValue());
+
             $fieldsStartIndex = 14;
             $fieldsConfig = [];
             do {
@@ -204,7 +206,7 @@ class GenerateDefinitionCommand extends Command
                         $fieldsStartIndex
                     ));
                 }
-                $fieldsConfig[$fieldIdentifier] = [
+                $fieldsConfig[$identifier] = [
                     "name" => [
                         $languageCode => trim($sheet->getCell("A$fieldsStartIndex")->getValue()),
                     ],

@@ -74,6 +74,7 @@ class ImageGenerator
     public function generateImage(IbexaContent $content, string $fieldIdentifier, string $variationName)
     {
         $fieldValue = $content->getFieldValue($fieldIdentifier);
+
         if ($fieldValue instanceof ImageValue) {
             return $this->getImage(
                 ($this->contentTransformer)($content),

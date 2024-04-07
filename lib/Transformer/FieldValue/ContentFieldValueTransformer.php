@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Relation\Value as RelationValue;
@@ -18,6 +19,11 @@ use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
 
 class ContentFieldValueTransformer implements FieldValueTransformerInterface
 {
+    public function __construct(
+        protected ContentTransformer $contentTransformer
+    ) {
+    }
+
     public function transformFieldValue(
         Content         $content,
         string          $fieldIdentifier,
@@ -38,16 +44,12 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
 
         if ($max === 1) {
             if (! empty($destinationContentIds)) {
-                return [
-                    'contentId' => reset($destinationContentIds),
-                ];
+                return $this->contentTransformer->lazyTransformContentFromContentId(reset($destinationContentIds));
             }
             return null;
         }
         return array_map(function (int $destinationContentId) {
-            return [
-                'contentId' => $destinationContentId,
-            ];
+            return $this->contentTransformer->lazyTransformContentFromContentId($destinationContentId);
         }, $destinationContentIds);
     }
 }

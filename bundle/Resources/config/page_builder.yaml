@@ -58,6 +58,8 @@ services:
     erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.embed:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\EmbedBlockAttributeValueTransformer
         lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'embed'}
 
@@ -78,6 +80,8 @@ services:
     erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.locationlist:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\LocationListBlockAttributeValueTransformer
         lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'locationlist'}
 
