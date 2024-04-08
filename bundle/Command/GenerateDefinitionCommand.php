@@ -206,7 +206,7 @@ class GenerateDefinitionCommand extends Command
                         $fieldsStartIndex
                     ));
                 }
-                $fieldsConfig[$identifier] = [
+                $fieldsConfig[$fieldIdentifier] = [
                     "name" => [
                         $languageCode => trim($sheet->getCell("A$fieldsStartIndex")->getValue()),
                     ],
