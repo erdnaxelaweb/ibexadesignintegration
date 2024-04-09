@@ -118,7 +118,7 @@ class GenerateDefinitionCommand extends Command
             ],
         ],
         "ezlandingpage" => [
-            "type" => "block",
+            "type" => "blocks",
             "options" => [
                 'layout' => null,
                 'allowedTypes' => [],
@@ -205,6 +205,7 @@ class GenerateDefinitionCommand extends Command
                         $fieldTypeIdentifier,
                         $fieldsStartIndex
                     ));
+                    continue;
                 }
                 $fieldsConfig[$fieldIdentifier] = [
                     "name" => [
