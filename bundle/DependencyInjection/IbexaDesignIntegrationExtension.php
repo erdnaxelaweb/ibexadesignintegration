@@ -85,7 +85,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
             "ibexa",
             [
                 'system' => [
-                    'site' => [
+                    'fo_group' => [
                         'image_variations' => $variationsConfig,
                     ],
                 ],
