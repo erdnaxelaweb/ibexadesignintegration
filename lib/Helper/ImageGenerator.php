@@ -12,7 +12,6 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Helper;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Image;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageFocusPoint;
@@ -74,13 +73,8 @@ class ImageGenerator
     public function generateImage(IbexaContent $content, string $fieldIdentifier, string $variationName)
     {
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-
         if ($fieldValue instanceof ImageValue) {
-            return $this->getImage(
-                ($this->contentTransformer)($content),
-                $content->getField($fieldIdentifier),
-                $variationName
-            );
+            return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
         }
         if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
             $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
@@ -88,7 +82,7 @@ class ImageGenerator
         }
     }
 
-    protected function getImage(Content $content, Field $field, string $variationName = 'original'): ?Image
+    protected function getImage(IbexaContent $content, Field $field, string $variationName = 'original'): ?Image
     {
         /** @var ImageValue $imageFieldValue */
         $imageFieldValue = $field->value;
@@ -96,8 +90,8 @@ class ImageGenerator
 
         return new Image(
             $imageFieldValue->alternativeText,
-            $content->fields['caption'],
-            $content->fields['credits'],
+            $content->getFieldValue('caption'),
+            $content->getFieldValue('credits'),
             $sources,
         );
     }
