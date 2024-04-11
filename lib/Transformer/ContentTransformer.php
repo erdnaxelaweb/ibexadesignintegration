@@ -24,6 +24,7 @@ use Ibexa\Contracts\Core\Repository\LocationService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
+use Ibexa\HttpCache\Handler\TagHandler;
 
 class ContentTransformer
 {
@@ -34,6 +35,7 @@ class ContentTransformer
         protected FieldValueTransformer       $fieldValueTransformers,
         protected ContentService $contentService,
         protected LocationService $locationService,
+        protected TagHandler $responseTagger
     ) {
     }
 
@@ -49,11 +51,14 @@ class ContentTransformer
                 return $locationId;
             },
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) {
-                return $instance->innerLocation->getContent();
+                $content = $instance->innerLocation->getContent();
+                $this->responseTagger->addContentTags([$content]);
+                return $content;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $locationId
             ) {
+                $this->responseTagger->addLocationTags([$locationId]);
                 return $this->locationService->loadLocation($locationId);
             },
         ];
@@ -74,10 +79,13 @@ class ContentTransformer
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $contentId
             ) {
+                $this->responseTagger->addContentTags([$contentId]);
                 return $this->contentService->loadContent($contentId);
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) {
-                return $instance->innerContent->contentInfo->getMainLocation();
+                $location = $instance->innerContent->contentInfo->getMainLocation();
+                $this->responseTagger->addLocationTags([$location->id]);
+                return $location;
             },
         ];
 
@@ -103,12 +111,15 @@ class ContentTransformer
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $ibexaContent
             ) {
+                $this->responseTagger->addContentTags([$ibexaContent->id]);
                 return $ibexaContent;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $ibexaLocation
             ) {
-                return $ibexaLocation ?? $instance->innerContent->contentInfo->getMainLocation();
+                $location = $ibexaLocation ?? $instance->innerContent->contentInfo->getMainLocation();
+                $this->responseTagger->addLocationTags([$location->id]);
+                return $location;
             },
         ];
         $skippedProperties = ['id', 'locationId'];
