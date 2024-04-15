@@ -25,7 +25,9 @@ class LocationListBlockAttributeValueTransformer implements BlockAttributeValueT
         if (empty($attributeValue)) {
             return [];
         }
-        $locationIds = explode(',', $attributeValue);
+        $locationIds = array_map(function ($locationId) {
+            return intval($locationId);
+        }, explode(',', $attributeValue));
 
         if ($max === 1) {
             if (! empty($locationIds)) {

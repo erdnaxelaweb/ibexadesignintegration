@@ -52,7 +52,7 @@ class ContentTransformer
             },
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) {
                 $content = $instance->innerLocation->getContent();
-                $this->responseTagger->addContentTags([$content]);
+                $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
@@ -84,7 +84,9 @@ class ContentTransformer
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) {
                 $location = $instance->innerContent->contentInfo->getMainLocation();
-                $this->responseTagger->addLocationTags([$location->id]);
+                if ($location) {
+                    $this->responseTagger->addLocationTags([$location->id]);
+                }
                 return $location;
             },
         ];
@@ -118,7 +120,9 @@ class ContentTransformer
                 $ibexaLocation
             ) {
                 $location = $ibexaLocation ?? $instance->innerContent->contentInfo->getMainLocation();
-                $this->responseTagger->addLocationTags([$location->id]);
+                if ($location) {
+                    $this->responseTagger->addLocationTags([$location->id]);
+                }
                 return $location;
             },
         ];
