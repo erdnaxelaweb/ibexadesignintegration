@@ -42,6 +42,8 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
             $destinationContentIds = $fieldValue->destinationContentIds;
         }
 
+        $destinationContentIds = array_slice($destinationContentIds, 0, $max);
+
         if ($max === 1) {
             if (! empty($destinationContentIds)) {
                 return $this->contentTransformer->lazyTransformContentFromContentId(reset($destinationContentIds));

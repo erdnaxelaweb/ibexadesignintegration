@@ -34,13 +34,15 @@ class TaxonomyEntryAssignementFieldValueTransformer implements FieldValueTransfo
         /** @var TaxonomyEntryAssignmentValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $entries = [];
-        foreach ($fieldValue->getTaxonomyEntries() as $taxonomyEntry) {
+        $taxonomyEntries = array_slice($fieldValue->getTaxonomyEntries(), 0, $max);
+        foreach ($taxonomyEntries as $taxonomyEntry) {
             $taxonomyEntry = ($this->taxonomyEntryTransformer)($taxonomyEntry);
             if ($max === 1) {
                 return $taxonomyEntry;
             }
             $entries[] = $taxonomyEntry;
         }
+
         return $entries;
     }
 }
