@@ -11,9 +11,11 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\Block;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry;
+use Symfony\Component\VarExporter\Instantiator;
 
 class PageFieldValueTransformer implements FieldValueTransformerInterface
 {
@@ -42,14 +44,16 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
                 'blocks' => [],
             ];
             foreach ($zone->getBlocks() as $block) {
-                $zones[$zone->getName()]['blocks'][] = [
+                $zones[$zone->getName()]['blocks'][] = Instantiator::instantiate(Block::class, [
                     'id' => $block->getId(),
+                    'type' => $block->getType(),
+                    'view' => $block->getView(),
                     'contentId' => $content->id,
                     'locationId' => $content->contentInfo->mainLocationId,
                     'versionNo' => $content->getVersionInfo()
 ->versionNo,
                     'languageCode' => $field->languageCode,
-                ];
+                ]);
             }
         }
         return [
