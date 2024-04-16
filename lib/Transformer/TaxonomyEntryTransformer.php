@@ -38,7 +38,7 @@ class TaxonomyEntryTransformer
                 $ibexaTaxonomyEntry
             ) {
                 $content = $ibexaTaxonomyEntry->getContent();
-                $this->responseTagger->addContentTags([$content]);
+                $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
         ];
@@ -49,7 +49,7 @@ class TaxonomyEntryTransformer
     protected function createLazyTaxonomyEntry(array $initializers, array $skippedProperties = []): TaxonomyEntry
     {
         $initializers += [
-            "\0*\0fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
                 $contentType = $instance->innerContent->getContentType();
                 $contentConfiguration = $this->taxonomyEntryConfigurationManager->getConfiguration(
                     $contentType->identifier
