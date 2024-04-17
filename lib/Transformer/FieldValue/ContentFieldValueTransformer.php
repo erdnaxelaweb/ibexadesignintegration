@@ -35,7 +35,7 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $destinationContentIds = [];
 
-        if ($fieldValue instanceof RelationValue) {
+        if ($fieldValue instanceof RelationValue && $fieldValue->destinationContentId !== null) {
             $destinationContentIds = [$fieldValue->destinationContentId];
         }
         if ($fieldValue instanceof RelationListValue) {
