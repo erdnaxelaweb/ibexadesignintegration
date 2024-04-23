@@ -29,7 +29,7 @@ class BlockTransformer
         );
 
         return new Block(
-            $blockValue->getId(),
+            (int) $blockValue->getId(),
             $blockValue->getName(),
             $blockValue->getType(),
             $blockValue->getView(),
