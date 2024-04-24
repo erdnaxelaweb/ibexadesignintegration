@@ -23,7 +23,7 @@ class PagerBuildEvent extends Event
 
     public function __construct(
         public readonly string     $pagerType,
-        public readonly array      $pagerConfiguration,
+        public array      &$pagerConfiguration,
         public readonly Query      $pagerQuery,
         public readonly SearchData $searchData,
         public readonly SearchData $defaultSearchData,

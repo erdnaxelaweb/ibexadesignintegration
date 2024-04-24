@@ -205,6 +205,7 @@ class GenerateDefinitionCommand extends Command
                         $fieldTypeIdentifier,
                         $fieldsStartIndex
                     ));
+                    $fieldsStartIndex++;
                     continue;
                 }
                 $fieldsConfig[$fieldIdentifier] = [
