@@ -105,6 +105,7 @@ class PagerBuilder
         );
         $pagerFanta = new Pager($adapter);
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
+        $pagerFanta->setHeadlineCount($configuration['headlineCount']);
 
         $page = $request->get('page', 1);
         $pagerFanta->setCurrentPage(min(is_numeric($page) ? $page : 1, $pagerFanta->getNbPages()));

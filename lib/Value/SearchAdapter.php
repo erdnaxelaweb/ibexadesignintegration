@@ -12,6 +12,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
+use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
@@ -19,7 +20,7 @@ use Ibexa\Core\Pagination\Pagerfanta\AbstractSearchResultAdapter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-class SearchAdapter extends AbstractSearchResultAdapter
+class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterInterface
 {
     public const SEARCH_TYPE_LOCATION = 'location';
 
