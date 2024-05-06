@@ -3,6 +3,7 @@ services:
         lazy: true
         arguments:
             $layoutDefinitionRegistry: '@Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry'
+            $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezlandingpage' }
 
