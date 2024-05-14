@@ -55,10 +55,11 @@ class ContentTransformer
             $ibexaContent->id,
             $ibexaContent->getName(),
             $contentTypeIdentifier,
-            $ibexaContent->contentInfo->publishedDate,
-            $ibexaContent->contentInfo->modificationDate,
+            $ibexaContent->contentInfo->publishedDate ?? $ibexaContent->versionInfo->creationDate,
+            $ibexaContent->contentInfo->modificationDate ?? $ibexaContent->versionInfo->modificationDate,
             $contentFields,
-            $ibexaLocation ? $this->linkGenerator->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
+            $ibexaLocation && $ibexaLocation->id ? $this->linkGenerator->generateUrl(
+                UrlAliasRouter::URL_ALIAS_ROUTE_NAME, [
                 'locationId' => $ibexaLocation->id,
             ]) : '',
             $ibexaLocation ? $this->breadcrumbGenerator->generateLocationBreadcrumb($ibexaLocation) : new Breadcrumb()
