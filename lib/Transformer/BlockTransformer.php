@@ -29,7 +29,7 @@ class BlockTransformer
         );
 
         $properties = [
-            'id' => $blockValue->getId(),
+            'id' => (int) $blockValue->getId(),
             'name' => $blockValue->getName(),
             'type' => $blockValue->getType(),
             'view' => $blockValue->getView(),
