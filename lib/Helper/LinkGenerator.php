@@ -32,16 +32,20 @@ class LinkGenerator
         array    $parameters = [],
         int      $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): ItemInterface {
-        $parameters['locationId'] = $location->id;
+        $url = '#';
+        if ($location->id !== null) {
+            $parameters['locationId'] = $location->id;
+            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType);
+        }
         return $this->generateLink(
-            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType),
+            $url,
             $location->getContent()
                 ->getName(),
             [
                 'extras' => [
                     'identifier' => $location->getContentInfo()
                         ->getContentType()
-->identifier,
+                        ->identifier,
                 ],
             ]
         );
