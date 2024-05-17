@@ -139,8 +139,7 @@ class ContentTransformer
                     $contentType->identifier
                 );
                 return new ContentFieldsCollection(
-                    $instance->innerContent,
-                    $instance->getContentType(),
+                    $instance,
                     $contentConfiguration['fields'],
                     $this->fieldValueTransformers
                 );

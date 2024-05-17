@@ -12,8 +12,8 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer;
-use ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Taxonomy\FieldType\TaxonomyEntry\Value as TaxonomyEntryValue;
 
@@ -25,7 +25,7 @@ class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterfa
     }
 
     public function transformFieldValue(
-        Content         $content,
+        AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         array $fieldConfiguration

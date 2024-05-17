@@ -12,8 +12,8 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\ContentService;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\Helper\FieldHelper;
 
@@ -27,7 +27,7 @@ class ImageFieldValueTransformer implements FieldValueTransformerInterface
     }
 
     public function transformFieldValue(
-        Content         $content,
+        AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         array $fieldConfiguration

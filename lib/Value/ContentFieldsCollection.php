@@ -13,17 +13,14 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection as BaseContentFieldsCollection;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
-use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
 
 class ContentFieldsCollection extends BaseContentFieldsCollection
 {
     protected array $initState = [];
 
     public function __construct(
-        protected IbexaContent $ibexaContent,
-        protected ContentType  $contentType,
-        protected array        $contentFieldsConfiguration,
+        protected AbstractContent          $content,
+        protected array                 $contentFieldsConfiguration,
         protected FieldValueTransformer $fieldValueTransformers
     ) {
         parent::__construct();
@@ -41,8 +38,7 @@ class ContentFieldsCollection extends BaseContentFieldsCollection
             $this->set(
                 $key,
                 $this->fieldValueTransformers->transform(
-                    $this->ibexaContent,
-                    $this->contentType,
+                    $this->content,
                     $key,
                     $this->contentFieldsConfiguration[$key]
                 )

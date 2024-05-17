@@ -12,7 +12,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
@@ -25,7 +25,7 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
     }
 
     public function transformFieldValue(
-        Content         $content,
+        AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         array $fieldConfiguration

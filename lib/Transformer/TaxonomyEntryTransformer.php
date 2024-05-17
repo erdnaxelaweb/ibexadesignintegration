@@ -49,14 +49,13 @@ class TaxonomyEntryTransformer
     protected function createLazyTaxonomyEntry(array $initializers, array $skippedProperties = []): TaxonomyEntry
     {
         $initializers += [
-            "fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "\0*\0fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
                 $contentType = $instance->innerContent->getContentType();
                 $contentConfiguration = $this->taxonomyEntryConfigurationManager->getConfiguration(
                     $contentType->identifier
                 );
                 return new ContentFieldsCollection(
-                    $instance->innerContent,
-                    $contentType,
+                    $instance,
                     $contentConfiguration['fields'],
                     $this->fieldValueTransformers
                 );

@@ -11,7 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 
@@ -23,7 +23,7 @@ class RichtextFieldValueTransformer implements FieldValueTransformerInterface
     }
 
     public function transformFieldValue(
-        Content $content,
+        AbstractContent $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         array $fieldConfiguration
