@@ -28,8 +28,8 @@ class Content extends AbstractContent
         int                     $locationId,
         string                  $name,
         string                  $type,
-        DateTime                $creationDate,
-        DateTime                $modificationDate,
+        ?DateTime               $creationDate,
+        ?DateTime               $modificationDate,
         ContentFieldsCollection $fields,
         public readonly string $url,
         public readonly Breadcrumb  $breadcrumb

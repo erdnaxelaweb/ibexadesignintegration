@@ -30,8 +30,8 @@ class AbstractContent extends IbexaContent
         public readonly int $locationId,
         public readonly string $name,
         public readonly string $type,
-        public readonly DateTime $creationDate,
-        public readonly DateTime $modificationDate,
+        public readonly ?DateTime $creationDate,
+        public readonly ?DateTime $modificationDate,
         ContentFieldsCollection  $fields
     ) {
         $this->fields = $fields;
