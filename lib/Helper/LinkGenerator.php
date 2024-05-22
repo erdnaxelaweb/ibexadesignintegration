@@ -35,7 +35,7 @@ class LinkGenerator
         $url = '#';
         if ($location->id !== null) {
             $parameters['locationId'] = $location->id;
-            $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType);
+            $url = $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType);
         }
         return $this->generateLink(
             $url,
