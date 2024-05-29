@@ -84,6 +84,7 @@ services:
         lazy: true
         arguments:
             $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+            $fieldHelper: '@Ibexa\Core\Helper\FieldHelper'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezrichtext' }
 
