@@ -113,9 +113,6 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $options = $this->resolveOptions($options);
         $operator = is_array($value) ? Operator::IN : Operator::EQ;
         $criterion = new CustomField($options['field'], $operator, $value);
-        if ($options['multiple'] === false) {
-            return $criterion;
-        }
         return new FilterTag($filterName, $criterion);
     }
 
