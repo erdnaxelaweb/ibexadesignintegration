@@ -47,16 +47,10 @@ class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterI
         foreach ($searchHits as $searchHit) {
             $result = $searchHit->valueObject;
             if ($result instanceof \Ibexa\Core\Repository\Values\Content\Location) {
-                $list[] = [
-                    'locationId' => $result->id,
-                    'content' => ($this->contentTransformer)($result->getContent(), $result),
-                ];
+                $list[] = ($this->contentTransformer)($result->getContent(), $result);
             }
             if ($result instanceof \Ibexa\Core\Repository\Values\Content\Content) {
-                $list[] = [
-                    'locationId' => $result->contentInfo->mainLocationId,
-                    'content' => ($this->contentTransformer)($result),
-                ];
+                $list[] = ($this->contentTransformer)($result);
             }
         }
         return $list;
