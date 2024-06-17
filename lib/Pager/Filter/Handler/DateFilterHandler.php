@@ -16,6 +16,7 @@ use Exception;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use IntlDateFormatter;
 use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -35,6 +36,9 @@ class DateFilterHandler extends AbstractFilterHandler
         $formOptions['block_prefix'] = "filter_$filterName";
         $formOptions['required'] = false;
         $formOptions['widget'] = $options['widget'];
+        $formOptions['format'] = $options['format'];
+        $formOptions['input_format'] = $options['input_format'];
+        $formOptions['html5'] = $options['html5'];
         $formBuilder->add($filterName, DateType::class, $formOptions);
     }
 
@@ -42,7 +46,7 @@ class DateFilterHandler extends AbstractFilterHandler
     {
         $options = $this->resolveOptions($options);
         $operator = $options['operator'];
-        return new CustomField($options['field'], $operator, $this->mapDate($value));
+        return new CustomField($options['field'], $operator, $this->mapDate($value, $options['input_format']));
     }
 
     public function getFakeFormType(): array
@@ -67,15 +71,24 @@ class DateFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('widget')
             ->default('single_text')
             ->allowedTypes('string');
+        $optionsResolver->define('format')
+            ->default(IntlDateFormatter::MEDIUM)
+            ->allowedTypes('string', 'int');
+        $optionsResolver->define('input_format')
+            ->default('Y-m-d')
+            ->allowedTypes('string');
+        $optionsResolver->define('html5')
+            ->default(true)
+            ->allowedTypes('boolean');
     }
 
-    protected function mapDate($value): string
+    protected function mapDate($value, string $inputFormat): string
     {
         if (is_numeric($value)) {
             $date = new DateTime("@{$value}");
         } else {
             try {
-                $date = new DateTime($value);
+                $date = DateTime::createFromFormat($inputFormat, $value);
             } catch (Exception $e) {
                 throw new InvalidArgumentException('Invalid date provided: ' . $value);
             }
