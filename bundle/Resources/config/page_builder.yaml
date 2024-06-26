@@ -4,6 +4,7 @@ services:
         arguments:
             $layoutDefinitionRegistry: '@Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry'
             $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
+            $requestStack: '@request_stack'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezlandingpage' }
 
