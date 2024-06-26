@@ -15,12 +15,10 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry;
-use Symfony\Component\HttpFoundation\RequestStack;
 
 class PageFieldValueTransformer implements FieldValueTransformerInterface
 {
     public function __construct(
-        protected RequestStack $requestStack,
         protected LayoutDefinitionRegistry $layoutDefinitionRegistry,
         protected BlockTransformer $blockTransformer
     ) {
@@ -46,9 +44,6 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
                 'blocks' => [],
             ];
             foreach ($zone->getBlocks() as $block) {
-                if (!$block->isVisible() and !$this->inEditorialMode()) {
-                    continue;
-                }
                 $zones[$zone->getName()]['blocks'][] = ($this->blockTransformer)($block, [
                     'contentId' => $content->id,
                     'locationId' => $content->contentInfo->mainLocationId,
@@ -62,12 +57,5 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
             "layout" => $layoutDefinition->getTemplate(),
             "zones" => $zones,
         ];
-    }
-
-    private function inEditorialMode(): bool
-    {
-        $masterRequest = $this->requestStack->getMainRequest();
-
-        return (bool)$masterRequest->attributes->get(PageController::EDITORIAL_MODE_PARAMETER, false);
     }
 }
