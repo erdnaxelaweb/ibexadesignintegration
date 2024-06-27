@@ -41,6 +41,11 @@ class TaxonomyEntryTransformer
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
+            'innerTaxonomy' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) use (
+                $ibexaTaxonomyEntry
+            ) {
+                return $ibexaTaxonomyEntry;
+            },
         ];
         $skippedProperties = ['id'];
         return $this->createLazyTaxonomyEntry($initializers, $skippedProperties);
@@ -72,6 +77,16 @@ class TaxonomyEntryTransformer
             },
             "modificationDate" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
                 return $instance->innerContent->contentInfo->modificationDate;
+            },
+            "identifier" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+                return $instance->innerTaxonomy->getIdentifier();
+            },
+            "level" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+                return $instance->innerTaxonomy->getLevel();
+            },
+            "parent" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+                $parent = $instance->innerTaxonomy->getParent();
+                return $parent ? $this->transformTaxonomyEntry($parent) : null;
             },
         ];
 
