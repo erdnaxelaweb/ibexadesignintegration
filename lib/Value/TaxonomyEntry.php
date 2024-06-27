@@ -32,7 +32,7 @@ class TaxonomyEntry extends AbstractContent
         public readonly IbexaTaxonomyEntry                                  $innerTaxonomy,
         public readonly string                                              $identifier,
         public readonly int                                                 $level = 0,
-        public readonly ?\ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry $parent = null,
+        public readonly ?TaxonomyEntry $parent = null,
     )
     {
         parent::__construct(
