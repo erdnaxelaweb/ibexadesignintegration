@@ -23,7 +23,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
-use Pagerfanta\Pagerfanta;
+use Pagerfanta\PagerfantaInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -44,7 +44,7 @@ class PagerBuilder
     ) {
     }
 
-    public function build(string $type, array $context = []): Pagerfanta
+    public function build(string $type, array $context = []): PagerfantaInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
