@@ -44,12 +44,11 @@ class PagerBuilder
     ) {
     }
 
-    public function build(string $type, array $context = []): PagerfantaInterface
+    public function build(string $type, array $context = [], SearchData $defaultSearchData = new SearchData()): PagerfantaInterface
     {
         $request = $this->requestStack->getCurrentRequest();
 
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
-        $defaultSearchData = new SearchData();
         $rawSearchData = $request->get($type, null);
         $searchData = $rawSearchData !== null ? SearchData::createFromRequest($rawSearchData) : $defaultSearchData;
         $searchFormName = $type;
