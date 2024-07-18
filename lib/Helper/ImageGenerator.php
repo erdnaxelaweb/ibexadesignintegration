@@ -152,7 +152,7 @@ class ImageGenerator
         string     $sourceVariationName
     ): ImageSource {
         $source = new ImageSource(
-            implode(', ', $uris),
+            $uris,
             $media,
             $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
             $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
