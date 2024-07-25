@@ -25,6 +25,18 @@ class TextFieldValueTransformer
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
 
-        return $fieldValue != "" ? sprintf('<p>%s</p>', nl2br($fieldValue->text)) : null;
+        return $fieldValue != "" ? new class ($fieldValue->text)
+        {
+            public string $rawText;
+            public function __construct(string $text)
+            {
+                $this->rawText = $text;
+            }
+
+            public function __toString(): string
+            {
+                return sprintf('<p>%s</p>', nl2br($this->rawText));
+            }
+        }: null;
     }
 }
