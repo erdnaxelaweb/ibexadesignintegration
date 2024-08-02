@@ -45,6 +45,7 @@ class TaxonomyEntryTransformer
             $ibexaContent->contentInfo->publishedDate,
             $ibexaContent->contentInfo->modificationDate,
             $contentFields,
+            $ibexaTaxonomyEntry->getLevel()
         );
     }
 }
