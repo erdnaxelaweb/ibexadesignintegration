@@ -6,7 +6,7 @@
     "license": "MIT",
     "require": {
         "erdnaxelaweb/staticfakedesign": "dev-main",
-        "novactive/ezsolrsearchextrabundle": "dev-feat-solr-ibx4",
+        "novactive/ezsolrsearchextrabundle": "^3.0",
         "novactive/ezstatictemplatesbundle": "^3.0",
         "http-interop/http-factory-guzzle": "^1.2"
     },
