@@ -78,7 +78,8 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
     }
 
     protected function buildChoiceFromAggregationResultEntry(
-        RawTermAggregationResultEntry $entry
+        RawTermAggregationResultEntry $entry,
+        array $options
     ): FilterChoiceInterface {
         try {
             $taxonomyEntry = $this->taxonomyService->loadEntryById((int) $entry->getKey());
@@ -88,10 +89,11 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
                 $entry->getCount(),
                 [
                     'class' => $taxonomyEntry->getIdentifier(),
-                ]
+                ],
+                $options['choice_label_format']
             );
         } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
-            return parent::buildChoiceFromAggregationResultEntry($entry);
+            return parent::buildChoiceFromAggregationResultEntry($entry, $options);
         }
     }
 

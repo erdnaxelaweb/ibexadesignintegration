@@ -80,12 +80,12 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         return $value;
     }
 
-    protected function buildChoicesFromAggregationResult(AggregationResult $aggregationResult): array
+    protected function buildChoicesFromAggregationResult(AggregationResult $aggregationResult, array $options): array
     {
         $choices = [];
         if ($aggregationResult) {
             foreach ($aggregationResult->getEntries() as $entry) {
-                $choices[] = $this->buildChoiceFromAggregationResultEntry($entry);
+                $choices[] = $this->buildChoiceFromAggregationResultEntry($entry, $options);
             }
         }
         return $choices;
@@ -98,7 +98,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
      */
     protected function getChoices(?AggregationResult $aggregationResult, array $options): array
     {
-        $choices = $this->buildChoicesFromAggregationResult($aggregationResult);
+        $choices = $this->buildChoicesFromAggregationResult($aggregationResult, $options);
         switch ($options['sort']) {
             case 'label':
                 usort(
@@ -245,8 +245,15 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
     }
 
     protected function buildChoiceFromAggregationResultEntry(
-        RawTermAggregationResultEntry $entry
+        RawTermAggregationResultEntry $entry,
+        array $options
     ): FilterChoiceInterface {
-        return new FilterChoice($entry->getName(), $entry->getKey(), $entry->getCount(), []);
+        return new FilterChoice(
+            $entry->getName(),
+            $entry->getKey(),
+            $entry->getCount(),
+            [],
+            $options['choice_label_format']
+        );
     }
 }

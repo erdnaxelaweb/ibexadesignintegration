@@ -26,7 +26,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 {
     public function __construct(
         protected ContentTypeService $contentTypeService,
-        FakerGenerator $fakerGenerator
+        FakerGenerator               $fakerGenerator
     ) {
         parent::__construct($fakerGenerator);
     }
@@ -62,8 +62,15 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
     }
 
     protected function buildChoiceFromAggregationResultEntry(
-        RawTermAggregationResultEntry $entry
+        RawTermAggregationResultEntry $entry,
+        array                         $options
     ): FilterChoiceInterface {
-        return new FilterChoice($this->getValueLabel($entry->getKey()), $entry->getKey(), $entry->getCount(), []);
+        return new FilterChoice(
+            $this->getValueLabel($entry->getKey()),
+            $entry->getKey(),
+            $entry->getCount(),
+            [],
+            $options['choice_label_format']
+        );
     }
 }
