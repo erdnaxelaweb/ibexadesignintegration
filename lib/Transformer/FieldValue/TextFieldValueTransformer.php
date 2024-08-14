@@ -25,9 +25,9 @@ class TextFieldValueTransformer
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
 
-        return $fieldValue != "" ? new class ($fieldValue->text)
-        {
+        return $fieldValue != "" ? new class($fieldValue->text) {
             public string $rawText;
+
             public function __construct(string $text)
             {
                 $this->rawText = $text;
@@ -37,6 +37,6 @@ class TextFieldValueTransformer
             {
                 return sprintf('<p>%s</p>', nl2br($this->rawText));
             }
-        }: null;
+        } : null;
     }
 }

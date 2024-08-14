@@ -33,8 +33,7 @@ class TaxonomyEntry extends AbstractContent
         public readonly string                                              $identifier,
         public readonly int                                                 $level = 0,
         public readonly ?TaxonomyEntry $parent = null,
-    )
-    {
+    ) {
         parent::__construct(
             $innerContent,
             $innerLocation,

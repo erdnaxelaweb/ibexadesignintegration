@@ -49,7 +49,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             );
         }
 
-        if (!empty($configuration['excludedContentTypes'])) {
+        if (! empty($configuration['excludedContentTypes'])) {
             $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
                 new Criterion\ContentTypeIdentifier($configuration['excludedContentTypes'])
             );
