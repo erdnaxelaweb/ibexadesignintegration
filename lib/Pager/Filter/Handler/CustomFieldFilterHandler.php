@@ -50,7 +50,13 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
         $choices = $this->getChoices($aggregationResult);
-        ;
+
+        if (isset($options['nameSort']) && $options['nameSort']) {
+            usort($choices, function($a, $b) {
+                return strcasecmp($a->getName(), $b->getName());
+            });
+        }
+
         $formOptions['choices'] = $choices;
 
         $formOptions['choice_value'] = function ($entry): ?string {
@@ -139,6 +145,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('limit')
             ->default(10)
             ->allowedTypes('integer');
+        $optionsResolver->define('nameSort')
+            ->default(false)
+            ->allowedTypes('bool');
 
         // only used for static
         $optionsResolver->define('choices')
