@@ -33,4 +33,9 @@ class FilterChoice implements FilterChoiceInterface
     {
         return $this->attr;
     }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
 }

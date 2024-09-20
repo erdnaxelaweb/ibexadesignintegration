@@ -38,6 +38,16 @@ class TaxonomyFilterChoice implements FilterChoiceInterface
         return $this->value;
     }
 
+    public function getIdentifier(): string
+    {
+        return $this->taxonomyEntry->getIdentifier();
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
+    }
+
     public function getLabel(): string
     {
         return str_replace(

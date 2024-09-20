@@ -11,4 +11,6 @@ interface FilterChoiceInterface
     public function getValue(): mixed;
 
     public function getAttr(): array;
+
+    public function getCount(): int;
 }
