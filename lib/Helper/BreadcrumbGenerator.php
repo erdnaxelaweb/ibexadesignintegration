@@ -29,14 +29,17 @@ class BreadcrumbGenerator
             $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
             $currentLocation = $location;
             $breadcrumbLinks = [$this->linkGenerator->generateLocationLink($location)];
-            do {
-                $parentLocation = $currentLocation->getParentLocation();
-                if ($parentLocation === null) {
-                    break;
-                }
-                $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink($parentLocation);
-                $currentLocation = $parentLocation;
-            } while ($parentLocation->id != $rootLocationId);
+
+            if(in_array($rootLocationId, $location->path)) {
+                do {
+                    $parentLocation = $currentLocation->getParentLocation();
+                    if ($parentLocation === null) {
+                        break;
+                    }
+                    $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink($parentLocation);
+                    $currentLocation = $parentLocation;
+                } while ($parentLocation->id != $rootLocationId);
+            }
 
             $breadcrumbLinks = array_reverse($breadcrumbLinks);
             foreach ($breadcrumbLinks as $link) {
