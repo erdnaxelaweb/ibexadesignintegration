@@ -49,14 +49,22 @@ class FulltextFilterHandler extends AbstractFilterHandler
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->define('fuzziness')
-            ->default(1.)
-            ->allowedTypes('float');
+            ->default(1)
+            ->allowedTypes('int');
 
         $optionsResolver->define('boost')
             ->default([])
             ->allowedTypes('array');
 
         $optionsResolver->define('metaBoost')
+            ->default([])
+            ->allowedTypes('array');
+
+        $optionsResolver->define('boostQueries')
+            ->default([])
+            ->allowedTypes('array');
+
+        $optionsResolver->define('boostFunctions')
             ->default([])
             ->allowedTypes('array');
 
