@@ -41,7 +41,7 @@ class PagerConfigurationManager extends BasePagerConfigurationManager
     protected function configureOptions(OptionsResolver $optionsResolver): void
     {
         $optionsResolver->define('searchType')
-            ->default(reset($this->availableSearchTypes))
+            ->default('location')
             ->allowedTypes('string')
             ->allowedValues(...$this->availableSearchTypes);
 
