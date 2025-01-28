@@ -56,9 +56,9 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         return $formOptions;
     }
 
-    protected function getChoices(?AggregationResult $aggregationResult, array $options): array
+    protected function getChoices(?AggregationResult $aggregationResult, string $filterName, array $options): array
     {
-        $choices = parent::getChoices($aggregationResult, $options);
+        $choices = parent::getChoices($aggregationResult, $filterName, $options);
 
         if ($options['group_by_parent'] && $options['sort'] === 'label') {
             usort(

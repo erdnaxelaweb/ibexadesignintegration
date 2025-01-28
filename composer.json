@@ -7,7 +7,7 @@
     "require": {
         "erdnaxelaweb/staticfakedesign": "dev-feat-showroom",
         "novactive/ezenhancedimageassetbundle": "^3.0",
-        "novactive/ezsolrsearchextrabundle": "^3.0",
+        "novactive/ezsolrsearchextrabundle": "^3.2",
         "novactive/ezstatictemplatesbundle": "^3.0",
         "http-interop/http-factory-guzzle": "^1.2"
     },

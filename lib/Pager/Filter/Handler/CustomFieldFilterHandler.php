@@ -29,7 +29,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CustomFieldFilterHandler extends AbstractFilterHandler
+class CustomFieldFilterHandler extends AbstractFilterHandler implements NestableFilterHandlerInterface
 {
     public function __construct(
         protected FakerGenerator $fakerGenerator
@@ -43,13 +43,18 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         FormBuilderInterface $formBuilder,
         string               $filterName,
         ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        array                $options = [],
     ): void {
         $options = $this->resolveOptions($options);
         $formBuilder->add(
             $filterName,
             ChoiceType::class,
-            $this->getFormOptions($formBuilder, $filterName, $aggregationResult, $options)
+            $this->getFormOptions(
+                $formBuilder,
+                $filterName,
+                $aggregationResult,
+                $options
+            )
         );
     }
 
@@ -65,8 +70,16 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
 
-        $formOptions['choice_loader'] = new CallbackChoiceLoader(function () use ($aggregationResult, $options) {
-            return $this->getChoices($aggregationResult, $options);
+        $formOptions['choice_loader'] = new CallbackChoiceLoader(function () use ($aggregationResult, $filterName ,$options) {
+            if($options['is_nested']) {
+                $choices = [];
+                foreach ($aggregationResult->getEntries() as $entry) {
+                    $nestedAggregationResults = $entry->getNestedResults()[$filterName] ?? [];
+                    $choices[$entry->getName()] = $this->getChoices($nestedAggregationResults, $filterName, $options);
+                }
+                return $choices;
+            }
+            return $this->getChoices($aggregationResult, $filterName, $options);
         });
 
         $formOptions['choice_value'] = 'value';
@@ -80,7 +93,13 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         return $value;
     }
 
-    protected function buildChoicesFromAggregationResult(AggregationResult $aggregationResult, array $options): array
+    /**
+     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
+     * @param array                                                                    $options
+     *
+     * @return array
+     */
+    protected function buildChoicesFromAggregationResult(AggregationResult $aggregationResult, string $filterName, array $options): array
     {
         $choices = [];
         if ($aggregationResult) {
@@ -96,9 +115,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
      *
      * @return RawTermAggregationResultEntry[]
      */
-    protected function getChoices(?AggregationResult $aggregationResult, array $options): array
+    protected function getChoices(?AggregationResult $aggregationResult, string $filterName, array $options): array
     {
-        $choices = $this->buildChoicesFromAggregationResult($aggregationResult, $options);
+        $choices = $this->buildChoicesFromAggregationResult($aggregationResult, $filterName, $options);
         switch ($options['sort']) {
             case 'label':
                 usort(
@@ -162,6 +181,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
             ->default('asc')
             ->allowedTypes('string')
             ->allowedValues('asc', 'desc');
+        $optionsResolver->define('is_nested')
+            ->default(false)
+            ->allowedTypes('bool');
 
         // only used for static
         $optionsResolver->define('choices')
