@@ -39,7 +39,7 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
             $routeReference = $this->routeReferenceGenerator->generate(
                 ContentDownloadRouteReferenceListener::ROUTE_NAME,
                 [
-                    ContentDownloadRouteReferenceListener::OPT_CONTENT => $content,
+                    ContentDownloadRouteReferenceListener::OPT_CONTENT => $content->innerContent,
                     ContentDownloadRouteReferenceListener::OPT_VERSION => $content->getVersionInfo()->versionNo,
                     ContentDownloadRouteReferenceListener::OPT_FIELD_IDENTIFIER => $fieldIdentifier,
                 ]
