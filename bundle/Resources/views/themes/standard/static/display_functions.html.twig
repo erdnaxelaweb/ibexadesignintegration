@@ -5,7 +5,7 @@
         "viewType": viewType,
         "params": parameters ?? {}
     }) %}
-    {% if isEsi|default(false) %}
+    {% if isEsi ?? false %}
         {{ render_esi(controller(
             "ibexa_content:viewAction",
             viewParameters
@@ -28,7 +28,7 @@
         'versionNo': block.versionNo,
         'languageCode': block.languageCode
     } %}
-    {% if isEsi|default(true) %}
+    {% if isEsi ?? true %}
         {{ render_esi(controller(
             'Ibexa\\Bundle\\FieldTypePage\\Controller\\BlockController::renderAction',
             viewParameters
@@ -43,7 +43,7 @@
 
 {% block display_component %}
     {% if controllerAction %}
-        {% if isEsi|default(true) %}
+        {% if isEsi ?? true %}
             {{ render_esi(controller(
                 controllerAction,
                 parameters
