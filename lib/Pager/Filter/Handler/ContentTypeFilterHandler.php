@@ -11,20 +11,22 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoice;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\ValueObject;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
+use Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ContentTypeFilterHandler extends CustomFieldFilterHandler
 {
     public function __construct(
         protected ContentTypeService $contentTypeService,
-        FakerGenerator $fakerGenerator
+        FakerGenerator               $fakerGenerator
     ) {
         parent::__construct($fakerGenerator);
     }
@@ -47,11 +49,6 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         return $aggregation;
     }
 
-    protected function getChoiceLabel(ValueObject $entry): string
-    {
-        return $this->getValueLabel($entry->getKey());
-    }
-
     protected function getValueLabel(string $value): string
     {
         $contentType = $this->contentTypeService->loadContentType($value);
@@ -62,5 +59,18 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
     {
         parent::configureOptions($optionsResolver);
         $optionsResolver->remove('field');
+    }
+
+    protected function buildChoiceFromAggregationResultEntry(
+        RawTermAggregationResultEntry $entry,
+        array                         $options
+    ): FilterChoiceInterface {
+        return new FilterChoice(
+            $this->getValueLabel($entry->getKey()),
+            $entry->getKey(),
+            $entry->getCount(),
+            [],
+            $options['choice_label_format']
+        );
     }
 }

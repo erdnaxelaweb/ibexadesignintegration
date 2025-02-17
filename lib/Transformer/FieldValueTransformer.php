@@ -11,8 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
-use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 
 class FieldValueTransformer
 {
@@ -29,17 +28,14 @@ class FieldValueTransformer
         }
     }
 
-    public function transform(
-        IbexaContent $ibexaContent,
-        ContentType $contentType,
-        string $fieldIdentifier,
-        array $fieldConfiguration
-    ) {
-        $fieldDefinition = $contentType->getFieldDefinition($fieldIdentifier);
+    public function transform(AbstractContent $content, string $fieldIdentifier, array $fieldConfiguration)
+    {
+        $fieldDefinition = $content->getContentType()
+            ->getFieldDefinition($fieldIdentifier);
         if ($fieldDefinition) {
             $fieldValueTransformer = $this->fieldValueTransformers[$fieldDefinition->fieldTypeIdentifier];
             return $fieldValueTransformer->transformFieldValue(
-                $ibexaContent,
+                $content,
                 $fieldIdentifier,
                 $fieldDefinition,
                 $fieldConfiguration

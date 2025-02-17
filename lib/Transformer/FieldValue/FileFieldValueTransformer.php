@@ -11,9 +11,9 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\File;
 use Ibexa\Bundle\Core\EventListener\ContentDownloadRouteReferenceListener;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\RouteReferenceGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -28,7 +28,7 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
     }
 
     public function transformFieldValue(
-        Content $content,
+        AbstractContent $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         array $fieldConfiguration
@@ -39,7 +39,7 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
             $routeReference = $this->routeReferenceGenerator->generate(
                 ContentDownloadRouteReferenceListener::ROUTE_NAME,
                 [
-                    ContentDownloadRouteReferenceListener::OPT_CONTENT => $content,
+                    ContentDownloadRouteReferenceListener::OPT_CONTENT => $content->innerContent,
                     ContentDownloadRouteReferenceListener::OPT_VERSION => $content->getVersionInfo()->versionNo,
                     ContentDownloadRouteReferenceListener::OPT_FIELD_IDENTIFIER => $fieldIdentifier,
                 ]

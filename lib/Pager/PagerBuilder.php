@@ -9,28 +9,32 @@
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
+declare(strict_types=1);
+
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\SearchService;
-use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\Form\FormInterface;
+use Pagerfanta\PagerfantaInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class PagerBuilder
 {
+    /**
+     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\SearchTypeFactoryInterface[]
+     */
+    protected array $searchTypeFactories = [];
+
     public function __construct(
+        iterable $searchTypeFactories,
         protected PagerConfigurationManager     $pagerConfigurationManager,
         protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
@@ -41,20 +45,36 @@ class PagerBuilder
         protected LinkGenerator                 $linkGenerator,
         protected TranslatorInterface           $translator
     ) {
+        foreach ($searchTypeFactories as $type => $searchTypeFactory) {
+            $this->searchTypeFactories[$type] = $searchTypeFactory;
+        }
     }
 
-    public function build(string $type, array $context = []): Pagerfanta
-    {
+    public function build(
+        string $type,
+        array $context = [],
+        SearchData $defaultSearchData = new SearchData()
+    ): PagerfantaInterface {
         $request = $this->requestStack->getCurrentRequest();
-
         $configuration = $this->pagerConfigurationManager->getConfiguration($type);
-        $defaultSearchData = new SearchData();
-        $rawSearchData = $request->get($type, null);
-        $searchData = $rawSearchData !== null ? SearchData::createFromRequest($rawSearchData) : $defaultSearchData;
-        $searchFormName = $type;
 
-        $query = $configuration['searchType'] === SearchAdapter::SEARCH_TYPE_LOCATION ? new LocationQuery() : new Query();
-        $event = new PagerBuildEvent($type, $configuration, $query, $searchData, $defaultSearchData, $context);
+        $searchTypeFactory = $this->searchTypeFactories[$configuration['searchType']];
+        $searchType = ($searchTypeFactory)(
+            $type,
+            $configuration,
+            $request,
+            $defaultSearchData
+        );
+
+        $query = $searchType->getQuery();
+        $event = new PagerBuildEvent(
+            $type,
+            $configuration,
+            $query,
+            $searchType->getSearchData(),
+            $defaultSearchData,
+            $context
+        );
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
 
@@ -72,38 +92,9 @@ class PagerBuilder
             $query->aggregations = $event->aggregations;
         }
 
-        $adapter = new SearchAdapter(
-            $query,
-            $this->searchService,
-            $configuration['searchType'],
-            $this->contentTransformer,
-            function (AggregationResultCollection $aggregationResultCollection) use (
-                $defaultSearchData,
-                $searchFormName,
-                $configuration,
-            ) {
-                $formBuilder = $this->pagerSearchFormBuilder->build(
-                    $searchFormName,
-                    $configuration,
-                    $aggregationResultCollection,
-                    $defaultSearchData
-                );
-
-                $form = $formBuilder->getForm();
-                $form->handleRequest($this->requestStack->getCurrentRequest());
-                return $form;
-            },
-            function (FormInterface $filtersFormBuilder) use ($searchFormName, $configuration, $searchData) {
-                return $this->pagerActiveFiltersListBuilder->buildList(
-                    $searchFormName,
-                    $configuration,
-                    $filtersFormBuilder,
-                    $searchData
-                );
-            }
-        );
-        $pagerFanta = new Pagerfanta($adapter);
+        $pagerFanta = new Pager($searchType->getAdapter());
         $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
+        $pagerFanta->setHeadlineCount($configuration['headlineCount']);
 
         $page = $request->get('page', 1);
         $pagerFanta->setCurrentPage(min(is_numeric($page) ? $page : 1, $pagerFanta->getNbPages()));

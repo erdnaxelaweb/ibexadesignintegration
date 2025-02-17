@@ -30,6 +30,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('pager_sorts_handlers.yaml');
         $loader->load('pager_filter_handlers.yaml');
         $loader->load('transformer.yaml');
+        $loader->load('showroom.yaml');
 
         $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         if (in_array('eZMigrationBundle', $activatedBundles, true)) {
@@ -40,6 +41,12 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         }
         if (in_array('IbexaFormBuilderBundle', $activatedBundles, true)) {
             $loader->load('form_builder.yaml');
+        }
+        if (in_array('IbexaFieldTypePageBundle', $activatedBundles, true)) {
+            $loader->load('page_builder.yaml');
+        }
+        if (in_array('IbexaProductCatalogBundle', $activatedBundles, true)) {
+            $loader->load('product_catalog.yaml');
         }
     }
 
@@ -115,6 +122,12 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                         'params' => [$height],
                     ],
                 ],
+            ];
+        }
+        if (! $width && !$height) {
+            return [
+                'reference' => null,
+                'filters' => [],
             ];
         }
         return [

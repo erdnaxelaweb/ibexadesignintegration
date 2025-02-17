@@ -5,6 +5,13 @@ services:
         public: false
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+        arguments:
+            $breadcrumbGenerator: '@ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator'
+            $contentConfigurationManager: '@ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager'
+            $fieldValueTransformers: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer'
+            $contentService: '@Ibexa\Contracts\Core\Repository\ContentService'
+            $locationService: '@Ibexa\Contracts\Core\Repository\LocationService'
+            $responseTagger: '@Ibexa\HttpCache\Handler\TagHandler'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer:
         arguments:
@@ -77,6 +84,7 @@ services:
         lazy: true
         arguments:
             $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+            $fieldHelper: '@Ibexa\Core\Helper\FieldHelper'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezrichtext' }
 
@@ -98,9 +106,18 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ContentFieldValueTransformer:
         lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezobjectrelation' }
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezobjectrelationlist' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\UrlFieldValueTransformer:
+        lazy: true
+        arguments:
+            $factory: '@knp_menu.factory'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezurl' }
 
     # form
     # taxo

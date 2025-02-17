@@ -11,6 +11,8 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Helper;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Image;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageFocusPoint;
@@ -19,7 +21,6 @@ use Ibexa\Bundle\Core\Imagine\IORepositoryResolver;
 use Ibexa\Contracts\Core\Exception\InvalidArgumentException;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidVariationException;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
 use Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo;
 use Ibexa\Contracts\Core\Variation\Values\ImageVariation;
@@ -39,7 +40,8 @@ class ImageGenerator
         protected VariationHandler   $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
         protected ContentService     $contentService,
-        protected LoggerInterface    $imageVariationLogger
+        protected LoggerInterface    $imageVariationLogger,
+        protected ContentTransformer $contentTransformer
     ) {
     }
 
@@ -68,7 +70,7 @@ class ImageGenerator
         return null;
     }
 
-    public function generateImage(IbexaContent $content, string $fieldIdentifier, string $variationName)
+    public function generateImage(AbstractContent $content, string $fieldIdentifier, string $variationName)
     {
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         if ($fieldValue instanceof ImageValue) {
@@ -76,11 +78,11 @@ class ImageGenerator
         }
         if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
             $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
-            return $this->generateImage($relatedContent, 'image', $variationName);
+            return $this->generateImage(($this->contentTransformer)($relatedContent), 'image', $variationName);
         }
     }
 
-    protected function getImage(IbexaContent $content, Field $field, string $variationName = 'original'): ?Image
+    protected function getImage(AbstractContent $content, Field $field, string $variationName = 'original'): ?Image
     {
         /** @var ImageValue $imageFieldValue */
         $imageFieldValue = $field->value;
@@ -88,8 +90,8 @@ class ImageGenerator
 
         return new Image(
             $imageFieldValue->alternativeText,
-            $content->getFieldValue('caption'),
-            $content->getFieldValue('credits'),
+            $content->fields['caption'],
+            $content->fields['credits'],
             $sources,
         );
     }
@@ -150,7 +152,7 @@ class ImageGenerator
         string     $sourceVariationName
     ): ImageSource {
         $source = new ImageSource(
-            implode(', ', $uris),
+            $uris,
             $media,
             $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
             $baseVariation instanceof ImageVariation ? $baseVariation->height : null,

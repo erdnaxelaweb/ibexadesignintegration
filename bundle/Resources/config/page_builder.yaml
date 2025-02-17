@@ -1,0 +1,94 @@
+services:
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\PageFieldValueTransformer:
+        lazy: true
+        arguments:
+            $layoutDefinitionRegistry: '@Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry'
+            $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezlandingpage' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer:
+        arguments:
+            $blockAttributeValueTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttributeValueTransformer'
+            $blockConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockConfigurationManager'
+            $blockDefinitionFactory: '@Ibexa\FieldTypePage\FieldType\Page\Block\Definition\CachedBlockDefinitionFactory'
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttributeValueTransformer:
+        arguments:
+            $transformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\LandingPageBlockSubscriber:
+        arguments:
+            $blockConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockConfigurationManager'
+            $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
+        tags:
+            - { name: kernel.event_subscriber }
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.integer:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\IntegerBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'integer'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.string:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\GenericBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'string'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.url:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\GenericBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'url'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.text:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\GenericBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'text'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.richtext:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\RichtextBlockAttributeValueTransformer
+        lazy: true
+        arguments:
+            $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'richtext'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.embed:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\EmbedBlockAttributeValueTransformer
+        lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'embed'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.checkbox:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\CheckboxBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'checkbox'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.multiple:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\SelectionBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'multiple'}
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'select'}
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'radio'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.locationlist:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\LocationListBlockAttributeValueTransformer
+        lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'locationlist'}
+
+    erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.contenttypelist:
+        class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\ContentTypeListBlockAttributeValueTransformer
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'contenttypelist'}
+

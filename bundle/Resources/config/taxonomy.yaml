@@ -5,6 +5,10 @@ services:
         public: false
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer:
+        arguments:
+            $taxonomyEntryConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager'
+            $fieldValueTransformers: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer'
+            $responseTagger: '@Ibexa\HttpCache\Handler\TagHandler'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryAssignementFieldValueTransformer:
         lazy: true

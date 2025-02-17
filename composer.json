@@ -6,7 +6,8 @@
     "license": "MIT",
     "require": {
         "erdnaxelaweb/staticfakedesign": "dev-main",
-        "novactive/ezsolrsearchextrabundle": "^3.0",
+        "novactive/ezenhancedimageassetbundle": "^3.0",
+        "novactive/ezsolrsearchextrabundle": "^3.2",
         "novactive/ezstatictemplatesbundle": "^3.0",
         "http-interop/http-factory-guzzle": "^1.2"
     },
@@ -40,7 +41,10 @@
     },
     "config": {
         "allow-plugins": {
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "ibexa/post-install": true,
+            "symfony/flex": true,
+            "phpstan/extension-installer": true
         }
     }
 }
