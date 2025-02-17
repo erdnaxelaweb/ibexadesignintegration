@@ -27,7 +27,7 @@ class AbstractContent extends IbexaContent
         public readonly IbexaApiContent $innerContent,
         public readonly ?IbexaApiLocation $innerLocation,
         public readonly int $id,
-        public readonly int $locationId,
+        public readonly ?int $locationId,
         public readonly string $name,
         public readonly string $type,
         public readonly ?DateTime $creationDate,

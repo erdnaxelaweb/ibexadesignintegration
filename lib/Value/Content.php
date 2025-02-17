@@ -25,7 +25,7 @@ class Content extends AbstractContent
         IbexaApiContent         $innerContent,
         ?IbexaApiLocation       $innerLocation,
         int                     $id,
-        int                     $locationId,
+        ?int                     $locationId,
         string                  $name,
         string                  $type,
         ?DateTime               $creationDate,
