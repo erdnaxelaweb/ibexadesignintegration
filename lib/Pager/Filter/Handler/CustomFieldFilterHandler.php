@@ -49,7 +49,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $formOptions['required'] = false;
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
-        $choices = $this->getChoices($aggregationResult);
+        $choices = $this->getChoices($aggregationResult, $options);
         ;
         $formOptions['choices'] = $choices;
 
@@ -97,7 +97,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
     /**
      * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
      */
-    protected function getChoices(?AggregationResult $aggregationResult = null): array
+    protected function getChoices(?AggregationResult $aggregationResult = null, array $options = []): array
     {
         $choices = [];
         if ($aggregationResult) {
@@ -105,6 +105,27 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
                 $choices[] = $entry;
             }
         }
+
+        switch ($options['sort'] ?? null) {
+            case 'label':
+                usort(
+                    $choices,
+                    function ($choice1, $choice2) use ($options) {
+                        $choice1Label = $choice1 instanceof ValueObject ? $this->getChoiceLabel($choice1) : $choice1;
+                        $choice2Label = $choice2 instanceof ValueObject ? $this->getChoiceLabel($choice2) : $choice2;
+
+                        if ($options['sort_direction'] === 'asc') {
+                            return strnatcasecmp($choice1Label, $choice2Label);
+                        } else {
+                            return strnatcasecmp($choice2Label, $choice1Label);
+                        }
+                    }
+                );
+                break;
+            default:
+                break;
+        }
+
         return $choices;
     }
 
@@ -139,6 +160,14 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('limit')
             ->default(10)
             ->allowedTypes('integer');
+        $optionsResolver->define('sort')
+            ->default('count')
+            ->allowedTypes('string')
+            ->allowedValues('count', 'label');
+        $optionsResolver->define('sort_direction')
+            ->default('asc')
+            ->allowedTypes('string')
+            ->allowedValues('asc', 'desc');
 
         // only used for static
         $optionsResolver->define('choices')
