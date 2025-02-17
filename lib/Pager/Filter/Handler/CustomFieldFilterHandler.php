@@ -49,12 +49,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $formBuilder->add(
             $filterName,
             ChoiceType::class,
-            $this->getFormOptions(
-                $formBuilder,
-                $filterName,
-                $aggregationResult,
-                $options
-            )
+            $this->getFormOptions($formBuilder, $filterName, $aggregationResult, $options)
         );
     }
 
@@ -70,8 +65,12 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $formOptions['multiple'] = $options['multiple'];
         $formOptions['expanded'] = $options['expanded'];
 
-        $formOptions['choice_loader'] = new CallbackChoiceLoader(function () use ($aggregationResult, $filterName ,$options) {
-            if($options['is_nested']) {
+        $formOptions['choice_loader'] = new CallbackChoiceLoader(function () use (
+            $aggregationResult,
+            $filterName,
+            $options
+        ) {
+            if ($options['is_nested']) {
                 $choices = [];
                 foreach ($aggregationResult->getEntries() as $entry) {
                     $nestedAggregationResults = $entry->getNestedResults()[$filterName] ?? [];
@@ -95,12 +94,12 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
 
     /**
      * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
-     * @param array                                                                    $options
-     *
-     * @return array
      */
-    protected function buildChoicesFromAggregationResult(AggregationResult $aggregationResult, string $filterName, array $options): array
-    {
+    protected function buildChoicesFromAggregationResult(
+        AggregationResult $aggregationResult,
+        string $filterName,
+        array $options
+    ): array {
         $choices = [];
         if ($aggregationResult) {
             foreach ($aggregationResult->getEntries() as $entry) {

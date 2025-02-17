@@ -21,13 +21,10 @@ class BlockTransformer
     public function __invoke(BlockValue $blockValue, array $aditionalProperties = [])
     {
         $blockDefinition = $this->blockDefinitionFactory->getBlockDefinition($blockValue->getType());
-        try
-        {
-            $blockConfiguration = $this->blockConfigurationManager->getConfiguration( $blockValue->getType() );
+        try {
+            $blockConfiguration = $this->blockConfigurationManager->getConfiguration($blockValue->getType());
             $blockAttributesConfiguration = $blockConfiguration['attributes'];
-        }
-        catch ( ConfigurationNotFoundException $e )
-        {
+        } catch (ConfigurationNotFoundException $e) {
             $blockAttributesConfiguration = [];
         }
 
@@ -39,13 +36,12 @@ class BlockTransformer
         );
 
         $properties = [
-                          'id' => (int) $blockValue->getId(),
-                          'name' => $blockValue->getName(),
-                          'type' => $blockValue->getType(),
-                          'view' => $blockValue->getView(),
-                          'attributes' => $blockAttributes,
-                      ] + $aditionalProperties;
-
+            'id' => (int) $blockValue->getId(),
+            'name' => $blockValue->getName(),
+            'type' => $blockValue->getType(),
+            'view' => $blockValue->getView(),
+            'attributes' => $blockAttributes,
+        ] + $aditionalProperties;
 
         return Instantiator::instantiate(\ErdnaxelaWeb\IbexaDesignIntegration\Value\Block::class, $properties);
     }

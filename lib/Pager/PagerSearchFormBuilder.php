@@ -44,17 +44,11 @@ class PagerSearchFormBuilder
             'block_prefix' => 'filters',
         ]);
 
-        foreach ( $pagerConfiguration['filters'] as $filterName => $filter )
-        {
-            $aggregationResult = $aggregationResultCollection->has( $filterName ) ?
-                $aggregationResultCollection->get( $filterName ) : null;
+        foreach ($pagerConfiguration['filters'] as $filterName => $filter) {
+            $aggregationResult = $aggregationResultCollection->has($filterName) ?
+                $aggregationResultCollection->get($filterName) : null;
 
-            $this->resolveFilter(
-                $formFilters,
-                $filterName,
-                $filter,
-                $aggregationResult,
-            );
+            $this->resolveFilter($formFilters, $filterName, $filter, $aggregationResult);
         }
 
         $builder->add($formFilters);
@@ -79,8 +73,7 @@ class PagerSearchFormBuilder
         string $filterName,
         array $filter,
         ?AggregationResult $aggregationResult = null
-    ): void
-    {
+    ): void {
         $this->filterHandler->addForm(
             $filter['type'],
             $formFilters,
@@ -89,15 +82,9 @@ class PagerSearchFormBuilder
             $filter['options'],
         );
 
-        if(!empty($filter['nested'])) {
-            foreach ( $filter['nested'] as $filterName => $filter )
-            {
-                $this->resolveFilter(
-                    $formFilters,
-                    $filterName,
-                    $filter,
-                    $aggregationResult
-                );
+        if (! empty($filter['nested'])) {
+            foreach ($filter['nested'] as $filterName => $filter) {
+                $this->resolveFilter($formFilters, $filterName, $filter, $aggregationResult);
             }
         }
     }

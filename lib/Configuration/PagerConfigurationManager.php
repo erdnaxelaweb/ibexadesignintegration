@@ -69,16 +69,16 @@ class PagerConfigurationManager extends BasePagerConfigurationManager
             })
             ->allowedTypes('array');
 
-        if($this->filterHandler->isNestableFilter($filterType)) {
+        if ($this->filterHandler->isNestableFilter($filterType)) {
             $optionsResolver->define('nested')
                 ->default([])
-                ->normalize(function ( Options $options, $nestedFiltersOptions) {
-                    if(empty($nestedFiltersOptions)) {
+                ->normalize(function (Options $options, $nestedFiltersOptions) {
+                    if (empty($nestedFiltersOptions)) {
                         return [];
                     }
 
                     $nestedFilters = [];
-                    foreach ( $nestedFiltersOptions as $filterIdentifier => $nestedFilterOptions) {
+                    foreach ($nestedFiltersOptions as $filterIdentifier => $nestedFilterOptions) {
                         $optionsResolver = new OptionsResolver();
                         $this->configureFilterOptions($optionsResolver, $nestedFilterOptions['type'] ?? '');
 

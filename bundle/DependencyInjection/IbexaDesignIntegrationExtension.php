@@ -124,7 +124,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if (! $width && !$height) {
+        if (! $width && ! $height) {
             return [
                 'reference' => null,
                 'filters' => [],

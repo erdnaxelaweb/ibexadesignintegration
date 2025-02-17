@@ -36,13 +36,13 @@ class ChainFilterHandler
 
     public function getAggregation(string $filterType, string $filterName, array $options = []): ?Aggregation
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getAggregation($filterName, $options);
     }
 
     public function getCriterion(string $filterType, string $filterName, $value, array $options = []): Criterion
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getCriterion($filterName, $value, $options);
     }
 
@@ -53,13 +53,13 @@ class ChainFilterHandler
         ?AggregationResult   $aggregationResult = null,
         array                $options = []
     ): void {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         $filterHandler->addForm($formBuilder, $filterName, $aggregationResult, $options);
     }
 
     public function configureOptions(string $filterType, OptionsResolver $optionsResolver): void
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         $filterHandler->configureOptions($optionsResolver);
     }
 
@@ -70,23 +70,23 @@ class ChainFilterHandler
 
     public function getFakeFormType(string $filterType): array
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getFakeFormType();
     }
 
     public function getValuesLabels(string $filterType, array $activeValues, FormInterface $formBuilder): array
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getValuesLabels($activeValues, $formBuilder);
     }
 
-    public function isNestableFilter( string $filterType ): bool
+    public function isNestableFilter(string $filterType): bool
     {
-        $filterHandler = $this->getFilterHandler( $filterType );
+        $filterHandler = $this->getFilterHandler($filterType);
         return class_implements($filterHandler, NestableFilterHandlerInterface::class) !== false;
     }
 
-    protected function getFilterHandler( string $filterType ): Handler\FilterHandlerInterface
+    protected function getFilterHandler(string $filterType): Handler\FilterHandlerInterface
     {
         return $this->filtersHandler[$filterType];
     }

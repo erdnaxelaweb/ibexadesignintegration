@@ -60,15 +60,12 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             $event
         );
 
-        foreach ( $criterions as $criterionType => $typeCriterions )
-        {
-            foreach ( $typeCriterions as $filterName => $criterion )
-            {
+        foreach ($criterions as $criterionType => $typeCriterions) {
+            foreach ($typeCriterions as $filterName => $criterion) {
                 $event->{$criterionType}[$filterName] = $criterion;
             }
         }
-        foreach ( $aggregations as $filterName => $aggregation )
-        {
+        foreach ($aggregations as $filterName => $aggregation) {
             $event->aggregations[$filterName] = $aggregation;
         }
 
@@ -79,19 +76,20 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         }
     }
 
-    protected function resolveFilters( array $filters, PagerBuildEvent $event): array
+    protected function resolveFilters(array $filters, PagerBuildEvent $event): array
     {
         $searchData = $event->searchData;
         $criterions = [];
         $aggregations = [];
         foreach ($filters as $filterName => $filter) {
             ['criterions' => $nestedCriterions, 'aggregations' => $nestedAggregations] = $this->resolveFilters(
-                $filter['nested'], $event
+                $filter['nested'],
+                $event
             );
 
             // Criterion
             $criterionType = $filter['criterionType'] === 'query' ? 'queryCriterions' : 'filtersCriterions';
-            if ( isset( $searchData->filters[$filterName]) && ! empty( $searchData->filters[$filterName])) {
+            if (isset($searchData->filters[$filterName]) && ! empty($searchData->filters[$filterName])) {
                 $criterions[$criterionType][$filterName] = $this->filterHandler->getCriterion(
                     $filter['type'],
                     $filterName,
@@ -107,9 +105,9 @@ class PagerBuildSubscriber implements EventSubscriberInterface
                 $aggregations[$filterName] = $aggregation;
             }
 
-            if($aggregation && method_exists($aggregation, 'setNestedAggregations')) {
+            if ($aggregation && method_exists($aggregation, 'setNestedAggregations')) {
                 $aggregation->setNestedAggregations($nestedAggregations);
-            }else{
+            } else {
                 $aggregations += $nestedAggregations;
             }
         }
