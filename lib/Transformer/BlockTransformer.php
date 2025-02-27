@@ -40,6 +40,11 @@ class BlockTransformer
             'name' => $blockValue->getName(),
             'type' => $blockValue->getType(),
             'view' => $blockValue->getView(),
+            'class' => $blockValue->getClass(),
+            'style' => $blockValue->getCompiled() ?? $blockValue->getStyle(),
+            'since' => $blockValue->getSince(),
+            'till' => $blockValue->getTill(),
+            'innerValue' => $blockValue,
             'attributes' => $blockAttributes,
         ] + $aditionalProperties;
 
