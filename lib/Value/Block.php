@@ -18,6 +18,7 @@ class Block extends BaseBlock
         ?string                    $style,
         ?DateTime                  $since,
         ?DateTime                  $till,
+        bool $isVisible,
         BlockAttributesCollection  $attributes,
         public readonly int        $contentId,
         public readonly int        $locationId,
@@ -34,6 +35,7 @@ class Block extends BaseBlock
             $style,
             $since,
             $till,
+            $isVisible,
             $attributes
         );
     }

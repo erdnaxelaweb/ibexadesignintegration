@@ -46,7 +46,7 @@ class BlockTransformer
             'till' => $blockValue->getTill(),
             'innerValue' => $blockValue,
             'attributes' => $blockAttributes,
-        ] + $aditionalProperties;
+        ] + $aditionalProperties + ['isVisible' => true];
 
         return Instantiator::instantiate(\ErdnaxelaWeb\IbexaDesignIntegration\Value\Block::class, $properties);
     }
