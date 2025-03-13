@@ -1,0 +1,8 @@
+services:
+  erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.segment_content_map:
+    class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\SegmentContentMapBlockAttributeValueTransformer
+    lazy: true
+    arguments:
+      $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
+    tags:
+      - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'segment_content_map' }
