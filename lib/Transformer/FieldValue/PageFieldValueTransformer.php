@@ -71,6 +71,7 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
         return [
             "layout" => new Layout($layoutDefinition->getTemplate(), $zones, $layoutConfiguration['sections']),
             "zones" => $zones,
+            "parameters" => $parameters,
         ];
     }
 }
