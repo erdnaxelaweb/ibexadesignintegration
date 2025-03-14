@@ -35,15 +35,9 @@ class PagerBuilder
 
     public function __construct(
         iterable $searchTypeFactories,
-        protected PagerConfigurationManager     $pagerConfigurationManager,
-        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
-        protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
-        protected SearchService                 $searchService,
-        protected RequestStack                  $requestStack,
-        protected ContentTransformer            $contentTransformer,
-        protected EventDispatcherInterface      $eventDispatcher,
-        protected LinkGenerator                 $linkGenerator,
-        protected TranslatorInterface           $translator
+        private readonly PagerConfigurationManager $pagerConfigurationManager,
+        private readonly RequestStack $requestStack,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
         foreach ($searchTypeFactories as $type => $searchTypeFactory) {
             $this->searchTypeFactories[$type] = $searchTypeFactory;
