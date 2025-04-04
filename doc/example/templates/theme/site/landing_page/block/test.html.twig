@@ -1,0 +1,10 @@
+{% component {
+    name: "Test block",
+    properties: {
+        block: 'block("test")'
+    }
+} %}
+
+{% for identifier,attribute in block.attributes %}
+    {{ identifier }} : {{ dump(block.attributes[identifier]) }}
+{% endfor %}

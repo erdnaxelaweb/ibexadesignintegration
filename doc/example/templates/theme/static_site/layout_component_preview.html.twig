@@ -1,0 +1,10 @@
+{% extends '@ibexadesign/layout_preview.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {{ encore_entry_link_tags('allcomponents', null, 'site') }}
+{% endblock %}
+{% block footer_scripts %}
+    {{ parent() }}
+    {{ encore_entry_script_tags('allcomponents', null, 'site') }}
+{% endblock %}

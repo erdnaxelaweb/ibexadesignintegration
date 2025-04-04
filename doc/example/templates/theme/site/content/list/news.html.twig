@@ -1,0 +1,12 @@
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+{% component {
+    name: "Vue liste d'une actualité",
+    specifications: "",
+    properties: {
+        content: 'content("news")'
+    }
+} %}
+
+<a href="{{ content.url }}">
+    {{ content.name }}
+</a>

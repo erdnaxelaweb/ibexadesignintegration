@@ -1,0 +1,13 @@
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+{% component {
+    name: 'Image',
+    description: '',
+    specifications: '',
+    parameters: {
+        content: 'content("image")',
+        objectParameters: {default: {}},
+        linkParameters: {default: {}}
+    }
+} %}
+{% set variation = objectParameters.size|default('raw') %}
+{{ display_component('@ibexadesign/components/image.html.twig', {image: content.fields.image(variation), linkParameters: linkParameters }) }}

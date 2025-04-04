@@ -1,0 +1,3 @@
+parameters:
+    erdnaxelaweb.static_fake_design.image.variations:
+        raw: [[~,~]]

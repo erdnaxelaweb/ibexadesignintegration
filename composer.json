@@ -1,8 +1,14 @@
 {
     "name":  "erdnaxelaweb/ibexadesignintegration",
-    "type": "library",
-    "description": "Provides utilities to generate fake data in order to create a static design",
-    "keywords": [],
+    "type": "symfony-bundle",
+    "description": "Provide an abstraction layer for the Ibexa CMS in order to streamline the templates development workflow.",
+    "keywords": [
+        "ibexa",
+        "symfony",
+        "twig",
+        "integration",
+        "templating"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.1",

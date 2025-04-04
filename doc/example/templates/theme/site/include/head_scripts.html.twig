@@ -1,0 +1,7 @@
+<script type="text/javascript">
+    {% if location is defined and location.status %}
+        const locationPathArray = {{ location.path|json_encode|raw }};
+    {% endif %}
+</script>
+
+
