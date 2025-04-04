@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -21,7 +22,7 @@ class FormFieldValueTransformer implements FieldValueTransformerInterface
 {
     public function transformFieldValue(
         AbstractContent $content,
-        string          $fieldIdentifier,
+        string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Closure {

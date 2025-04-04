@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -34,7 +35,15 @@ interface FilterHandlerInterface
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
 
+    /**
+     * @return array{type: string, options?: array<string, mixed>}
+     */
     public function getFakeFormType(): array;
 
+    /**
+     * @param array<string, mixed>                                 $activeValues
+     *
+     * @return array<string, string>
+     */
     public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array;
 }

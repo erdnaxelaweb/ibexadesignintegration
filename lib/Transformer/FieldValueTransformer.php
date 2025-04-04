@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -18,13 +19,15 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 class FieldValueTransformer
 {
     /**
-     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface[]
+     * @var FieldValueTransformerInterface[]
      */
     protected array $fieldValueTransformers = [];
 
-    public function __construct(
-        iterable $transformers
-    ) {
+    /**
+     * @param iterable<FieldValueTransformerInterface> $transformers
+     */
+    public function __construct(iterable $transformers)
+    {
         foreach ($transformers as $type => $fieldValueTransformer) {
             $this->fieldValueTransformers[$type] = $fieldValueTransformer;
         }

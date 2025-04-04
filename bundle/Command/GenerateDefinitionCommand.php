@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -25,6 +26,9 @@ class GenerateDefinitionCommand extends Command
 {
     protected static $defaultName = "erdnaxelaweb:ibexa_design:generate_definition";
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
     protected static array $typesMapping = [
         "ezboolean" => [
             "type" => "boolean",
@@ -134,7 +138,7 @@ class GenerateDefinitionCommand extends Command
         ],
     ];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('lang', InputArgument::REQUIRED, 'Language code');
         $this->addArgument('file', InputArgument::REQUIRED, 'Path to the excel file to import');
@@ -145,9 +149,10 @@ class GenerateDefinitionCommand extends Command
             'Name of sheets for which to generate definition',
             []
         );
+        $this->addOption('output', 'o', InputOption::VALUE_OPTIONAL, 'Output file', null);
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
         $filePath = $input->getArgument("file");
@@ -163,7 +168,7 @@ class GenerateDefinitionCommand extends Command
             }
 
             $identifier = trim($sheet->getCell('B3')->getValue());
-            if (! $identifier) {
+            if (!$identifier) {
                 continue;
             }
             $foundContenTypeIdentifiers[] = $sheet->getTitle();
@@ -183,7 +188,7 @@ class GenerateDefinitionCommand extends Command
             }
         }
 
-        $config = [];
+        $configs = [];
         foreach ($sheetNames as $sheetName) {
             $sheet = $spreadsheet->getSheetByName($sheetName);
             $io->info($sheetName);
@@ -198,7 +203,7 @@ class GenerateDefinitionCommand extends Command
                 $typeConfig = static::$typesMapping[$fieldTypeIdentifier] ?? [
                     'type' => null,
                 ];
-                if (! $typeConfig['type']) {
+                if (!$typeConfig['type']) {
                     $io->warning(sprintf(
                         'No field type found for field "%s" of type "%s" (Line %d)',
                         $fieldIdentifier,
@@ -225,7 +230,7 @@ class GenerateDefinitionCommand extends Command
                 $fieldsStartIndex++;
             } while (trim($sheet->getCell("B$fieldsStartIndex")->getValue()) !== "");
 
-            $config[$identifier] = [
+            $configs[$identifier] = [
                 "name" => [
                     $languageCode => trim($sheet->getCell('B2')->getValue()),
                 ],
@@ -241,7 +246,25 @@ class GenerateDefinitionCommand extends Command
                 "fields" => $fieldsConfig,
             ];
         }
-        $output->writeln(Yaml::dump($config, 4));
+
+        $outputPath = $input->getOption('output');
+        if ($outputPath) {
+            $existingConfigs = Yaml::parse(file_get_contents($outputPath));
+            foreach ($configs as $identifier => $config) {
+                $newConfig = array_merge_recursive($config, $existingConfigs[$identifier] ?? []);
+                foreach ($newConfig['fields'] as $fieldIdentifier => $fieldConfig) {
+                    if (!isset($config['fields'][$fieldIdentifier])) {
+                        unset($newConfig['fields'][$fieldIdentifier]);
+                    }
+                }
+                $existingConfigs[$identifier] = $newConfig;
+            }
+            Yaml::dump($existingConfigs, 4);
+            $output->writeln('Configs writen to ' . $outputPath);
+        } else {
+            $output->writeln(Yaml::dump($configs, 4));
+        }
+
         return Command::SUCCESS;
     }
 }

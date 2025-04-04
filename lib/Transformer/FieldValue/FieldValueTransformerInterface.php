@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -17,6 +18,9 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 interface FieldValueTransformerInterface
 {
+    /**
+     * @return mixed
+     */
     public function transformFieldValue(
         AbstractContent $content,
         string $fieldIdentifier,

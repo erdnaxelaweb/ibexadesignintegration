@@ -1,15 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
-
-declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection;
 
@@ -21,7 +20,10 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class IbexaDesignIntegrationExtension extends Extension implements PrependExtensionInterface
 {
-    public function load(array $configs, ContainerBuilder $container)
+    /**
+     * @param array<mixed>                                                   $configs
+     */
+    public function load(array $configs, ContainerBuilder $container): void
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('parameters.yaml');
@@ -60,7 +62,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $this->addImageVariationConfig($container);
     }
 
-    protected function getParameter(ContainerBuilder $container, string $name, $default)
+    protected function getParameter(ContainerBuilder $container, string $name, mixed $default): mixed
     {
         return $container->hasParameter($name) ? $container->getParameter($name) : $default;
     }
@@ -104,9 +106,12 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         );
     }
 
+    /**
+     * @return array{reference: null|string, filters: array<array{name: string, params: mixed}>}
+     */
     private function getVariationConfig(?float $width, ?float $height): array
     {
-        if (! $height && $width) {
+        if (!$height && $width) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -117,7 +122,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if (! $width && $height) {
+        if (!$width && $height) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -128,7 +133,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if (! $width && ! $height) {
+        if (!$width && !$height) {
             return [
                 'reference' => null,
                 'filters' => [],
@@ -150,7 +155,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
 
     private function addTwigConfiguration(ContainerBuilder $container): void
     {
-        if (! $container->hasExtension('twig')) {
+        if (!$container->hasExtension('twig')) {
             return;
         }
 

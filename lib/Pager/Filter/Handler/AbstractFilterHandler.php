@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -23,14 +24,6 @@ abstract class AbstractFilterHandler implements FilterHandlerInterface
         return null;
     }
 
-    protected function resolveOptions(array $options = []): array
-    {
-        $optionsResolver = new OptionsResolver();
-        $this->configureOptions($optionsResolver);
-
-        return $optionsResolver->resolve($options);
-    }
-
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
     }
@@ -38,5 +31,18 @@ abstract class AbstractFilterHandler implements FilterHandlerInterface
     public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array
     {
         return array_combine($activeValues, $activeValues);
+    }
+
+    /**
+     * @param array<string, mixed> $options
+     *
+     * @return array<string, mixed>
+     */
+    protected function resolveOptions(array $options = []): array
+    {
+        $optionsResolver = new OptionsResolver();
+        $this->configureOptions($optionsResolver);
+
+        return $optionsResolver->resolve($options);
     }
 }

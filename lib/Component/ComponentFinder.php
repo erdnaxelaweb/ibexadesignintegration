@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Ibexa Design Bundle.
+ *
+ * @author    Florian ALEXANDRE
+ * @copyright 2023-present Florian ALEXANDRE
+ * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
+ */
+
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Component;
 
 use ErdnaxelaWeb\StaticFakeDesign\Component\ComponentFinder as BaseComponentFinder;
@@ -12,13 +22,22 @@ class ComponentFinder extends BaseComponentFinder
 {
     use DesignAwareTrait;
 
+    /**
+     * @param array<string, string[]>             $designList
+     * @param array<string, string[]>             $templatePathsMap
+     */
     public function __construct(
-        Environment     $twig,
-        string          $baseDir,
+        Environment $twig,
+        string $baseDir,
         protected array $designList,
         protected array $templatePathsMap
     ) {
         parent::__construct($twig, $baseDir);
+    }
+
+    public function getComponentFromTemplatePath(string $templatePath): ?Component
+    {
+        return parent::getComponentFromTemplatePath(sprintf('@ibexadesign/%s', $templatePath));
     }
 
     protected function getFinder(): Finder
@@ -39,10 +58,5 @@ class ComponentFinder extends BaseComponentFinder
             ->files();
 
         return $finder;
-    }
-
-    public function getComponentFromTemplatePath(string $templatePath): ?Component
-    {
-        return parent::getComponentFromTemplatePath(sprintf('@ibexadesign/%s', $templatePath));
     }
 }

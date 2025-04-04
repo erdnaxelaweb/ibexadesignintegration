@@ -1,5 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
+/*
+ * Ibexa Design Bundle.
+ *
+ * @author    Florian ALEXANDRE
+ * @copyright 2023-present Florian ALEXANDRE
+ * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
+ */
+
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer;
@@ -25,7 +35,7 @@ class LandingPageBlockSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onBlockPreRender(PreRenderEvent $event)
+    public function onBlockPreRender(PreRenderEvent $event): void
     {
         $blockValue = $event->getBlockValue();
         try {

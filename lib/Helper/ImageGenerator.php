@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -37,16 +38,32 @@ use ReflectionException;
 class ImageGenerator
 {
     public function __construct(
-        protected VariationHandler   $imageVariationService,
+        protected VariationHandler $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
-        protected ContentService     $contentService,
-        protected LoggerInterface    $imageVariationLogger,
+        protected ContentService $contentService,
+        protected LoggerInterface $imageVariationLogger,
         protected ContentTransformer $contentTransformer
     ) {
     }
 
-    protected function getImageVariationIfExist(Field $field, VersionInfo $versionInfo, $variationName): ?Variation
+    public function generateImage(AbstractContent $content, string $fieldIdentifier, string $variationName): ?Image
     {
+        $fieldValue = $content->getFieldValue($fieldIdentifier);
+        if ($fieldValue instanceof ImageValue) {
+            return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
+        }
+        if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
+            $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
+            return $this->generateImage(($this->contentTransformer)($relatedContent), 'image', $variationName);
+        }
+        return null;
+    }
+
+    protected function getImageVariationIfExist(
+        Field $field,
+        VersionInfo $versionInfo,
+        string $variationName
+    ): Variation {
         try {
             return $this->imageVariationService->getVariation($field, $versionInfo, $variationName);
         } catch (SourceImageNotFoundException $e) {
@@ -66,23 +83,9 @@ class ImageGenerator
             }
             throw $e;
         }
-
-        return null;
     }
 
-    public function generateImage(AbstractContent $content, string $fieldIdentifier, string $variationName)
-    {
-        $fieldValue = $content->getFieldValue($fieldIdentifier);
-        if ($fieldValue instanceof ImageValue) {
-            return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
-        }
-        if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
-            $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
-            return $this->generateImage(($this->contentTransformer)($relatedContent), 'image', $variationName);
-        }
-    }
-
-    protected function getImage(AbstractContent $content, Field $field, string $variationName = 'original'): ?Image
+    protected function getImage(AbstractContent $content, Field $field, string $variationName = 'original'): Image
     {
         /** @var ImageValue $imageFieldValue */
         $imageFieldValue = $field->value;
@@ -90,12 +93,15 @@ class ImageGenerator
 
         return new Image(
             $imageFieldValue->alternativeText,
-            $content->fields['caption'],
-            $content->fields['credits'],
+            (string) $content->fields->get('caption'),
+            (string) $content->fields->get('credits'),
             $sources,
         );
     }
 
+    /**
+     * @return ImageSource[]
+     */
     protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
         if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
@@ -123,7 +129,7 @@ class ImageGenerator
                 try {
                     $variation = $this->getImageVariationIfExist($field, $versionInfo, $typeVariationName);
                     $uris[] = $variation->uri . $variationType;
-                    if (! $baseVariation) {
+                    if (!$baseVariation) {
                         $baseVariation = $variation;
                     }
                 } catch (NonExistingFilterException|SourceImageNotFoundException $e) {
@@ -145,13 +151,16 @@ class ImageGenerator
         return $sources;
     }
 
+    /**
+     * @param string[]                                                 $uris
+     */
     private function getImageVariationSource(
-        array      $uris,
-        $media,
+        array $uris,
+        string $media,
         ?Variation $baseVariation,
-        string     $sourceVariationName
+        string $sourceVariationName
     ): ImageSource {
-        $source = new ImageSource(
+        return new ImageSource(
             $uris,
             $media,
             $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
@@ -161,9 +170,8 @@ class ImageGenerator
                 $baseVariation->focusPoint->getPosX(),
                 $baseVariation->focusPoint->getPosY()
             ) : null,
-            $baseVariation ? $baseVariation->mimeType : null,
+            $baseVariation?->mimeType,
             $sourceVariationName
         );
-        return $source;
     }
 }

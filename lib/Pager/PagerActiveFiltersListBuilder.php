@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -23,12 +24,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PagerActiveFiltersListBuilder
 {
     public function __construct(
-        protected ChainFilterHandler            $filterHandler,
-        protected RequestStack              $requestStack,
+        protected ChainFilterHandler $filterHandler,
+        protected RequestStack $requestStack,
         protected LinkGenerator $linkGenerator,
     ) {
     }
 
+    /**
+     * @return ItemInterface[]
+     */
     public function buildList(
         string $searchFormName,
         PagerDefinition $pagerDefinition,
@@ -56,7 +60,7 @@ class PagerActiveFiltersListBuilder
 
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
-                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? []);
+                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? [], true);
                     unset($query[$searchFormName]['filters'][$filter][$valueKey]);
                     $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
                         'extras' => [
@@ -84,6 +88,10 @@ class PagerActiveFiltersListBuilder
         return $this->requestStack->getCurrentRequest();
     }
 
+    /**
+     * @param array<string, mixed>  $query
+     * @param array<string, mixed>  $options
+     */
     protected function generateLink(string $label, array $query, array $options): ItemInterface
     {
         return $this->linkGenerator->generateLink(

@@ -1,24 +1,25 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-declare(strict_types=1);
-
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
+use Knp\Menu\ItemInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,7 +36,7 @@ abstract class AbstractSearchType implements SearchTypeInterface
     protected SearchData $searchData;
 
     public function __construct(
-        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
+        protected PagerSearchFormBuilder $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         protected string $searchFormName,
         protected PagerDefinition $pagerDefinition,
@@ -63,6 +64,9 @@ abstract class AbstractSearchType implements SearchTypeInterface
         return $form;
     }
 
+    /**
+     * @return ItemInterface[]
+     */
     public function getActiveFilters(FormInterface $filtersFormBuilder): array
     {
         return $this->pagerActiveFiltersListBuilder->buildList(
@@ -86,7 +90,7 @@ abstract class AbstractSearchType implements SearchTypeInterface
         return $this->searchData;
     }
 
-    abstract protected function initializeQuery(): void;
-
     abstract public function getAdapter(): PagerAdapterInterface;
+
+    abstract protected function initializeQuery(): void;
 }

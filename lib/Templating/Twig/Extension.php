@@ -1,15 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
-
-declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig;
 
@@ -27,13 +26,19 @@ class Extension extends AbstractExtension
         ];
     }
 
-    public function getContentViewControllerParameters($content, array $parameters): array
+    /**
+     * @param Content|IbexaContent|array<string, mixed>      $content
+     * @param array<string, mixed> $parameters
+     *
+     * @return array<string, mixed>
+     */
+    public function getContentViewControllerParameters(mixed $content, array $parameters): array
     {
         if ($content instanceof Content) {
-            if (in_array('id', $content->getLazyObjectState()->skippedProperties)) {
+            if (array_key_exists('id', $content->getLazyObjectState()->skippedProperties)) {
                 $parameters['contentId'] = $content->id;
             }
-            if (in_array('locationId', $content->getLazyObjectState()->skippedProperties)) {
+            if (array_key_exists('locationId', $content->getLazyObjectState()->skippedProperties)) {
                 $parameters['locationId'] = $content->locationId;
             }
         } elseif ($content instanceof IbexaContent) {

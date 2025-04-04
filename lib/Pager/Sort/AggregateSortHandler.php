@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -18,7 +19,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class AggregateSortHandler extends AbstractSortHandler
 {
     public function __construct(
-        protected ChainSortHandler                           $sortsHandler,
+        protected ChainSortHandler $sortsHandler,
     ) {
     }
 

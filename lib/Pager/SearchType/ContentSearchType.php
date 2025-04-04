@@ -1,15 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
-
-declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 
@@ -30,8 +29,8 @@ use Symfony\Component\HttpFoundation\Request;
 class ContentSearchType extends AbstractSearchType
 {
     public function __construct(
-        protected SearchService                 $searchService,
-        protected ContentTransformer            $contentTransformer,
+        protected SearchService $searchService,
+        protected ContentTransformer $contentTransformer,
         PagerSearchFormBuilder $pagerSearchFormBuilder,
         PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         string $searchFormName,
@@ -49,11 +48,6 @@ class ContentSearchType extends AbstractSearchType
         );
     }
 
-    protected function initializeQuery(): void
-    {
-        $this->query = new Query();
-    }
-
     public function getAdapter(): PagerAdapterInterface
     {
         return new ContentSearchAdapter(
@@ -63,5 +57,10 @@ class ContentSearchType extends AbstractSearchType
             [$this, 'getFiltersForm'],
             [$this, 'getActiveFilters']
         );
+    }
+
+    protected function initializeQuery(): void
+    {
+        $this->query = new Query();
     }
 }

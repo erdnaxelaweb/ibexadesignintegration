@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -19,20 +20,22 @@ use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitio
 class BlockAttributeValueTransformer
 {
     /**
-     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\BlockAttributeValueTransformerInterface[]
+     * @var BlockAttributeValueTransformerInterface[]
      */
     protected array $blockAttributeValueTransformers = [];
 
-    public function __construct(
-        iterable $transformers
-    ) {
+    /**
+     * @param iterable<BlockAttributeValueTransformerInterface> $transformers
+     */
+    public function __construct(iterable $transformers)
+    {
         foreach ($transformers as $type => $blockAttributeValueTransformer) {
             $this->blockAttributeValueTransformers[$type] = $blockAttributeValueTransformer;
         }
     }
 
     public function transform(
-        BlockValue      $blockValue,
+        BlockValue $blockValue,
         BlockDefinition $blockDefinition,
         string $attributeIdentifier,
         BlockAttributeDefinition $attributeDefinition,

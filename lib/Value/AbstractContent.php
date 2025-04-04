@@ -2,6 +2,14 @@
 
 declare(strict_types=1);
 
+/*
+ * Ibexa Design Bundle.
+ *
+ * @author    Florian ALEXANDRE
+ * @copyright 2023-present Florian ALEXANDRE
+ * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
+ */
+
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use DateTime;
@@ -16,6 +24,9 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
 use Ibexa\Core\Repository\Values\Content\Content as IbexaContent;
 use Symfony\Component\VarExporter\LazyGhostTrait;
 
+/**
+ * @property-read ContentFieldsCollection $fields
+ */
 class AbstractContent extends IbexaContent
 {
     use LazyGhostTrait {
@@ -32,14 +43,49 @@ class AbstractContent extends IbexaContent
         public readonly string $type,
         public readonly ?DateTime $creationDate,
         public readonly ?DateTime $modificationDate,
-        ContentFieldsCollection  $fields
+        ContentFieldsCollection $fields
     ) {
         $this->fields = $fields;
     }
 
-    public function __call(string $name, array $arguments)
+    /**
+     * @param array<mixed>  $arguments
+     */
+    public function __call(string $name, array $arguments): mixed
     {
         return call_user_func_array([$this->innerContent, $name], $arguments);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function __get($name): mixed
+    {
+        switch ($name) {
+            case 'versionInfo':
+                return $this->getVersionInfo();
+
+            case 'contentInfo':
+                return $this->getVersionInfo()
+                    ->getContentInfo();
+
+            case 'thumbnail':
+                return $this->getThumbnail();
+        }
+
+        return $this->lazyGet($name);
+    }
+
+    /**
+     * @param string $name
+     */
+    public function __isset($name): bool
+    {
+        if ($name === 'contentInfo') {
+            return true;
+        }
+
+        return $this->lazyIsset($name);
     }
 
     public function getThumbnail(): ?Thumbnail
@@ -82,39 +128,13 @@ class AbstractContent extends IbexaContent
         return $this->innerContent->getDefaultLanguageCode();
     }
 
-    protected function getProperties($dynamicProperties = ['id', 'contentInfo'])
-    {
-        return $this->innerContent->getProperties($dynamicProperties);
-    }
-
-    public function __get($property)
-    {
-        switch ($property) {
-            case 'versionInfo':
-                return $this->getVersionInfo();
-
-            case 'contentInfo':
-                return $this->getVersionInfo()
-                    ->getContentInfo();
-
-            case 'thumbnail':
-                return $this->getThumbnail();
-        }
-
-        return $this->lazyGet($property);
-    }
-
-    public function __isset($property)
-    {
-        if ($property === 'contentInfo') {
-            return true;
-        }
-
-        return $this->lazyIsset($property);
-    }
-
-    public function getLazyObjectState()
+    public function getLazyObjectState(): \Symfony\Component\VarExporter\Internal\LazyObjectState
     {
         return $this->lazyObjectState;
+    }
+
+    protected function getProperties($dynamicProperties = ['id', 'contentInfo']): array
+    {
+        return $this->innerContent->getProperties($dynamicProperties);
     }
 }

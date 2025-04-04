@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -23,8 +24,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 class PagerBuildSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        protected ChainFilterHandler            $filterHandler,
-        protected ChainSortHandler              $sortHandler,
+        protected ChainFilterHandler $filterHandler,
+        protected ChainSortHandler $sortHandler,
     ) {
     }
 

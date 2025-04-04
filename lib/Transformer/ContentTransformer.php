@@ -1,15 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
-
-declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
@@ -43,50 +42,50 @@ class ContentTransformer
     ) {
     }
 
+    public function __invoke(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
+    {
+        return $this->transformContent($ibexaContent, $ibexaLocation);
+    }
+
     public function lazyTransformContentFromLocationId(int $locationId): Content
     {
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerLocation->contentId;
             },
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $locationId
-            ) {
-                return $locationId;
-            },
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
                 $content = $instance->innerLocation->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $locationId
-            ) {
-                $this->responseTagger->addLocationTags([$locationId]);
-                return $this->locationService->loadLocation($locationId);
+            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaLocation {
+                $this->responseTagger->addLocationTags([$instance->locationId]);
+                return $this->locationService->loadLocation($instance->locationId);
             },
         ];
 
-        $skippedProperties = ['locationId'];
-        return $this->createLazyContent($initializers, $skippedProperties);
+        $instance = Instantiator::instantiate(Content::class, [
+            'locationId' => $locationId
+        ]);
+        $skippedProperties = ['locationId' => true];
+        return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
     public function lazyTransformContentFromContentId(int $contentId): Content
     {
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope) use ($contentId) {
-                return $contentId;
-            },
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerContent->contentInfo->mainLocationId;
             },
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $contentId
-            ) {
-                $this->responseTagger->addContentTags([$contentId]);
-                return $this->contentService->loadContent($contentId);
+            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+                $this->responseTagger->addContentTags([$instance->id]);
+                return $this->contentService->loadContent($instance->id);
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            'innerLocation' => function (
+                Content $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): IbexaLocation {
                 $location = $instance->innerContent->contentInfo->getMainLocation();
                 if ($location) {
                     $this->responseTagger->addLocationTags([$location->id]);
@@ -95,8 +94,11 @@ class ContentTransformer
             },
         ];
 
-        $skippedProperties = ['id'];
-        return $this->createLazyContent($initializers, $skippedProperties);
+        $instance = Instantiator::instantiate(Content::class, [
+            'id' => $contentId,
+        ]);
+        $skippedProperties = ['id' => true];
+        return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
     public function transformContent(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
@@ -106,23 +108,15 @@ class ContentTransformer
         }
 
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope) use ($ibexaContent) {
-                return $ibexaContent->id;
-            },
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $ibexaLocation
-            ) {
-                return $ibexaLocation->id ?? $instance->innerContent->contentInfo->mainLocationId;
-            },
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $ibexaContent
-            ) {
+            ): IbexaContent {
                 $this->responseTagger->addContentTags([$ibexaContent->id]);
                 return $ibexaContent;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $ibexaLocation
-            ) {
+            ): IbexaLocation {
                 $location = $ibexaLocation ?? $instance->innerContent->contentInfo->getMainLocation();
                 if ($location) {
                     $this->responseTagger->addLocationTags([$location->id]);
@@ -130,14 +124,29 @@ class ContentTransformer
                 return $location;
             },
         ];
-        $skippedProperties = ['id', 'locationId'];
-        return $this->createLazyContent($initializers, $skippedProperties);
+        $instance = Instantiator::instantiate(Content::class, [
+            'id' => $ibexaContent->id,
+            'locationId' => $ibexaLocation->id ?? $ibexaContent->contentInfo->mainLocationId,
+        ]);
+        $skippedProperties = [
+            'id' => true,
+            'locationId' => true
+        ];
+        return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
-    protected function createLazyContent(array $initializers, array $skippedProperties = []): Content
+    /**
+     * @param array<string, callable(Content, string, ?string): mixed> $initializers
+     * @param array<string, true> $skippedProperties
+     */
+    protected function createLazyContent(array $initializers, array $skippedProperties = [], ?Content $instance = null): Content
     {
         $initializers += [
-            "\0*\0fields" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "\0*\0fields" => function (
+                Content $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): ContentFieldsCollection {
                 $contentType = $instance->getContentType();
                 $contentDefinition = $this->definitionManager->getDefinition(
                     ContentDefinition::class,
@@ -162,20 +171,20 @@ class ContentTransformer
 
                 return $contentFields;
             },
-            "name" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "name" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerContent->getName();
             },
-            "type" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "type" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->getContentType()
-->identifier;
+                    ->identifier;
             },
-            "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
                 return $instance->innerContent->contentInfo->publishedDate;
             },
-            "modificationDate" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "modificationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
                 return $instance->innerContent->contentInfo->modificationDate;
             },
-            "url" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "url" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerLocation ? $this->linkGenerator->generateUrl(
                     UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
                     [
@@ -183,18 +192,13 @@ class ContentTransformer
                     ]
                 ) : '';
             },
-            "breadcrumb" => function (Content $instance, string $propertyName, ?string $propertyScope) {
+            "breadcrumb" => function (Content $instance, string $propertyName, ?string $propertyScope): Breadcrumb {
                 return $instance->innerLocation ?
                     $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
                     new Breadcrumb();
             },
         ];
 
-        return Content::createLazyGhost($initializers, $skippedProperties);
-    }
-
-    public function __invoke(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
-    {
-        return $this->transformContent($ibexaContent, $ibexaLocation);
+        return Content::createLazyGhost($initializers, $skippedProperties, $instance);
     }
 }

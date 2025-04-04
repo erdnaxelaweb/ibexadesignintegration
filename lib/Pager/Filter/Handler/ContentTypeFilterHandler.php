@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -27,7 +28,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 {
     public function __construct(
         protected ContentTypeService $contentTypeService,
-        FakerGenerator               $fakerGenerator
+        FakerGenerator $fakerGenerator
     ) {
         parent::__construct($fakerGenerator);
     }
@@ -49,16 +50,16 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         return $aggregation;
     }
 
-    protected function getValueLabel(string $value): string
-    {
-        $contentType = $this->contentTypeService->loadContentType($value);
-        return $contentType->getName();
-    }
-
     public function configureOptions(OptionsResolver $optionsResolver): void
     {
         parent::configureOptions($optionsResolver);
         $optionsResolver->remove('field');
+    }
+
+    protected function getValueLabel(mixed $value): string
+    {
+        $contentType = $this->contentTypeService->loadContentType((int) $value);
+        return $contentType->getName();
     }
 
     protected function buildChoiceFromAggregationResultEntry(

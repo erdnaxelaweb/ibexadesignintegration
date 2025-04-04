@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -20,6 +21,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 use Ibexa\HttpCache\Handler\TagHandler;
+use Symfony\Component\VarExporter\Instantiator;
 
 class TaxonomyEntryTransformer
 {
@@ -30,35 +32,38 @@ class TaxonomyEntryTransformer
     ) {
     }
 
+    public function __invoke(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
+    {
+        return $this->transformTaxonomyEntry($ibexaTaxonomyEntry);
+    }
+
     public function transformTaxonomyEntry(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
     {
-        $initializers = [
-            'id' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) use (
-                $ibexaTaxonomyEntry
-            ) {
-                return $ibexaTaxonomyEntry->getId();
-            },
-            'innerContent' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) use (
-                $ibexaTaxonomyEntry
-            ) {
-                $content = $ibexaTaxonomyEntry->getContent();
+        $instance = Instantiator::instantiate(TaxonomyEntry::class, [
+            'id' => $ibexaTaxonomyEntry->getId(),
+            'innerTaxonomy' => $ibexaTaxonomyEntry,
+        ]);
+        $skippedProperties = ['id' => true];
+        return $this->createLazyTaxonomyEntry([], $skippedProperties, $instance);
+    }
+
+    /**
+     * @param array<string, callable(TaxonomyEntry, string, ?string): mixed> $initializers
+     * @param array<string, true> $skippedProperties
+     */
+    protected function createLazyTaxonomyEntry(array $initializers, array $skippedProperties = [], ?TaxonomyEntry $instance = null): TaxonomyEntry
+    {
+        $initializers += [
+            'innerContent' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+                $content = $instance->innerTaxonomy->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerTaxonomy' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) use (
-                $ibexaTaxonomyEntry
-            ) {
-                return $ibexaTaxonomyEntry;
-            },
-        ];
-        $skippedProperties = ['id'];
-        return $this->createLazyTaxonomyEntry($initializers, $skippedProperties);
-    }
-
-    protected function createLazyTaxonomyEntry(array $initializers, array $skippedProperties = []): TaxonomyEntry
-    {
-        $initializers += [
-            "\0*\0fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "\0*\0fields" => function (
+                TaxonomyEntry $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): ContentFieldsCollection {
                 $contentType = $instance->innerContent->getContentType();
                 $taxonomyEntryDefinition = $this->definitionManager->getDefinition(
                     TaxonomyEntryDefinition::class,
@@ -83,36 +88,43 @@ class TaxonomyEntryTransformer
 
                 return $contentFields;
             },
-            "name" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "name" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerContent->getName();
             },
-            "type" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "type" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerContent->getContentType()
                     ->identifier;
             },
-            "creationDate" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "creationDate" => function (
+                TaxonomyEntry $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): DateTime {
                 return $instance->innerContent->contentInfo->publishedDate;
             },
-            "modificationDate" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "modificationDate" => function (
+                TaxonomyEntry $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): DateTime {
                 return $instance->innerContent->contentInfo->modificationDate;
             },
-            "identifier" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "identifier" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerTaxonomy->getIdentifier();
             },
-            "level" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "level" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerTaxonomy->getLevel();
             },
-            "parent" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
+            "parent" => function (
+                TaxonomyEntry $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): ?TaxonomyEntry {
                 $parent = $instance->innerTaxonomy->getParent();
                 return $parent ? $this->transformTaxonomyEntry($parent) : null;
             },
         ];
 
-        return TaxonomyEntry::createLazyGhost($initializers, $skippedProperties);
-    }
-
-    public function __invoke(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
-    {
-        return $this->transformTaxonomyEntry($ibexaTaxonomyEntry);
+        return TaxonomyEntry::createLazyGhost($initializers, $skippedProperties, $instance);
     }
 }

@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -15,9 +16,12 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 
 class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorInterface
 {
+    /**
+     * @param array<string, string>  $optionsMap
+     */
     public function __construct(
         protected string $type,
-        protected array  $optionsMap = []
+        protected array $optionsMap = []
     ) {
     }
 

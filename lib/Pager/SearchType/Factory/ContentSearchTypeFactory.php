@@ -1,15 +1,14 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
-
-declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 
@@ -26,9 +25,9 @@ use Symfony\Component\HttpFoundation\Request;
 class ContentSearchTypeFactory implements SearchTypeFactoryInterface
 {
     public function __construct(
-        protected SearchService                 $searchService,
-        protected ContentTransformer            $contentTransformer,
-        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
+        protected SearchService $searchService,
+        protected ContentTransformer $contentTransformer,
+        protected PagerSearchFormBuilder $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
     ) {
     }

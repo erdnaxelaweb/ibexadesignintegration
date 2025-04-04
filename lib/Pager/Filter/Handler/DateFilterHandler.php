@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -80,7 +81,7 @@ class DateFilterHandler extends AbstractFilterHandler
             ->allowedTypes('boolean');
     }
 
-    protected function mapDate($value, string $inputFormat): string
+    protected function mapDate(mixed $value, string $inputFormat): string
     {
         if (is_numeric($value)) {
             $date = new DateTime("@{$value}");

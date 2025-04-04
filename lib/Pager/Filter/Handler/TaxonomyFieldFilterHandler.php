@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -31,10 +32,18 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         parent::__construct($fakerGenerator);
     }
 
-    protected function getValueLabel(string $value): string
+    public function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        parent::configureOptions($optionsResolver);
+        $optionsResolver->define('group_by_parent')
+            ->default(false)
+            ->allowedTypes('bool');
+    }
+
+    protected function getValueLabel(mixed $value): string
     {
         try {
-            return $this->taxonomyService->loadEntryById($value)
+            return $this->taxonomyService->loadEntryById((int) $value)
                 ->getName();
         } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
             return $value;
@@ -99,13 +108,5 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
             return parent::buildChoiceFromAggregationResultEntry($entry, $options);
         }
-    }
-
-    public function configureOptions(OptionsResolver $optionsResolver): void
-    {
-        parent::configureOptions($optionsResolver);
-        $optionsResolver->define('group_by_parent')
-            ->default(false)
-            ->allowedTypes('bool');
     }
 }

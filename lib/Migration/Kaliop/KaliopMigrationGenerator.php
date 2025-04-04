@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -27,6 +28,9 @@ class KaliopMigrationGenerator extends MigrationGenerator
      */
     protected array $attributeMigrationGenerators;
 
+    /**
+     * @param iterable<AttributeMigrationGeneratorInterface>                                                       $attributeMigrationGenerators
+     */
     public function __construct(
         string $kernelProjectDir,
         string $eZMigrationDirectory,
@@ -38,10 +42,6 @@ class KaliopMigrationGenerator extends MigrationGenerator
         foreach ($attributeMigrationGenerators as $type => $attributeMigrationGenerator) {
             $this->attributeMigrationGenerators[$type] = $attributeMigrationGenerator;
         }
-    }
-
-    protected function configureOptions(OptionsResolver $optionsResolver): void
-    {
     }
 
     public function generate(): void
@@ -79,5 +79,9 @@ class KaliopMigrationGenerator extends MigrationGenerator
             $fileName = date('YmdHis') . '_' . $contentType . '.yml';
             file_put_contents($this->migrationDirectory . '/' . $fileName, $code);
         }
+    }
+
+    protected function configureOptions(OptionsResolver $optionsResolver): void
+    {
     }
 }
