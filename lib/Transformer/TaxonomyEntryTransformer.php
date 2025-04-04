@@ -43,7 +43,9 @@ class TaxonomyEntryTransformer
             'id' => $ibexaTaxonomyEntry->getId(),
             'innerTaxonomy' => $ibexaTaxonomyEntry,
         ]);
-        $skippedProperties = ['id' => true];
+        $skippedProperties = [
+            'id' => true,
+        ];
         return $this->createLazyTaxonomyEntry([], $skippedProperties, $instance);
     }
 

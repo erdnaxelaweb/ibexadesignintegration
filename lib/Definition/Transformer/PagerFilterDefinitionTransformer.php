@@ -50,25 +50,25 @@ class PagerFilterDefinitionTransformer extends NativePagerFilterDefinitionTransf
                         ->allowedTypes('string')
                         ->allowedValues('filter', 'query');
 
-        //        if ($this->filterHandler->isNestableFilter($options['type'] ?? '')) {
-        //            $optionsResolver->define('nested')
-        //                ->default([])
-        //                ->normalize(function (Options $options, $nestedFiltersOptions) {
-        //                    if (empty($nestedFiltersOptions)) {
-        //                        return [];
-        //                    }
-        //
-        //                    $nestedFilters = [];
-        //                    foreach ($nestedFiltersOptions as $filterIdentifier => $nestedFilterOptions) {
-        //                        $optionsResolver = new OptionsResolver();
-        //                        $this->configureOptions($optionsResolver, $nestedFilterOptions);
-        //                        $nestedFilterOptions['options']['is_nested'] = true;
-        //                        $nestedFilters[$filterIdentifier] = $optionsResolver->resolve($nestedFilterOptions);
-        //                    }
-        //                    return $nestedFilters;
-        //                })
-        //                ->allowedTypes('array');
-        //        }
+        if ($this->filterHandler->isNestableFilter($options['type'] ?? '')) {
+            $optionsResolver->define('nested')
+                ->default([])
+                ->normalize(function (Options $options, $nestedFiltersOptions) {
+                    if (empty($nestedFiltersOptions)) {
+                        return [];
+                    }
+
+                    $nestedFilters = [];
+                    foreach ($nestedFiltersOptions as $filterIdentifier => $nestedFilterOptions) {
+                        $optionsResolver = new OptionsResolver();
+                        $this->configureOptions($optionsResolver, $nestedFilterOptions);
+                        $nestedFilterOptions['options']['is_nested'] = true;
+                        $nestedFilters[$filterIdentifier] = $optionsResolver->resolve($nestedFilterOptions);
+                    }
+                    return $nestedFilters;
+                })
+                ->allowedTypes('array');
+        }
     }
 
     public function fromHash(array $hash): PagerFilterDefinition

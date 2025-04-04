@@ -65,9 +65,11 @@ class ContentTransformer
         ];
 
         $instance = Instantiator::instantiate(Content::class, [
-            'locationId' => $locationId
+            'locationId' => $locationId,
         ]);
-        $skippedProperties = ['locationId' => true];
+        $skippedProperties = [
+            'locationId' => true,
+        ];
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
@@ -97,7 +99,9 @@ class ContentTransformer
         $instance = Instantiator::instantiate(Content::class, [
             'id' => $contentId,
         ]);
-        $skippedProperties = ['id' => true];
+        $skippedProperties = [
+            'id' => true,
+        ];
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
@@ -130,7 +134,7 @@ class ContentTransformer
         ]);
         $skippedProperties = [
             'id' => true,
-            'locationId' => true
+            'locationId' => true,
         ];
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
