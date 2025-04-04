@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -12,6 +13,7 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use DateTime;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Exception;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
@@ -26,12 +28,10 @@ class DateFilterHandler extends AbstractFilterHandler
 {
     public function addForm(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        string $filterName,
+        DefinitionOptions $options,
+        ?AggregationResult $aggregationResult = null,
     ): void {
-        $options = $this->resolveOptions($options);
-
         $formOptions['label'] = sprintf('searchform.%s', $filterName);
         $formOptions['block_prefix'] = "filter_$filterName";
         $formOptions['required'] = false;
@@ -42,9 +42,8 @@ class DateFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, DateType::class, $formOptions);
     }
 
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
     {
-        $options = $this->resolveOptions($options);
         $operator = $options['operator'];
         return new CustomField($options['field'], $operator, $this->mapDate($value, $options['input_format']));
     }
@@ -82,7 +81,7 @@ class DateFilterHandler extends AbstractFilterHandler
             ->allowedTypes('boolean');
     }
 
-    protected function mapDate($value, string $inputFormat): string
+    protected function mapDate(mixed $value, string $inputFormat): string
     {
         if (is_numeric($value)) {
             $date = new DateTime("@{$value}");

@@ -1,28 +1,27 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Migration;
 
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 
 class MigrationGenerator
 {
     public function __construct(
-        protected ContentConfigurationManager $contentConfigurationManager,
-        protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager
+        protected DefinitionManager $definitionManager
     ) {
     }
 
-    public function generate()
+    public function generate(): void
     {
         throw new \Exception('not implemented');
     }

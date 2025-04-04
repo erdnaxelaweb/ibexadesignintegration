@@ -1,0 +1,8 @@
+<meta charset="utf-8">
+<meta name="author" content="Site author" />
+<meta name="viewport" content="width=device-width,initial-scale=1">
+{% if language_links is defined and language_links %}
+    {% for language_link in language_links %}
+        <link rel="alternate" href="{{ language_link.uri }}" hreflang="{{ language_link.name }}" />
+    {% endfor %}
+{% endif %}

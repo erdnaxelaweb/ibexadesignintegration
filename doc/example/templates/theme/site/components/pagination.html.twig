@@ -1,0 +1,30 @@
+{# @var pager \ErdnaxelaWeb\StaticFakeDesign\Value\Pager #}
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+
+{% component {
+    name: "Pagination",
+    specifications: "",
+    properties: {
+        pager: 'pager("news_list")',
+        content: 'content("news_list")',
+        proximity: {
+            default: 3
+        }
+    }
+} %}
+
+<nav aria-label="{{'pagerfanta.pagination_results'|trans|desc('Pagination résultats de') ~ ' ' ~ content.name }}">
+    {{ pagerfanta(pager, 'custom_twitter_bootstrap', {
+        'proximity': proximity is defined ? proximity : 3,
+        'next_message': 'pagerfanta.next_message'|trans|desc('Next') ~ '<span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>',
+        'prev_message': '<span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>' ~ 'pagerfanta.prev_message'|trans|desc('Previous'),
+        'css_prev_class': 'js-prev-page',
+        'css_next_class': 'js-next-page',
+        'page_template': '<li class="page-item"><a class="page-link" href="%href%"%rel%><span
+        class="visually-hidden">'~'pagerfanta.page'|trans|desc('Page')~'</span>%text%</a></li>',
+        'span_template': '<li class="page-item"><a class="page-link %class%">%text%</a></li>',
+        'current_template': '<li class="page-item active"><span class="page-link"><span
+        class="visually-hidden">'~'pagerfanta.current'|trans|desc('Page courante')~'</span>%text%</span></li>',
+        'active_suffix': '<span class="visually-hidden">'~'pagerfanta.current'|trans|desc('Page courante')~'</span>',
+    }) }}
+</nav>

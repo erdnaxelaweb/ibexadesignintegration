@@ -1,0 +1,20 @@
+{% component {
+    name: 'Bloc "A lire aussi"',
+    specifications: "",
+    properties: {
+        contents: 'content("news")[3]'
+    }
+} %}
+
+{% if contents is defined and contents|length %}
+    <ul>
+        {# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+        {% for content in contents %}
+            <li>
+                <a href="{{ content.url }}">
+                    {{ content.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}

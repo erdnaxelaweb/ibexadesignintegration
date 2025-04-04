@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -15,14 +16,16 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PagerBuildSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        protected ChainFilterHandler            $filterHandler,
-        protected ChainSortHandler              $sortHandler,
+        protected ChainFilterHandler $filterHandler,
+        protected ChainSortHandler $sortHandler,
     ) {
     }
 
@@ -36,27 +39,27 @@ class PagerBuildSubscriber implements EventSubscriberInterface
     public function onPagerBuild(PagerBuildEvent $event): void
     {
         $eventContext = $event->buildContext;
-        $configuration = $event->pagerConfiguration;
+        $pagerDefinition = $event->pagerDefinition;
         $searchData = $event->searchData;
 
         if (isset($eventContext['location']) && $eventContext['location'] instanceof Location && $eventContext['location']->id) {
             $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
         }
 
-        if (! empty($configuration['contentTypes'])) {
+        if (!empty($pagerDefinition->getContentTypes())) {
             $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
-                $configuration['contentTypes']
+                $pagerDefinition->getContentTypes()
             );
         }
 
-        if (! empty($configuration['excludedContentTypes'])) {
+        if (!empty($pagerDefinition->getExcludedContentTypes())) {
             $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
-                new Criterion\ContentTypeIdentifier($configuration['excludedContentTypes'])
+                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedContentTypes())
             );
         }
 
         ['criterions' => $criterions, 'aggregations' => $aggregations] = $this->resolveFilters(
-            $configuration['filters'],
+            $pagerDefinition->getFilters(),
             $event
         );
 
@@ -69,38 +72,51 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             $event->aggregations[$filterName] = $aggregation;
         }
 
-        if (! empty($configuration['sorts'])) {
-            $sortIdentifier = $searchData->sort ?? array_key_first($configuration['sorts']);
-            $sortConfig = $configuration['sorts'][$sortIdentifier];
-            $this->sortHandler->addSortClause($event->pagerQuery, $sortConfig['type'], $sortConfig['options']);
+        if (!empty($pagerDefinition->getSorts())) {
+            $sortIdentifier = $searchData->sort ?? array_key_first($pagerDefinition->getSorts());
+            $sortDefinition = $pagerDefinition->getSort($sortIdentifier);
+            $this->sortHandler->addSortClause(
+                $event->pagerQuery,
+                $sortDefinition->getType(),
+                $sortDefinition->getOptions()
+            );
         }
     }
 
-    protected function resolveFilters(array $filters, PagerBuildEvent $event): array
+    /**
+     * @param array<string, \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition> $filterDefinitions
+     *
+     * @return array{criterions: array<string, array<string, CriterionInterface>>, aggregations: array<string, Aggregation>}
+     */
+    protected function resolveFilters(array $filterDefinitions, PagerBuildEvent $event): array
     {
         $searchData = $event->searchData;
         $criterions = [];
         $aggregations = [];
-        foreach ($filters as $filterName => $filter) {
+        foreach ($filterDefinitions as $filterName => $filterDefinition) {
             ['criterions' => $nestedCriterions, 'aggregations' => $nestedAggregations] = $this->resolveFilters(
-                $filter['nested'],
+                $filterDefinition->getNestedFilters(),
                 $event
             );
 
             // Criterion
-            $criterionType = $filter['criterionType'] === 'query' ? 'queryCriterions' : 'filtersCriterions';
-            if (isset($searchData->filters[$filterName]) && ! empty($searchData->filters[$filterName])) {
+            $criterionType = $filterDefinition->getCriterionType() === 'query' ? 'queryCriterions' : 'filtersCriterions';
+            if (isset($searchData->filters[$filterName]) && !empty($searchData->filters[$filterName])) {
                 $criterions[$criterionType][$filterName] = $this->filterHandler->getCriterion(
-                    $filter['type'],
+                    $filterDefinition->getType(),
                     $filterName,
                     $searchData->filters[$filterName],
-                    $filter['options']
+                    $filterDefinition->getOptions()
                 );
             }
             $criterions += $nestedCriterions;
 
             // Aggregation
-            $aggregation = $this->filterHandler->getAggregation($filter['type'], $filterName, $filter['options']);
+            $aggregation = $this->filterHandler->getAggregation(
+                $filterDefinition->getType(),
+                $filterName,
+                $filterDefinition->getOptions()
+            );
             if ($aggregation) {
                 $aggregations[$filterName] = $aggregation;
             }

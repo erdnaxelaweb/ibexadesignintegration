@@ -1,0 +1,34 @@
+{# @var layout \ErdnaxelaWeb\StaticFakeDesign\Value\Layout #}
+{# @var block \ErdnaxelaWeb\IbexaDesignIntegration\Value\Block #}
+{% set layout = field.layout %}
+{% include layout.template with {layout: layout} only %}
+{% if field.parameters.editorial_mode|default(false) %}
+    {{ encore_entry_link_tags('ibexa-page-fieldtype-common-css', null, 'ibexa') }}
+    {% set hidden_blocks = [] %}
+    {% for zone in layout.zones %}
+        {% for block in zone.blocks %}
+            {% if not block.isVisible %}
+                {% set hidden_blocks = hidden_blocks|merge([block.id]) %}
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    <script type="text/javascript">
+        (function(global, doc) {
+            'use strict';
+
+            const hiddenBlocks = {{ hidden_blocks|json_encode|raw }};
+
+            hiddenBlocks.forEach((id) => {
+                const element = doc.querySelector(`.landing-page__block[data-ez-block-id="${id}"]`);
+
+                if (element) {
+                    [...element.childNodes].forEach((child) => {
+                        if (child instanceof HTMLElement) {
+                            child.classList.add('ibexa-mark-invisible');
+                        }
+                    });
+                }
+            });
+        })(window, window.document);
+    </script>
+{% endif %}

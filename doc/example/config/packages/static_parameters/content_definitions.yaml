@@ -1,0 +1,290 @@
+parameters:
+    erdnaxelaweb.static_fake_design.content_definition:
+        header_configuration:
+            name:
+                fre-FR: 'Configuration en-tête'
+            description:
+                fre-FR: ''
+            nameSchema: '<name>'
+            urlAliasSchema: '<name>'
+            defaultAlwaysAvailable: true
+            defaultSortField: published
+            defaultSortOrder: desc
+            container: false
+            fields:
+                name:
+                    name: { fre-FR: Nom }
+                    description: { fre-FR: '' }
+                    type: string
+                    required: true
+                    searchable: true
+                    translatable: false
+                    category: Content
+                logo:
+                    name: { fre-FR: Logo }
+                    description: { fre-FR: '' }
+                    type: image
+                    required: false
+                    searchable: false
+                    translatable: false
+                    category: Content
+
+        footer_configuration:
+            name:
+                fre-FR: 'Configuration pied de page'
+            description:
+                fre-FR: ''
+            nameSchema: '<name>'
+            urlAliasSchema: '<name>'
+            defaultAlwaysAvailable: true
+            defaultSortField: published
+            defaultSortOrder: desc
+            container: false
+            fields:
+                name:
+                    name: { fre-FR: Nom }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: false
+                    category: Content
+        image:
+            name:
+                fre-FR: Image
+            description:
+                fre-FR: ''
+            nameSchema: '<name>'
+            urlAliasSchema: '<name>'
+            defaultAlwaysAvailable: true
+            defaultSortField: published
+            defaultSortOrder: desc
+            container: false
+            fields:
+                name:
+                    name: { fre-FR: Nom }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: false
+                    category: Content
+                image:
+                    name: { fre-FR: 'Image' }
+                    description: { fre-FR: '' }
+                    type: image
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: false
+                    category: Content
+                caption:
+                    name: { fre-FR: 'Légende' }
+                    description: { fre-FR: '' }
+                    type: richtext
+                    options: { }
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+                credits:
+                    name: { fre-FR: 'Crédits' }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+        news_list:
+            name:
+                fre-FR: 'Liste actualités'
+            description:
+                fre-FR: ''
+            nameSchema: '<short_title|title>'
+            urlAliasSchema: '<short_title|title>'
+            defaultAlwaysAvailable: true
+            defaultSortField: 'published'
+            defaultSortOrder: 'asc'
+            container: true
+            fields:
+                title:
+                    name: { fre-FR: Titre }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                short_title:
+                    name: { fre-FR: 'Titre court' }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+                page:
+                    name: { fre-FR: 'Page builder' }
+                    description: { fre-FR: '' }
+                    type: blocks
+                    options:
+                        layout: default
+                        allowedTypes:
+                            - test
+                    required: true
+                    searchable: true
+                    translatable: false
+                    category: Content
+        news:
+            name:
+                fre-FR: Actualité
+            description:
+                fre-FR: ''
+            nameSchema: '<short_title|title>'
+            urlAliasSchema: '<short_title|title>'
+            defaultAlwaysAvailable: true
+            defaultSortField: 'published'
+            defaultSortOrder: 'asc'
+            container: false
+            fields:
+                title:
+                    name: { fre-FR: Titre }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                short_title:
+                    name: { fre-FR: 'Titre court' }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+                news_date:
+                    name: { fre-FR: 'Date de l''actualité' }
+                    description: { fre-FR: '' }
+                    type: date
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                intro:
+                    name: { fre-FR: Châpo }
+                    description: { fre-FR: '' }
+                    type: richtext
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                thematic:
+                    name: { fre-FR: Thématique }
+                    description: { fre-FR: '' }
+                    type: taxonomy_entry
+                    options:
+                        type: thematic_tag
+                        max: 10
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                image:
+                    name: { fre-FR: Image }
+                    description: { fre-FR: '' }
+                    type: image
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                description:
+                    name: { fre-FR: Description }
+                    description: { fre-FR: '' }
+                    type: richtext
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                read_also:
+                    name: { fre-FR: 'A lire aussi' }
+                    description: { fre-FR: '' }
+                    type: content
+                    options:
+                        type: [ news ]
+                        max: 4
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+        not_found_page:
+            name:
+                fre-FR: Page 404
+            description:
+                fre-FR: ''
+            nameSchema: '<short_title|title>'
+            urlAliasSchema: '<short_title|title>'
+            defaultAlwaysAvailable: true
+            defaultSortField: 'published'
+            defaultSortOrder: 'asc'
+            container: false
+            fields:
+                title:
+                    name: { fre-FR: Titre }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                short_title:
+                    name: { fre-FR: 'Titre court' }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content
+                description:
+                    name: { fre-FR: Description }
+                    description: { fre-FR: '' }
+                    type: richtext
+                    options: { }
+                    required: false
+                    searchable: true
+                    translatable: true
+                    category: Content
+        homepage:
+            name:
+                fre-FR: Page d'acceuil
+            description:
+                fre-FR: ''
+            nameSchema: '<short_title|title>'
+            urlAliasSchema: '<short_title|title>'
+            defaultAlwaysAvailable: true
+            defaultSortField: 'published'
+            defaultSortOrder: 'asc'
+            container: false
+            fields:
+                title:
+                    name: { fre-FR: Titre }
+                    description: { fre-FR: '' }
+                    type: string
+                    options: { }
+                    required: true
+                    searchable: true
+                    translatable: true
+                    category: Content

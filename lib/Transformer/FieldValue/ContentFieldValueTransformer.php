@@ -1,18 +1,21 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
@@ -24,14 +27,17 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
     ) {
     }
 
+    /**
+     * @return Content|Content[]|null
+     */
     public function transformFieldValue(
         AbstractContent $content,
-        string          $fieldIdentifier,
+        string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
-        $max = $fieldConfiguration['options']['max'];
-        /** @var \Ibexa\Core\FieldType\RelationList\Value $fieldValue */
+        ContentFieldDefinition $contentFieldDefinition
+    ): Content|array|null {
+        $max = $contentFieldDefinition->getOption('max');
+        /** @var RelationValue|RelationListValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $destinationContentIds = [];
 
@@ -45,7 +51,7 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
         $destinationContentIds = array_slice($destinationContentIds, 0, $max);
 
         if ($max === 1) {
-            if (! empty($destinationContentIds)) {
+            if (!empty($destinationContentIds)) {
                 return $this->contentTransformer->lazyTransformContentFromContentId(reset($destinationContentIds));
             }
             return null;

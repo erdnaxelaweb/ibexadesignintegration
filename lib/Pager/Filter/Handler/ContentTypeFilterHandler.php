@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -13,6 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoice;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
@@ -26,14 +28,13 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 {
     public function __construct(
         protected ContentTypeService $contentTypeService,
-        FakerGenerator               $fakerGenerator
+        FakerGenerator $fakerGenerator
     ) {
         parent::__construct($fakerGenerator);
     }
 
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
     {
-        $options = $this->resolveOptions($options);
         $criterion = new Criterion\ContentTypeId($value);
 
         if ($options['multiple'] === false) {
@@ -42,17 +43,11 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName, array $options = []): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
     {
         $aggregation = new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
         $aggregation->setLimit($options['limit']);
         return $aggregation;
-    }
-
-    protected function getValueLabel(string $value): string
-    {
-        $contentType = $this->contentTypeService->loadContentType($value);
-        return $contentType->getName();
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void
@@ -61,9 +56,15 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         $optionsResolver->remove('field');
     }
 
+    protected function getValueLabel(mixed $value): string
+    {
+        $contentType = $this->contentTypeService->loadContentType((int) $value);
+        return $contentType->getName();
+    }
+
     protected function buildChoiceFromAggregationResultEntry(
         RawTermAggregationResultEntry $entry,
-        array                         $options
+        DefinitionOptions $options
     ): FilterChoiceInterface {
         return new FilterChoice(
             $this->getValueLabel($entry->getKey()),

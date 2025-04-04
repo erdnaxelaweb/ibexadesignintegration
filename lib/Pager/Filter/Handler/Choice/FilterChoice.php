@@ -2,15 +2,26 @@
 
 declare(strict_types=1);
 
+/*
+ * Ibexa Design Bundle.
+ *
+ * @author    Florian ALEXANDRE
+ * @copyright 2023-present Florian ALEXANDRE
+ * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
+ */
+
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice;
 
 class FilterChoice implements FilterChoiceInterface
 {
+    /**
+     * @param array<string, mixed>  $attr
+     */
     public function __construct(
         protected string $name,
-        protected $value,
-        protected int    $count,
-        protected array  $attr = [],
+        protected mixed $value,
+        protected int $count,
+        protected array $attr = [],
         protected string $labelFormat = '%name% (%count%)'
     ) {
     }
@@ -19,7 +30,7 @@ class FilterChoice implements FilterChoiceInterface
     {
         return str_replace(
             ['%name%', '%value%', '%count%'],
-            [$this->name, $this->value, $this->count],
+            [$this->name, (string) $this->value, (string) $this->count],
             $this->labelFormat
         );
     }
@@ -29,6 +40,9 @@ class FilterChoice implements FilterChoiceInterface
         return $this->value;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttr(): array
     {
         return $this->attr;

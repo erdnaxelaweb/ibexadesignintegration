@@ -1,0 +1,33 @@
+parameters:
+    erdnaxelaweb.static_fake_design.taxonomy_entry_definition:
+        thematic_tag:
+            name:
+                fre-FR: Thématique
+            description:
+                fre-FR: Thématique d'un article
+            models:
+                - name: tag1
+                  identifier: tag1
+                - name: tag2
+                  identifier: tag2
+            fields:
+                name:
+                    name:
+                        fre-FR: Nom
+                    description:
+                        fre-FR: Nom de la thématique
+                    required: true
+                    type: string
+                identifier:
+                    name:
+                        fre-FR: Identifiant
+                    required: true
+                    type: string
+                parent:
+                    name:
+                        fre-FR: Parent
+                    required: false
+                    type: taxonomy_entry
+                    options:
+                        type: thematic_tag
+                        max: 1

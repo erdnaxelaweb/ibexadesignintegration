@@ -1,18 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-declare(strict_types=1);
-
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
@@ -23,15 +23,18 @@ use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @extends \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\AbstractSearchType<Query>
+ */
 class ContentSearchType extends AbstractSearchType
 {
     public function __construct(
-        protected SearchService                 $searchService,
-        protected ContentTransformer            $contentTransformer,
+        protected SearchService $searchService,
+        protected ContentTransformer $contentTransformer,
         PagerSearchFormBuilder $pagerSearchFormBuilder,
         PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         string $searchFormName,
-        array $configuration,
+        PagerDefinition $pagerDefinition,
         Request $request,
         SearchData $defaultSearchData = new SearchData()
     ) {
@@ -39,15 +42,10 @@ class ContentSearchType extends AbstractSearchType
             $pagerSearchFormBuilder,
             $pagerActiveFiltersListBuilder,
             $searchFormName,
-            $configuration,
+            $pagerDefinition,
             $request,
             $defaultSearchData
         );
-    }
-
-    protected function initializeQuery(): void
-    {
-        $this->query = new Query();
     }
 
     public function getAdapter(): PagerAdapterInterface
@@ -59,5 +57,10 @@ class ContentSearchType extends AbstractSearchType
             [$this, 'getFiltersForm'],
             [$this, 'getActiveFilters']
         );
+    }
+
+    protected function initializeQuery(): void
+    {
+        $this->query = new Query();
     }
 }

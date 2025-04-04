@@ -1,28 +1,32 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use Closure;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
+use Symfony\Component\Form\FormView;
 
 class FormFieldValueTransformer implements FieldValueTransformerInterface
 {
     public function transformFieldValue(
         AbstractContent $content,
-        string          $fieldIdentifier,
+        string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array           $fieldConfiguration
-    ) {
-        return function ($modelData = null) use ($content, $fieldIdentifier, $fieldDefinition) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): Closure {
+        return function ($modelData = null) use ($content, $fieldIdentifier): FormView {
             /** @var \Ibexa\FormBuilder\FieldType\Value $fieldValue */
             $fieldValue = $content->getFieldValue($fieldIdentifier);
 

@@ -1,0 +1,11 @@
+{% component {
+    name: 'Mise en exergue',
+    description: '',
+    specifications: '',
+    properties: {
+        content: 'text'
+    }
+} %}
+<div class="highlighted">
+    {% apply spaceless %}{{ content|raw }}{% endapply %}
+</div>

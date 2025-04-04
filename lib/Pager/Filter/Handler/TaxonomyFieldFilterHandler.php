@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -13,6 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\TaxonomyFilterChoice;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Taxonomy\Service\TaxonomyServiceInterface;
@@ -30,10 +32,18 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         parent::__construct($fakerGenerator);
     }
 
-    protected function getValueLabel(string $value): string
+    public function configureOptions(OptionsResolver $optionsResolver): void
+    {
+        parent::configureOptions($optionsResolver);
+        $optionsResolver->define('group_by_parent')
+            ->default(false)
+            ->allowedTypes('bool');
+    }
+
+    protected function getValueLabel(mixed $value): string
     {
         try {
-            return $this->taxonomyService->loadEntryById($value)
+            return $this->taxonomyService->loadEntryById((int) $value)
                 ->getName();
         } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
             return $value;
@@ -42,9 +52,9 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
 
     protected function getFormOptions(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult,
-        array                $options
+        string $filterName,
+        ?AggregationResult $aggregationResult,
+        DefinitionOptions $options
     ): array {
         $formOptions = parent::getFormOptions($formBuilder, $filterName, $aggregationResult, $options);
         if ($options['group_by_parent']) {
@@ -56,8 +66,11 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         return $formOptions;
     }
 
-    protected function getChoices(?AggregationResult $aggregationResult, string $filterName, array $options): array
-    {
+    protected function getChoices(
+        ?AggregationResult $aggregationResult,
+        string $filterName,
+        DefinitionOptions $options
+    ): array {
         $choices = parent::getChoices($aggregationResult, $filterName, $options);
 
         if ($options['group_by_parent'] && $options['sort'] === 'label') {
@@ -79,7 +92,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
 
     protected function buildChoiceFromAggregationResultEntry(
         RawTermAggregationResultEntry $entry,
-        array $options
+        DefinitionOptions $options
     ): FilterChoiceInterface {
         try {
             $taxonomyEntry = $this->taxonomyService->loadEntryById((int) $entry->getKey());
@@ -95,13 +108,5 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
             return parent::buildChoiceFromAggregationResultEntry($entry, $options);
         }
-    }
-
-    public function configureOptions(OptionsResolver $optionsResolver): void
-    {
-        parent::configureOptions($optionsResolver);
-        $optionsResolver->define('group_by_parent')
-            ->default(false)
-            ->allowedTypes('bool');
     }
 }

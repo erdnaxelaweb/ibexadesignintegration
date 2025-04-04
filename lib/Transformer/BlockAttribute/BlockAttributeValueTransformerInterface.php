@@ -1,25 +1,30 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
 interface BlockAttributeValueTransformerInterface
 {
+    /**
+     * @return mixed
+     */
     public function transformAttributeValue(
-        BlockValue      $blockValue,
-        string          $attributeIdentifier,
+        BlockValue $blockValue,
+        string $attributeIdentifier,
         BlockDefinition $blockDefinition,
-        array $attributeConfiguration
+        BlockAttributeDefinition $attributeDefinition
     );
 }

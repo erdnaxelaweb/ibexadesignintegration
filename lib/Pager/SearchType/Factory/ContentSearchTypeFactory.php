@@ -1,18 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-declare(strict_types=1);
-
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\ContentSearchType;
@@ -25,17 +25,17 @@ use Symfony\Component\HttpFoundation\Request;
 class ContentSearchTypeFactory implements SearchTypeFactoryInterface
 {
     public function __construct(
-        protected SearchService                 $searchService,
-        protected ContentTransformer            $contentTransformer,
-        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
+        protected SearchService $searchService,
+        protected ContentTransformer $contentTransformer,
+        protected PagerSearchFormBuilder $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
     ) {
     }
 
     public function __invoke(
-        string     $searchFormName,
-        array      $configuration,
-        Request    $request,
+        string $searchFormName,
+        PagerDefinition $pagerDefinition,
+        Request $request,
         SearchData $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
         return new ContentSearchType(
@@ -44,7 +44,7 @@ class ContentSearchTypeFactory implements SearchTypeFactoryInterface
             $this->pagerSearchFormBuilder,
             $this->pagerActiveFiltersListBuilder,
             $searchFormName,
-            $configuration,
+            $pagerDefinition,
             $request,
             $defaultSearchData
         );

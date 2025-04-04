@@ -1,0 +1,36 @@
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+{% extends '@ibexadesign/layout_default.html.twig' %}
+
+{% component {
+    name: "Page actualité",
+    specifications: "",
+    properties: {
+        content: 'content("news")'
+    }
+} %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{#    {{ encore_entry_link_tags('news', null, 'site') }}#}
+{% endblock %}
+
+{% block footer_scripts %}
+    {{ parent() }}
+{#    {{ encore_entry_script_tags('news', null, 'site') }}#}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ content.fields.title }}</h1>
+    <div>
+        {% include '@ibexadesign/components/breadcrumb.html.twig' with {breadcrumb: content.breadcrumb} only %}
+    </div>
+    <p>{{ 'news.content.updated_on'|trans|desc('Mis à jour le') }} <time datetime="{{ content.fields.news_date|date('Y-m-d') }}">{{ content.fields.news_date|format_datetime('full', 'none') }}</time></p>
+    {{ display_component('@ibexadesign/components/image.html.twig', {image: content.fields.image('raw'), display_caption: true, empty_alt: true}) }}
+    <div>
+        {{ content.fields.intro|raw }}
+    </div>
+    <div>
+        {{ content.fields.description|raw }}
+    </div>
+    {{ display_component('@ibexadesign/components/read_also.html.twig', {contents: content.fields.read_also}) }}
+{% endblock %}

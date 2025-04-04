@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -15,23 +16,23 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Ibexa\Core\Pagination\Pagerfanta\AbstractSearchResultAdapter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
-class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterInterface
+abstract class AbstractSearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterInterface
 {
-    public const SEARCH_TYPE_LOCATION = 'location';
-
-    public const SEARCH_TYPE_CONTENT = 'content';
-
     private ?FormInterface $filtersFormBuilder = null;
 
+    /**
+     * @param callable(AggregationResultCollection): FormInterface                $filtersCallback
+     * @param callable(FormInterface): \Knp\Menu\ItemInterface[]                  $activeFiltersCallback
+     * @param array<string, mixed>|array<int, string>                             $languageFilter
+     */
     public function __construct(
         Query $query,
         SearchService $searchService,
-        protected string $searchType,
         protected ContentTransformer $contentTransformer,
         protected $filtersCallback,
         protected $activeFiltersCallback,
@@ -40,7 +41,14 @@ class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterI
         parent::__construct($query, $searchService, $languageFilter);
     }
 
-    public function getSlice($offset, $length)
+    /**
+     * @param int $offset
+     * @param int $length
+     *
+     * @return Content[]
+     * @phpstan-ignore-next-line
+     */
+    public function getSlice($offset, $length): array
     {
         $searchHits = parent::getSlice($offset, $length);
         $list = [];
@@ -56,14 +64,6 @@ class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterI
         return $list;
     }
 
-    protected function getFiltersFormBuilder(): FormInterface
-    {
-        if (! $this->filtersFormBuilder) {
-            $this->filtersFormBuilder = ($this->filtersCallback)($this->getAggregations());
-        }
-        return $this->filtersFormBuilder;
-    }
-
     public function getFilters(): FormView
     {
         return $this->getFiltersFormBuilder()
@@ -72,14 +72,14 @@ class SearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterI
 
     public function getActiveFilters(): array
     {
-        return ($this->activeFiltersCallback)($this->getFiltersFormBuilder());
+        return call_user_func($this->activeFiltersCallback, $this->getFiltersFormBuilder());
     }
 
-    protected function executeQuery(SearchService $searchService, Query $query, array $languageFilter): SearchResult
+    protected function getFiltersFormBuilder(): FormInterface
     {
-        if ($this->searchType === self::SEARCH_TYPE_CONTENT) {
-            return $searchService->findContent($query, $languageFilter);
+        if (!$this->filtersFormBuilder) {
+            $this->filtersFormBuilder = call_user_func($this->filtersCallback, $this->getAggregations());
         }
-        return $searchService->findLocations($query, $languageFilter);
+        return $this->filtersFormBuilder;
     }
 }

@@ -1,10 +1,11 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
@@ -18,7 +19,7 @@ use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 class BreadcrumbGenerator
 {
     public function __construct(
-        protected LinkGenerator           $linkGenerator,
+        protected LinkGenerator $linkGenerator,
         protected ConfigResolverInterface $configResolver
     ) {
     }
@@ -30,7 +31,7 @@ class BreadcrumbGenerator
             $currentLocation = $location;
             $breadcrumbLinks = [$this->linkGenerator->generateLocationLink($location)];
 
-            if (in_array($rootLocationId, $location->path)) {
+            if (in_array($rootLocationId, $location->path, true)) {
                 do {
                     $parentLocation = $currentLocation->getParentLocation();
                     if ($parentLocation === null) {
@@ -38,7 +39,7 @@ class BreadcrumbGenerator
                     }
                     $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink($parentLocation);
                     $currentLocation = $parentLocation;
-                } while ($parentLocation->id != $rootLocationId);
+                } while ($parentLocation->id !== $rootLocationId);
             }
 
             $breadcrumbLinks = array_reverse($breadcrumbLinks);

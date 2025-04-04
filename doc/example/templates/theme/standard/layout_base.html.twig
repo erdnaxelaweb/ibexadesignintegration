@@ -1,0 +1,25 @@
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+<!doctype html>
+<html lang="{{ app.request.locale|replace({'_': '-'}) }}">
+<head>
+    {% block head %}
+        {% include '@ibexadesign/include/head.html.twig' %}
+    {% endblock %}
+
+    {% block stylesheets %}
+        {% include '@ibexadesign/include/stylesheets.html.twig' %}
+    {% endblock %}
+
+    {% block head_scripts %}
+        {% include '@ibexadesign/include/head_scripts.html.twig' %}
+    {% endblock %}
+</head>
+<body>
+{% block body %}
+{% endblock %}
+
+{% block footer_scripts %}
+    {% include '@ibexadesign/include/footer_scripts.html.twig' %}
+{% endblock %}
+</body>
+</html>

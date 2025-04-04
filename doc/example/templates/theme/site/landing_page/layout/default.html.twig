@@ -1,0 +1,16 @@
+{# @var layout \ErdnaxelaWeb\StaticFakeDesign\Value\Layout #}
+{# @var zone \ErdnaxelaWeb\StaticFakeDesign\Value\LayoutZone #}
+{% set zone = layout.zones['default']  %}
+<div class="landing-page__zones">
+    <div class="landing-page__zone landing-page__zone--{{ zone.id }}" data-ibexa-zone-id="{{ zone.id }}">
+        {% if zone.blocks %}
+            {% set sections = zone.blocks|group_blocks_by_section(layout) %}
+
+            {% for section in sections %}
+                {% include section.template with {
+                    'blocks': section.blocks
+                } only %}
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>

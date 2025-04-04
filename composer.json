@@ -1,23 +1,43 @@
 {
     "name":  "erdnaxelaweb/ibexadesignintegration",
-    "type": "library",
-    "description": "Provides utilities to generate fake data in order to create a static design",
-    "keywords": [],
+    "type": "symfony-bundle",
+    "description": "Provide an abstraction layer for the Ibexa CMS in order to streamline the templates development workflow.",
+    "keywords": [
+        "ibexa",
+        "symfony",
+        "twig",
+        "integration",
+        "templating"
+    ],
     "license": "MIT",
     "require": {
+        "php": "^8.1",
         "erdnaxelaweb/staticfakedesign": "dev-main",
         "novactive/ezenhancedimageassetbundle": "^3.0",
         "novactive/ezsolrsearchextrabundle": "^3.2",
         "novactive/ezstatictemplatesbundle": "^3.0",
-        "http-interop/http-factory-guzzle": "^1.2"
+        "http-interop/http-factory-guzzle": "^1.2",
+        "ibexa/core": "^4.0",
+        "ibexa/http-cache": "^4.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.3",
-        "symplify/easy-coding-standard": "*"
+        "symplify/easy-coding-standard": "*",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-symfony": "^2.0",
+        "ibexa/fieldtype-page": "^4.0",
+        "ibexa/form-builder": "^4.0",
+        "ibexa/fieldtype-matrix": "^4.0",
+        "ibexa/taxonomy": "^4.0",
+        "almaviacx/ibexaimportexportbundle": "^0.3",
+        "phpoffice/phpspreadsheet": "^4.0",
+        "ibexa/product-catalog": "^4.0",
+        "ibexa/segmentation": "^4.0"
     },
     "suggest": {
         "ext-dom": "*",
-        "tanoconsulting/ibexa-migration-bundle":"^1.0"
+        "tanoconsulting/ibexa-migration-bundle":"^1.0",
+        "phpoffice/phpspreadsheet": "4.0"
     },
     "authors": [
         {
@@ -45,6 +65,12 @@
             "ibexa/post-install": true,
             "symfony/flex": true,
             "phpstan/extension-installer": true
+        }
+    },
+    "repositories": {
+        "ibexa": {
+            "type": "composer",
+            "url": "https://updates.ibexa.co"
         }
     }
 }

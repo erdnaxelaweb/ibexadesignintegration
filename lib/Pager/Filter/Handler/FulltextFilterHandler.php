@@ -1,16 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\MultipleFieldsFullText;
@@ -22,9 +24,9 @@ class FulltextFilterHandler extends AbstractFilterHandler
 {
     public function addForm(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        string $filterName,
+        DefinitionOptions $options,
+        ?AggregationResult $aggregationResult = null,
     ): void {
         $options = [];
         $options['label'] = sprintf('searchform.%s', $filterName);
@@ -33,10 +35,9 @@ class FulltextFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, TextType::class, $options);
     }
 
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
     {
-        $options = $this->resolveOptions($options);
-        return new MultipleFieldsFullText($value, $options);
+        return new MultipleFieldsFullText($value, $options->toArray());
     }
 
     public function getFakeFormType(): array

@@ -1,16 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\File;
 use Ibexa\Bundle\Core\EventListener\ContentDownloadRouteReferenceListener;
@@ -31,8 +33,8 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): ?File {
         /** @var \Ibexa\Core\FieldType\BinaryFile\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         if (isset($fieldValue->fileName)) {

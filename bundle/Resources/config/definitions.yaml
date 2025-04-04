@@ -1,0 +1,30 @@
+services:
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\ContentDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentDefinitionTransformer
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\TaxonomyEntryDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\TaxonomyEntryDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\TaxonomyEntryDefinitionTransformer
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\ContentFieldDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentFieldDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentFieldDefinitionTransformer
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\PagerDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerDefinitionTransformer
+        arguments:
+            $searchTypeFactories: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.search_type', index_by: 'type' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\PagerSortDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerSortDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerSortDefinitionTransformer
+        arguments:
+            $sortHandler: '@ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler'
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\PagerFilterDefinitionTransformer:
+        decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerFilterDefinitionTransformer
+        parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerFilterDefinitionTransformer
+        arguments:
+            $filterHandler: '@ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler'
