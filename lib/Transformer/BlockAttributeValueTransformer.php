@@ -11,6 +11,8 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\BlockAttributeValueTransformerInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
@@ -32,9 +34,9 @@ class BlockAttributeValueTransformer
     public function transform(
         BlockValue      $blockValue,
         BlockDefinition $blockDefinition,
-        string          $attributeIdentifier,
-        array           $attributeConfiguration,
-    ) {
+        string $attributeIdentifier,
+        BlockAttributeDefinition $attributeDefinition,
+    ): mixed {
         $attribute = $blockDefinition->getAttribute($attributeIdentifier);
 
         if ($attribute) {
@@ -43,7 +45,7 @@ class BlockAttributeValueTransformer
                 $blockValue,
                 $attributeIdentifier,
                 $blockDefinition,
-                $attributeConfiguration
+                $attributeDefinition
             );
         }
         return null;

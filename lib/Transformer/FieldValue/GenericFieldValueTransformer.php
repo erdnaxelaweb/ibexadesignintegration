@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
@@ -25,8 +26,8 @@ class GenericFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): mixed {
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         return $fieldValue->{$this->propertyName};
     }

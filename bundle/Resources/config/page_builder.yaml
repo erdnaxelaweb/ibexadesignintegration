@@ -4,14 +4,14 @@ services:
         arguments:
             $layoutDefinitionRegistry: '@Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry'
             $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
-            $blockLayoutConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockLayoutConfigurationManager'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezlandingpage' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer:
         arguments:
             $blockAttributeValueTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttributeValueTransformer'
-            $blockConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockConfigurationManager'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $blockDefinitionFactory: '@Ibexa\FieldTypePage\FieldType\Page\Block\Definition\CachedBlockDefinitionFactory'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttributeValueTransformer:
@@ -20,7 +20,7 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\LandingPageBlockSubscriber:
         arguments:
-            $blockConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockConfigurationManager'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
         tags:
             - { name: kernel.event_subscriber }

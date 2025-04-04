@@ -13,6 +13,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoice;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
@@ -31,9 +32,8 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         parent::__construct($fakerGenerator);
     }
 
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
     {
-        $options = $this->resolveOptions($options);
         $criterion = new Criterion\ContentTypeId($value);
 
         if ($options['multiple'] === false) {
@@ -42,7 +42,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName, array $options = []): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
     {
         $aggregation = new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
         $aggregation->setLimit($options['limit']);
@@ -63,7 +63,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 
     protected function buildChoiceFromAggregationResultEntry(
         RawTermAggregationResultEntry $entry,
-        array                         $options
+        DefinitionOptions $options
     ): FilterChoiceInterface {
         return new FilterChoice(
             $this->getValueLabel($entry->getKey()),

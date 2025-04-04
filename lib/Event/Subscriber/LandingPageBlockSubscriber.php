@@ -3,8 +3,9 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\BlockConfigurationManager;
-use ErdnaxelaWeb\StaticFakeDesign\Exception\ConfigurationNotFoundException;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockDefinition;
+use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionNotFoundException;
 use Ibexa\FieldTypePage\FieldType\Page\Block\Renderer\BlockRenderEvents;
 use Ibexa\FieldTypePage\FieldType\Page\Block\Renderer\Event\PreRenderEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -13,7 +14,7 @@ class LandingPageBlockSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         protected BlockTransformer $blockTransformer,
-        protected BlockConfigurationManager $blockConfigurationManager
+        protected DefinitionManager $definitionManager
     ) {
     }
 
@@ -28,12 +29,13 @@ class LandingPageBlockSubscriber implements EventSubscriberInterface
     {
         $blockValue = $event->getBlockValue();
         try {
-            $this->blockConfigurationManager->getConfiguration($blockValue->getType());
+            $this->definitionManager->getDefinition(BlockDefinition::class, $blockValue->getType());
+            /** @var \Ibexa\FieldTypePage\FieldType\Page\Block\Renderer\Twig\TwigRenderRequest $renderRequest */
             $renderRequest = $event->getRenderRequest();
             $parameters = $renderRequest->getParameters();
             $parameters['block'] = ($this->blockTransformer)($blockValue);
             $renderRequest->setParameters($parameters);
-        } catch (ConfigurationNotFoundException $e) {
+        } catch (DefinitionNotFoundException $e) {
             return;
         }
     }

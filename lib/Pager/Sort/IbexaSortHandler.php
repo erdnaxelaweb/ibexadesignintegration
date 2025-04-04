@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 
 class IbexaSortHandler extends AbstractSortHandler
@@ -20,8 +21,8 @@ class IbexaSortHandler extends AbstractSortHandler
     ) {
     }
 
-    public function addSortClause(Query $pagerQuery, array $sortOptions): void
+    public function addSortClause(Query $pagerQuery, DefinitionOptions $sortOptions): void
     {
-        $pagerQuery->sortClauses[] = new $this->sortClauseClass(...$sortOptions);
+        $pagerQuery->sortClauses[] = new $this->sortClauseClass(...$sortOptions->toArray());
     }
 }

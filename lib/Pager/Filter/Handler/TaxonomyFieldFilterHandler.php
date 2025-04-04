@@ -13,6 +13,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\TaxonomyFilterChoice;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Taxonomy\Service\TaxonomyServiceInterface;
@@ -42,9 +43,9 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
 
     protected function getFormOptions(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult,
-        array                $options
+        string $filterName,
+        ?AggregationResult $aggregationResult,
+        DefinitionOptions $options
     ): array {
         $formOptions = parent::getFormOptions($formBuilder, $filterName, $aggregationResult, $options);
         if ($options['group_by_parent']) {
@@ -56,8 +57,11 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         return $formOptions;
     }
 
-    protected function getChoices(?AggregationResult $aggregationResult, string $filterName, array $options): array
-    {
+    protected function getChoices(
+        ?AggregationResult $aggregationResult,
+        string $filterName,
+        DefinitionOptions $options
+    ): array {
         $choices = parent::getChoices($aggregationResult, $filterName, $options);
 
         if ($options['group_by_parent'] && $options['sort'] === 'label') {
@@ -79,7 +83,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
 
     protected function buildChoiceFromAggregationResultEntry(
         RawTermAggregationResultEntry $entry,
-        array $options
+        DefinitionOptions $options
     ): FilterChoiceInterface {
         try {
             $taxonomyEntry = $this->taxonomyService->loadEntryById((int) $entry->getKey());

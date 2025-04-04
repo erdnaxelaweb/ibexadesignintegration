@@ -2,9 +2,11 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Knp\Menu\FactoryInterface;
+use Knp\Menu\ItemInterface;
 
 class UrlFieldValueTransformer implements FieldValueTransformerInterface
 {
@@ -17,8 +19,8 @@ class UrlFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array           $fieldConfiguration
-    ) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): ItemInterface {
         /** @var \Ibexa\Core\FieldType\Url\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $name = $fieldValue->text ?? 'link';

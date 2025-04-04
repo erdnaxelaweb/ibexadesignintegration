@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -22,9 +23,9 @@ class PagerBuildEvent extends Event
     public const PAGER_BUILD_PATTERN = 'erdnaxelaweb.ibexa_design_integration.pager.build.%s';
 
     public function __construct(
-        public readonly string     $pagerType,
-        public array      &$pagerConfiguration,
-        public readonly Query      $pagerQuery,
+        public readonly string $pagerType,
+        public PagerDefinition $pagerDefinition,
+        public readonly Query $pagerQuery,
         public readonly SearchData $searchData,
         public readonly SearchData $defaultSearchData,
         public readonly array      $buildContext,

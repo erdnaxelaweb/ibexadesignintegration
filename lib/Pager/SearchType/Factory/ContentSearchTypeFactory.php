@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\ContentSearchType;
@@ -33,9 +34,9 @@ class ContentSearchTypeFactory implements SearchTypeFactoryInterface
     }
 
     public function __invoke(
-        string     $searchFormName,
-        array      $configuration,
-        Request    $request,
+        string $searchFormName,
+        PagerDefinition $pagerDefinition,
+        Request $request,
         SearchData $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
         return new ContentSearchType(
@@ -44,7 +45,7 @@ class ContentSearchTypeFactory implements SearchTypeFactoryInterface
             $this->pagerSearchFormBuilder,
             $this->pagerActiveFiltersListBuilder,
             $searchFormName,
-            $configuration,
+            $pagerDefinition,
             $request,
             $defaultSearchData
         );

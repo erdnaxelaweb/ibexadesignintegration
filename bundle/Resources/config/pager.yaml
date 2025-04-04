@@ -15,12 +15,6 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
-    ErdnaxelaWeb\IbexaDesignIntegration\Configuration\PagerConfigurationManager:
-        decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager
-        parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager
-        arguments:
-            $searchTypeFactories: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.pager.search_type', index_by: 'type' }
-
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\ContentSearchTypeFactory:
         tags:
             - { name: erdnaxelaweb.ibexa_design_integration.pager.search_type, type: content }

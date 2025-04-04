@@ -6,7 +6,7 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer:
         arguments:
-            $taxonomyEntryConfigurationManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $fieldValueTransformers: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer'
             $responseTagger: '@Ibexa\HttpCache\Handler\TagHandler'
 

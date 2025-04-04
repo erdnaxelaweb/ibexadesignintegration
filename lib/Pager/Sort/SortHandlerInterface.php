@@ -11,12 +11,13 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 interface SortHandlerInterface
 {
-    public function addSortClause(Query $pagerQuery, array $sortOptions): void;
+    public function addSortClause(Query $pagerQuery, DefinitionOptions $sortOptions): void;
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
 }

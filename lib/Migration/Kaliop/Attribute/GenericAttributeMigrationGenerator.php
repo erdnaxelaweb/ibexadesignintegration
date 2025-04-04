@@ -11,6 +11,8 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
+
 class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorInterface
 {
     public function __construct(
@@ -19,11 +21,11 @@ class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorI
     ) {
     }
 
-    public function generate(string $fieldIdentifier, array $field): array
+    public function generate(string $fieldIdentifier, ContentFieldDefinition $field): array
     {
         $fieldSettings = [];
-        foreach ($field['options'] as $option => $value) {
-            if (! isset($this->optionsMap[$option])) {
+        foreach ($field->getOptions() as $option => $value) {
+            if (!isset($this->optionsMap[$option])) {
                 continue;
             }
             $fieldSettings[$this->optionsMap[$option]] = $value;
@@ -31,13 +33,13 @@ class GenericAttributeMigrationGenerator implements AttributeMigrationGeneratorI
         return [
             'identifier' => $fieldIdentifier,
             'type' => $this->type,
-            'name' => $field['name'],
-            'description' => $field['description'],
-            'required' => $field['required'],
-            'searchable' => $field['searchable'],
-            'info-collector' => $field['infoCollector'],
-            'disable-translation' => ! $field['translatable'],
-            'category' => $field['category'],
+            'name' => $field->getName(),
+            'description' => $field->getDescription(),
+            'required' => $field->isRequired(),
+            'searchable' => $field->isSearchable(),
+            'info-collector' => $field->isInfoCollector(),
+            'disable-translation' => !$field->isTranslatable(),
+            'category' => $field->getCategory(),
             'field-settings' => $fieldSettings,
         ];
     }

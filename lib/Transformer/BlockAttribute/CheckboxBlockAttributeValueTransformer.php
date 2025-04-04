@@ -2,6 +2,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
@@ -11,8 +12,8 @@ class CheckboxBlockAttributeValueTransformer implements BlockAttributeValueTrans
         BlockValue $blockValue,
         string $attributeIdentifier,
         BlockDefinition $blockDefinition,
-        array $attributeConfiguration
-    ) {
+        BlockAttributeDefinition $attributeDefinition
+    ): bool {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)
             ->getValue();
         return $attributeValue === '1';

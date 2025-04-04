@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Coordinates;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
@@ -21,8 +22,8 @@ class LocationFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): Coordinates {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         return new Coordinates($fieldValue->latitude, $fieldValue->longitude, $fieldValue->address);

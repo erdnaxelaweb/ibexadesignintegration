@@ -5,9 +5,10 @@ services:
         public: false
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+        lazy: true
         arguments:
             $breadcrumbGenerator: '@ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator'
-            $contentConfigurationManager: '@ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $fieldValueTransformers: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer'
             $contentService: '@Ibexa\Contracts\Core\Repository\ContentService'
             $locationService: '@Ibexa\Contracts\Core\Repository\LocationService'

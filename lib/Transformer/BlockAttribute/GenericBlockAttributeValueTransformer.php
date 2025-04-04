@@ -2,6 +2,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
@@ -11,7 +12,7 @@ class GenericBlockAttributeValueTransformer implements BlockAttributeValueTransf
         BlockValue $blockValue,
         string $attributeIdentifier,
         BlockDefinition $blockDefinition,
-        array $attributeConfiguration
+        BlockAttributeDefinition $attributeDefinition
     ) {
         return $blockValue->getAttribute($attributeIdentifier)
             ->getValue();

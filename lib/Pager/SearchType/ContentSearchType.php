@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
@@ -23,6 +24,9 @@ use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @extends \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\AbstractSearchType<Query>
+ */
 class ContentSearchType extends AbstractSearchType
 {
     public function __construct(
@@ -31,7 +35,7 @@ class ContentSearchType extends AbstractSearchType
         PagerSearchFormBuilder $pagerSearchFormBuilder,
         PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         string $searchFormName,
-        array $configuration,
+        PagerDefinition $pagerDefinition,
         Request $request,
         SearchData $defaultSearchData = new SearchData()
     ) {
@@ -39,7 +43,7 @@ class ContentSearchType extends AbstractSearchType
             $pagerSearchFormBuilder,
             $pagerActiveFiltersListBuilder,
             $searchFormName,
-            $configuration,
+            $pagerDefinition,
             $request,
             $defaultSearchData
         );

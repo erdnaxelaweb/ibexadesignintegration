@@ -4,6 +4,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\Repository\PermissionResolver;
 use Ibexa\Contracts\Core\Repository\UserService;
@@ -25,8 +26,8 @@ class SegmentContentMapBlockAttributeValueTransformer implements BlockAttributeV
         BlockValue $blockValue,
         string $attributeIdentifier,
         BlockDefinition $blockDefinition,
-        array $attributeConfiguration
-    ) {
+        BlockAttributeDefinition $attributeDefinition
+    ): ?Content {
         return $this->getContentMapLocationId($blockValue, $attributeIdentifier);
     }
     /**

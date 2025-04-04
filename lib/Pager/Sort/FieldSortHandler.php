@@ -11,15 +11,16 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\SortClause;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FieldSortHandler extends AbstractSortHandler
 {
-    public function addSortClause(Query $pagerQuery, array $sortOptions): void
+    public function addSortClause(Query $pagerQuery, DefinitionOptions $sortOptions): void
     {
-        $pagerQuery->sortClauses[] = new SortClause\Field(...$sortOptions);
+        $pagerQuery->sortClauses[] = new SortClause\Field(...$sortOptions->toArray());
     }
 
     public function configureOptions(OptionsResolver $optionsResolver): void

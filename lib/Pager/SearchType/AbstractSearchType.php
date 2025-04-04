@@ -22,8 +22,14 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultColle
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @template Q of Query
+ */
 abstract class AbstractSearchType implements SearchTypeInterface
 {
+    /**
+     * @var Q
+     */
     protected Query $query;
 
     protected SearchData $searchData;
@@ -32,7 +38,7 @@ abstract class AbstractSearchType implements SearchTypeInterface
         protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         protected string $searchFormName,
-        protected array $configuration,
+        protected PagerDefinition $pagerDefinition,
         protected Request $request,
         protected SearchData $defaultSearchData = new SearchData()
     ) {
@@ -47,7 +53,7 @@ abstract class AbstractSearchType implements SearchTypeInterface
     {
         $formBuilder = $this->pagerSearchFormBuilder->build(
             $this->searchFormName,
-            $this->configuration,
+            $this->pagerDefinition,
             $aggregationResultCollection,
             $this->defaultSearchData
         );
@@ -61,12 +67,15 @@ abstract class AbstractSearchType implements SearchTypeInterface
     {
         return $this->pagerActiveFiltersListBuilder->buildList(
             $this->searchFormName,
-            $this->configuration,
+            $this->pagerDefinition,
             $filtersFormBuilder,
             $this->searchData
         );
     }
 
+    /**
+     * @return Q
+     */
     public function getQuery(): Query
     {
         return $this->query;

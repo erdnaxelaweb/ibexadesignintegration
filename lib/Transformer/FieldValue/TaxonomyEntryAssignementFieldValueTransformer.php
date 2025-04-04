@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
@@ -28,9 +29,9 @@ class TaxonomyEntryAssignementFieldValueTransformer implements FieldValueTransfo
         AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
+        ContentFieldDefinition $contentFieldDefinition
     ): array|TaxonomyEntry {
-        $max = $fieldConfiguration['options']['max'];
+        $max = $contentFieldDefinition->getOption('max');
         /** @var TaxonomyEntryAssignmentValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $entries = [];

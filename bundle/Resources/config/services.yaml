@@ -20,10 +20,6 @@ services:
     arguments:
       $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
 
-  ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager:
-    decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
-    parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
-
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateDefinitionCommand:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:

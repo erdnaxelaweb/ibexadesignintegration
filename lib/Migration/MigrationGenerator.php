@@ -11,14 +11,12 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Migration;
 
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 
 class MigrationGenerator
 {
     public function __construct(
-        protected ContentConfigurationManager $contentConfigurationManager,
-        protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager
+        protected DefinitionManager $definitionManager
     ) {
     }
 

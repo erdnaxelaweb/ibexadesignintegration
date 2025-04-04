@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
@@ -22,14 +23,14 @@ interface FilterHandlerInterface
 {
     public function addForm(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        string $filterName,
+        DefinitionOptions $options,
+        ?AggregationResult $aggregationResult = null,
     ): void;
 
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion;
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion;
 
-    public function getAggregation(string $filterName, array $options = []): ?Aggregation;
+    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation;
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
 

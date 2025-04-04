@@ -11,7 +11,9 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FilterHandlerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\NestableFilterHandlerInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
@@ -22,39 +24,53 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ChainFilterHandler
 {
     /**
-     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FilterHandlerInterface[]
+     * @var FilterHandlerInterface[]
      */
     protected array $filtersHandler;
 
-    public function __construct(
-        iterable $filtersHandler,
-    ) {
+    /**
+     * @param iterable<FilterHandlerInterface> $filtersHandler
+     */
+    public function __construct(iterable $filtersHandler)
+    {
         foreach ($filtersHandler as $type => $filterHandler) {
             $this->filtersHandler[$type] = $filterHandler;
         }
     }
 
-    public function getAggregation(string $filterType, string $filterName, array $options = []): ?Aggregation
+    public function getAggregation(string $filterType, string $filterName, DefinitionOptions $options): ?Aggregation
     {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getAggregation($filterName, $options);
     }
 
-    public function getCriterion(string $filterType, string $filterName, $value, array $options = []): Criterion
-    {
+    public function getCriterion(
+        string $filterType,
+        string $filterName,
+        mixed $value,
+        DefinitionOptions $options
+    ): Criterion {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getCriterion($filterName, $value, $options);
     }
 
     public function addForm(
-        string               $filterType,
+        string $filterType,
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        string $filterName,
+        DefinitionOptions $options,
+        ?AggregationResult $aggregationResult = null,
     ): void {
         $filterHandler = $this->getFilterHandler($filterType);
-        $filterHandler->addForm($formBuilder, $filterName, $aggregationResult, $options);
+        $filterHandler->addForm($formBuilder, $filterName, $options, $aggregationResult);
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTypes(): array
+    {
+        return array_keys($this->filtersHandler);
     }
 
     public function configureOptions(string $filterType, OptionsResolver $optionsResolver): void
@@ -63,17 +79,20 @@ class ChainFilterHandler
         $filterHandler->configureOptions($optionsResolver);
     }
 
-    public function getTypes(): array
-    {
-        return array_keys($this->filtersHandler);
-    }
-
+    /**
+     * @return array{type: string, options?: array<string, mixed>}
+     */
     public function getFakeFormType(string $filterType): array
     {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getFakeFormType();
     }
 
+    /**
+     * @param array<string, mixed>                                 $activeValues
+     *
+     * @return array<string, string>
+     */
     public function getValuesLabels(string $filterType, array $activeValues, FormInterface $formBuilder): array
     {
         $filterHandler = $this->getFilterHandler($filterType);
@@ -83,10 +102,11 @@ class ChainFilterHandler
     public function isNestableFilter(string $filterType): bool
     {
         $filterHandler = $this->getFilterHandler($filterType);
-        return class_implements($filterHandler, NestableFilterHandlerInterface::class) !== false;
+        $reflectionClass = new \ReflectionClass($filterHandler);
+        return $reflectionClass instanceof NestableFilterHandlerInterface;
     }
 
-    protected function getFilterHandler(string $filterType): Handler\FilterHandlerInterface
+    protected function getFilterHandler(string $filterType): FilterHandlerInterface
     {
         return $this->filtersHandler[$filterType];
     }

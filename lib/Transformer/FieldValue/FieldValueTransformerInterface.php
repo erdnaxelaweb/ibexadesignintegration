@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
@@ -20,6 +21,6 @@ interface FieldValueTransformerInterface
         AbstractContent $content,
         string $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
+        ContentFieldDefinition $contentFieldDefinition
     );
 }

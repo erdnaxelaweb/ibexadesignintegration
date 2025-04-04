@@ -14,10 +14,10 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
-use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
-use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\SearchTypeFactoryInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\PagerConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
@@ -35,7 +35,7 @@ class PagerBuilder
 
     public function __construct(
         iterable $searchTypeFactories,
-        private readonly PagerConfigurationManager $pagerConfigurationManager,
+        private readonly DefinitionManager $definitionManager,
         private readonly RequestStack $requestStack,
         private readonly EventDispatcherInterface $eventDispatcher
     ) {
@@ -50,12 +50,13 @@ class PagerBuilder
         SearchData $defaultSearchData = new SearchData()
     ): PagerfantaInterface {
         $request = $this->requestStack->getCurrentRequest();
-        $configuration = $this->pagerConfigurationManager->getConfiguration($type);
+        /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition $pagerDefinition */
+        $pagerDefinition = $this->definitionManager->getDefinition(PagerDefinition::class, $type);
 
-        $searchTypeFactory = $this->searchTypeFactories[$configuration['searchType']];
+        $searchTypeFactory = $this->searchTypeFactories[$pagerDefinition->getSearchType()];
         $searchType = ($searchTypeFactory)(
             $type,
-            $configuration,
+            $pagerDefinition,
             $request,
             $defaultSearchData
         );
@@ -63,7 +64,7 @@ class PagerBuilder
         $query = $searchType->getQuery();
         $event = new PagerBuildEvent(
             $type,
-            $configuration,
+            $pagerDefinition,
             $query,
             $searchType->getSearchData(),
             $defaultSearchData,
@@ -87,8 +88,8 @@ class PagerBuilder
         }
 
         $pagerFanta = new Pager($searchType->getAdapter());
-        $pagerFanta->setMaxPerPage($configuration['maxPerPage']);
-        $pagerFanta->setHeadlineCount($configuration['headlineCount']);
+        $pagerFanta->setMaxPerPage($pagerDefinition->getMaxPerPage());
+        $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
 
         $page = $request->get('page', 1);
         $pagerFanta->setCurrentPage(min(is_numeric($page) ? $page : 1, $pagerFanta->getNbPages()));

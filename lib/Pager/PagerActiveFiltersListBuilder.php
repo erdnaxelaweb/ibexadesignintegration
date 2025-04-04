@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
@@ -29,8 +30,8 @@ class PagerActiveFiltersListBuilder
     }
 
     public function buildList(
-        string     $searchFormName,
-        array      $pagerConfiguration,
+        string $searchFormName,
+        PagerDefinition $pagerDefinition,
         FormInterface $filtersFormBuilder,
         SearchData $searchData
     ): array {
@@ -39,10 +40,10 @@ class PagerActiveFiltersListBuilder
             if (empty($filterValue)) {
                 continue;
             }
-            $filterConfiguration = $pagerConfiguration['filters'][$filter];
+            $pagerFilterDefinition = $pagerDefinition->getFilter($filter);
 
             $labels = $this->filterHandler->getValuesLabels(
-                $filterConfiguration['type'],
+                $pagerFilterDefinition->getType(),
                 is_array($filterValue) ? $filterValue : [$filterValue],
                 $filtersFormBuilder->get('filters')
                     ->get($filter)

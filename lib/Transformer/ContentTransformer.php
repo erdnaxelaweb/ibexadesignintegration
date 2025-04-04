@@ -13,11 +13,14 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
+use DateTime;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\LazyTransformer;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\LocationService;
@@ -25,14 +28,15 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Ibexa\HttpCache\Handler\TagHandler;
+use Symfony\Component\VarExporter\Instantiator;
 
 class ContentTransformer
 {
     public function __construct(
-        protected ContentConfigurationManager $contentConfigurationManager,
-        protected LinkGenerator               $linkGenerator,
-        protected BreadcrumbGenerator         $breadcrumbGenerator,
-        protected FieldValueTransformer       $fieldValueTransformers,
+        protected DefinitionManager $definitionManager,
+        protected LinkGenerator $linkGenerator,
+        protected BreadcrumbGenerator $breadcrumbGenerator,
+        protected FieldValueTransformer $fieldValueTransformers,
         protected ContentService $contentService,
         protected LocationService $locationService,
         protected TagHandler $responseTagger
@@ -135,14 +139,28 @@ class ContentTransformer
         $initializers += [
             "\0*\0fields" => function (Content $instance, string $propertyName, ?string $propertyScope) {
                 $contentType = $instance->getContentType();
-                $contentConfiguration = $this->contentConfigurationManager->getConfiguration(
+                $contentDefinition = $this->definitionManager->getDefinition(
+                    ContentDefinition::class,
                     $contentType->identifier
                 );
-                return new ContentFieldsCollection(
-                    $instance,
-                    $contentConfiguration['fields'],
-                    $this->fieldValueTransformers
-                );
+
+                $contentFields = new ContentFieldsCollection();
+                foreach ($contentDefinition->getFields() as $fieldIdentifier => $contentFieldDefinition) {
+                    $contentFields->set(
+                        $fieldIdentifier,
+                        new LazyTransformer(
+                            function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
+                                return $this->fieldValueTransformers->transform(
+                                    $instance,
+                                    $fieldIdentifier,
+                                    $contentFieldDefinition
+                                );
+                            }
+                        )
+                    );
+                }
+
+                return $contentFields;
             },
             "name" => function (Content $instance, string $propertyName, ?string $propertyScope) {
                 return $instance->innerContent->getName();

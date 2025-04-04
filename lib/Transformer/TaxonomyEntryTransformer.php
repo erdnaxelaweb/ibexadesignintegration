@@ -11,16 +11,20 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
+use DateTime;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\TaxonomyEntryDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\LazyTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\TaxonomyEntryConfigurationManager;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 use Ibexa\HttpCache\Handler\TagHandler;
 
 class TaxonomyEntryTransformer
 {
     public function __construct(
-        protected TaxonomyEntryConfigurationManager $taxonomyEntryConfigurationManager,
+        protected DefinitionManager $definitionManager,
         protected FieldValueTransformer $fieldValueTransformers,
         protected TagHandler $responseTagger
     ) {
@@ -56,14 +60,28 @@ class TaxonomyEntryTransformer
         $initializers += [
             "\0*\0fields" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
                 $contentType = $instance->innerContent->getContentType();
-                $contentConfiguration = $this->taxonomyEntryConfigurationManager->getConfiguration(
+                $taxonomyEntryDefinition = $this->definitionManager->getDefinition(
+                    TaxonomyEntryDefinition::class,
                     $contentType->identifier
                 );
-                return new ContentFieldsCollection(
-                    $instance,
-                    $contentConfiguration['fields'],
-                    $this->fieldValueTransformers
-                );
+
+                $contentFields = new ContentFieldsCollection();
+                foreach ($taxonomyEntryDefinition->getFields() as $fieldIdentifier => $contentFieldDefinition) {
+                    $contentFields->set(
+                        $fieldIdentifier,
+                        new LazyTransformer(
+                            function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
+                                return $this->fieldValueTransformers->transform(
+                                    $instance,
+                                    $fieldIdentifier,
+                                    $contentFieldDefinition
+                                );
+                            }
+                        )
+                    );
+                }
+
+                return $contentFields;
             },
             "name" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope) {
                 return $instance->innerContent->getName();

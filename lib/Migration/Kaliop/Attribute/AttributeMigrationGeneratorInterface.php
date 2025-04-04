@@ -11,7 +11,12 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Migration\Kaliop\Attribute;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
+
 interface AttributeMigrationGeneratorInterface
 {
-    public function generate(string $fieldIdentifier, array $field): array;
+    /**
+     * @return array<string, mixed>
+     */
+    public function generate(string $fieldIdentifier, ContentFieldDefinition $field): array;
 }

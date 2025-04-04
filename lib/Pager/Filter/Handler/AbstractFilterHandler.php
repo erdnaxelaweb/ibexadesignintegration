@@ -11,13 +11,14 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFilterHandler implements FilterHandlerInterface
 {
-    public function getAggregation(string $filterName, array $options = []): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
     {
         return null;
     }

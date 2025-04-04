@@ -11,6 +11,8 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
@@ -30,8 +32,8 @@ class PagerSearchFormBuilder
     }
 
     public function build(
-        string                      $type,
-        array                       $pagerConfiguration,
+        string $type,
+        PagerDefinition $pagerDefinition,
         AggregationResultCollection $aggregationResultCollection,
         SearchData                  $searchData
     ): FormBuilderInterface {
@@ -44,7 +46,7 @@ class PagerSearchFormBuilder
             'block_prefix' => 'filters',
         ]);
 
-        foreach ($pagerConfiguration['filters'] as $filterName => $filter) {
+        foreach ($pagerDefinition->getFilters() as $filterName => $filter) {
             $aggregationResult = $aggregationResultCollection->has($filterName) ?
                 $aggregationResultCollection->get($filterName) : null;
 
@@ -52,11 +54,11 @@ class PagerSearchFormBuilder
         }
 
         $builder->add($formFilters);
-        if (count($pagerConfiguration['sorts']) > 1) {
+        if (count($pagerDefinition->getSorts()) > 0) {
             $builder->add('sort', ChoiceType::class, [
                 'choices' => array_combine(
-                    array_keys($pagerConfiguration['sorts']),
-                    array_keys($pagerConfiguration['sorts'])
+                    array_keys($pagerDefinition->getSorts()),
+                    array_keys($pagerDefinition->getSorts())
                 ),
                 'block_prefix' => 'sort',
             ]);
@@ -71,20 +73,20 @@ class PagerSearchFormBuilder
     protected function resolveFilter(
         FormBuilderInterface $formFilters,
         string $filterName,
-        array $filter,
+        PagerFilterDefinition $filterDefinition,
         ?AggregationResult $aggregationResult = null
     ): void {
         $this->filterHandler->addForm(
-            $filter['type'],
+            $filterDefinition->getType(),
             $formFilters,
             $filterName,
+            $filterDefinition->getOptions(),
             $aggregationResult,
-            $filter['options'],
         );
 
-        if (! empty($filter['nested'])) {
-            foreach ($filter['nested'] as $filterName => $filter) {
-                $this->resolveFilter($formFilters, $filterName, $filter, $aggregationResult);
+        if (!empty($filterDefinition->getNestedFilters())) {
+            foreach ($filterDefinition->getNestedFilters() as $filterName => $filterDefinition) {
+                $this->resolveFilter($formFilters, $filterName, $filterDefinition, $aggregationResult);
             }
         }
     }

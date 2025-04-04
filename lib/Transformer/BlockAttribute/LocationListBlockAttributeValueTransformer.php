@@ -3,6 +3,8 @@
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
@@ -17,9 +19,9 @@ class LocationListBlockAttributeValueTransformer implements BlockAttributeValueT
         BlockValue $blockValue,
         string $attributeIdentifier,
         BlockDefinition $blockDefinition,
-        array $attributeConfiguration
-    ) {
-        $max = $attributeConfiguration['options']['max'];
+        BlockAttributeDefinition $attributeDefinition
+    ): Content|array|null {
+        $max = $attributeDefinition['options']['max'];
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)
             ->getValue();
         if (empty($attributeValue)) {

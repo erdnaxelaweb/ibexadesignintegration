@@ -11,6 +11,7 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
@@ -20,8 +21,8 @@ class SelectionFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
+        ContentFieldDefinition $contentFieldDefinition
+    ): array {
         /** @var \Ibexa\Core\FieldType\Selection\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         return array_intersect_key($fieldDefinition->fieldSettings['options'], array_flip($fieldValue->selection));

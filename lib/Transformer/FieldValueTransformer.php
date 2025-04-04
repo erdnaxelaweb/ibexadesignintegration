@@ -11,6 +11,8 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 
 class FieldValueTransformer
@@ -28,8 +30,11 @@ class FieldValueTransformer
         }
     }
 
-    public function transform(AbstractContent $content, string $fieldIdentifier, array $fieldConfiguration)
-    {
+    public function transform(
+        AbstractContent $content,
+        string $fieldIdentifier,
+        ContentFieldDefinition $contentFieldDefinition
+    ): mixed {
         $fieldDefinition = $content->getContentType()
             ->getFieldDefinition($fieldIdentifier);
         if ($fieldDefinition) {
@@ -38,7 +43,7 @@ class FieldValueTransformer
                 $content,
                 $fieldIdentifier,
                 $fieldDefinition,
-                $fieldConfiguration
+                $contentFieldDefinition
             );
         }
         return null;

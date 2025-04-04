@@ -11,8 +11,10 @@
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
@@ -28,10 +30,10 @@ class ContentFieldValueTransformer implements FieldValueTransformerInterface
         AbstractContent $content,
         string          $fieldIdentifier,
         FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
-        $max = $fieldConfiguration['options']['max'];
-        /** @var \Ibexa\Core\FieldType\RelationList\Value $fieldValue */
+        ContentFieldDefinition $contentFieldDefinition
+    ): Content|array|null {
+        $max = $contentFieldDefinition->getOption('max');
+        /** @var RelationValue|RelationListValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
         $destinationContentIds = [];
 
