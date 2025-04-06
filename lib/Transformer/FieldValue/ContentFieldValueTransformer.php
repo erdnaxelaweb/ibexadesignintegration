@@ -20,20 +20,25 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\FieldType\Relation\Value as RelationValue;
 use Ibexa\Core\FieldType\RelationList\Value as RelationListValue;
 
-class ContentFieldValueTransformer implements FieldValueTransformerInterface
+class ContentFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected ContentTransformer $contentTransformer
     ) {
     }
 
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return in_array($ibexaFieldTypeIdentifier, ['ezobjectrelation', 'ezobjectrelationlist'], true);
+    }
+
     /**
      * @return Content|Content[]|null
      */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Content|array|null {
         $max = $contentFieldDefinition->getOption('max');

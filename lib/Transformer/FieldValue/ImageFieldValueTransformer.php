@@ -21,7 +21,7 @@ use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\Helper\FieldHelper;
 
-class ImageFieldValueTransformer implements FieldValueTransformerInterface
+class ImageFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected ImageGenerator $imageGenerator,
@@ -30,10 +30,15 @@ class ImageFieldValueTransformer implements FieldValueTransformerInterface
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return in_array($ibexaFieldTypeIdentifier, ['ezimage', 'ezimageasset'], true);
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Closure {
         return function (string $variationName) use ($content, $fieldIdentifier): ?Image {

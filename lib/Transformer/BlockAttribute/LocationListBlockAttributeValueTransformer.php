@@ -18,20 +18,25 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class LocationListBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class LocationListBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
     public function __construct(
         protected ContentTransformer $contentTransformer
     ) {
     }
 
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'locationlist';
+    }
+
     /**
      * @return Content|Content[]|null
      */
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): Content|array|null {
         $max = $attributeDefinition['options']['max'];

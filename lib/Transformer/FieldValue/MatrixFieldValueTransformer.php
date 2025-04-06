@@ -16,15 +16,20 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class MatrixFieldValueTransformer implements FieldValueTransformerInterface
+class MatrixFieldValueTransformer extends AbstractFieldValueTransformer
 {
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ezmatrix';
+    }
+
     /**
      * @return array<array<mixed>>
      */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array {
         /** @var \Ibexa\FieldTypeMatrix\FieldType\Value $fieldValue */

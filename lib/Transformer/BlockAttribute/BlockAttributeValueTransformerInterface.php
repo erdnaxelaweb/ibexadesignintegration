@@ -18,13 +18,12 @@ use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitio
 
 interface BlockAttributeValueTransformerInterface
 {
-    /**
-     * @return mixed
-     */
-    public function transformAttributeValue(
+    public function __invoke(
         BlockValue $blockValue,
         string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+        BlockDefinition $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
-    );
+    ): mixed;
+
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool;
 }

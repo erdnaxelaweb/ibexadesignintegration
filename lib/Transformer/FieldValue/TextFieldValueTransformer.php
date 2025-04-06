@@ -17,12 +17,17 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\TextFieldValue;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class TextFieldValueTransformer implements FieldValueTransformerInterface
+class TextFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'eztext';
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?TextFieldValue {
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */

@@ -16,12 +16,25 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class GenericBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class GenericBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    /**
+     * @param string[] $supportedTypes
+     */
+    public function __construct(
+        protected array $supportedTypes = [],
+    ) {
+    }
+
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return in_array($ibexaBlockAttributeTypeIdentifier, $this->supportedTypes, true);
+    }
+
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ) {
         return $blockValue->getAttribute($attributeIdentifier)

@@ -16,19 +16,24 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class SelectionFieldValueTransformer implements FieldValueTransformerInterface
+class SelectionFieldValueTransformer extends AbstractFieldValueTransformer
 {
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return in_array($ibexaFieldTypeIdentifier, ['ezselection'], true);
+    }
+
     /**
      * @return array<string, string>
      */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array {
         /** @var \Ibexa\Core\FieldType\Selection\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        return array_intersect_key($fieldDefinition->fieldSettings['options'], array_flip($fieldValue->selection));
+        return array_intersect_key($ibexaFieldDefinition->fieldSettings['options'], array_flip($fieldValue->selection));
     }
 }

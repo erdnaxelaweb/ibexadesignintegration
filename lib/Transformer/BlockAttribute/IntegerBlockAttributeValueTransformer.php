@@ -16,12 +16,17 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class IntegerBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class IntegerBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'integer';
+    }
+
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): int {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)

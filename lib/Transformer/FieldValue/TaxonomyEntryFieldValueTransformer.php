@@ -19,17 +19,23 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Taxonomy\FieldType\TaxonomyEntry\Value as TaxonomyEntryValue;
 
-class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterface
+class TaxonomyEntryFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected TaxonomyEntryTransformer $taxonomyEntryTransformer
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ibexa_taxonomy_entry';
+    }
+
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?TaxonomyEntry {
         /** @var TaxonomyEntryValue $fieldValue */

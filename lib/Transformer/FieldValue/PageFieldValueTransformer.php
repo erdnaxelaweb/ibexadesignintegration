@@ -23,7 +23,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Core\MVC\Symfony\FieldType\View\ParameterProviderRegistryInterface;
 use Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry;
 
-class PageFieldValueTransformer implements FieldValueTransformerInterface
+class PageFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected LayoutDefinitionRegistry $layoutDefinitionRegistry,
@@ -33,13 +33,18 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
     ) {
     }
 
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ezlandingpage';
+    }
+
     /**
      * @return array{layout: Layout, zones: array<string, LayoutZone>, parameters: array<string, mixed>}
      */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array {
         $field = $content->getField($fieldIdentifier);
@@ -52,9 +57,9 @@ class PageFieldValueTransformer implements FieldValueTransformerInterface
         $layoutDefinition = $this->definitionManager->getDefinition(BlockLayoutDefinition::class, $page->getLayout());
 
         $parameters = [];
-        if ($this->parameterProviderRegistry->hasParameterProvider($fieldDefinition->fieldTypeIdentifier)) {
+        if ($this->parameterProviderRegistry->hasParameterProvider($ibexaFieldDefinition->fieldTypeIdentifier)) {
             $parameters = $this->parameterProviderRegistry
-                ->getParameterProvider($fieldDefinition->fieldTypeIdentifier)
+                ->getParameterProvider($ibexaFieldDefinition->fieldTypeIdentifier)
                 ->getViewParameters($field);
         }
 

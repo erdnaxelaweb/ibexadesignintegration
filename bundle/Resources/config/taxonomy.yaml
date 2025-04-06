@@ -13,12 +13,12 @@ services:
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryAssignementFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry_assignment' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'taxonomy_entry' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TaxonomyEntryFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_taxonomy_entry' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'taxonomy_entry' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\TaxonomyFieldFilterHandler:
         lazy: true

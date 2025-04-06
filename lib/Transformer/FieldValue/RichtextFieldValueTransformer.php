@@ -18,7 +18,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\Core\Helper\FieldHelper;
 
-class RichtextFieldValueTransformer implements FieldValueTransformerInterface
+class RichtextFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected RichTextConverterInterface $richTextOutputConverter,
@@ -26,10 +26,15 @@ class RichtextFieldValueTransformer implements FieldValueTransformerInterface
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return in_array($ibexaFieldTypeIdentifier, ['ezrichtext'], true);
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): bool|string|null {
         /** @var \Ibexa\FieldTypeRichText\FieldType\RichText\Value $fieldValue */

@@ -17,12 +17,17 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Coordinates;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
-class LocationFieldValueTransformer implements FieldValueTransformerInterface
+class LocationFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ezgmaplocation';
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Coordinates {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */

@@ -18,17 +18,22 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\ItemInterface;
 
-class UrlFieldValueTransformer implements FieldValueTransformerInterface
+class UrlFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected FactoryInterface $factory,
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ezurl';
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ItemInterface {
         /** @var \Ibexa\Core\FieldType\Url\Value $fieldValue */

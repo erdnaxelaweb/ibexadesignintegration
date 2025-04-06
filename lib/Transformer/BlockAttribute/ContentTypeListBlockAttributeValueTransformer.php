@@ -16,15 +16,20 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class ContentTypeListBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class ContentTypeListBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'contenttypelist';
+    }
+
     /**
      * @return string[]
      */
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): array {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)

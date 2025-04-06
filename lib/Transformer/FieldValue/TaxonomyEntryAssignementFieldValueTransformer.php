@@ -19,20 +19,25 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Taxonomy\FieldType\TaxonomyEntryAssignment\Value as TaxonomyEntryAssignmentValue;
 
-class TaxonomyEntryAssignementFieldValueTransformer implements FieldValueTransformerInterface
+class TaxonomyEntryAssignementFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected TaxonomyEntryTransformer $taxonomyEntryTransformer
     ) {
     }
 
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ibexa_taxonomy_entry_assignment';
+    }
+
     /**
      * @return TaxonomyEntry[]|TaxonomyEntry
      */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array|TaxonomyEntry {
         $max = $contentFieldDefinition->getOption('max');

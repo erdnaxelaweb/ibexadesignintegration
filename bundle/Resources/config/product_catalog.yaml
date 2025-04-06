@@ -4,4 +4,4 @@ services:
         arguments:
             $productService: '@Ibexa\Contracts\ProductCatalog\Local\LocalProductServiceInterface'
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ibexa_product_specification' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'product_specification' }

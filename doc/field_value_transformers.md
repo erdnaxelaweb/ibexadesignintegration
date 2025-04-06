@@ -22,12 +22,14 @@ Field value transformers are defined as Symfony services with specific tags. Her
 ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FileFieldValueTransformer:
     lazy: true
     tags:
-        - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezbinaryfile' }
+        - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'file' }
 ```
 
 Key components:
 - **Tags**: Tagged with `erdnaxelaweb.ibexa_design_integration.transformer.field_value` to be collected by the tagged iterator
-- **Type**: Each transformer has a specific type (e.g., 'ezbinaryfile') that corresponds to the field type it handles in Ibexa CMS
+- **Type**: Each transformer has a specific type (e.g., 'file') that corresponds to the content field type
+
+
 
 ## Implementation
 
@@ -59,7 +61,7 @@ The main `ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer`
 
 ## Supported transformers
 
-The Ibexa Design Integration bundle includes the following block attribute value transformers:
+The Ibexa Design Integration bundle includes the following field types value transformers:
 
 - **ezboolean**
 - **ezdate**

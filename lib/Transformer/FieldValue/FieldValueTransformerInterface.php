@@ -18,13 +18,12 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 interface FieldValueTransformerInterface
 {
-    /**
-     * @return mixed
-     */
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function __invoke(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
-    );
+    ): mixed;
+
+    public function support(string $ibexaFieldTypeIdentifier): bool;
 }

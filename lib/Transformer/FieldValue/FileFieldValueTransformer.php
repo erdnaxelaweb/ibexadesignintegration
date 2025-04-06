@@ -21,7 +21,7 @@ use Ibexa\Core\MVC\Symfony\Routing\Generator\RouteReferenceGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-class FileFieldValueTransformer implements FieldValueTransformerInterface
+class FileFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected RouterInterface $router,
@@ -29,10 +29,15 @@ class FileFieldValueTransformer implements FieldValueTransformerInterface
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ezbinaryfile';
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?File {
         /** @var \Ibexa\Core\FieldType\BinaryFile\Value $fieldValue */

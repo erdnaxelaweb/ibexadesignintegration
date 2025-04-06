@@ -10,7 +10,7 @@ services:
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FormFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezform' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'form' }
 
     erdnaxelaweb.ibexa_design_integration.form.field.single_line.generator:
         class: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\Form\GenericFormFieldGenerator

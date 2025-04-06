@@ -18,17 +18,22 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Contracts\ProductCatalog\Local\LocalProductServiceInterface;
 use Ibexa\Contracts\ProductCatalog\Values\ProductInterface;
 
-class ProductSpecificationTransformer implements FieldValueTransformerInterface
+class ProductSpecificationTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected LocalProductServiceInterface $productService
     ) {
     }
 
-    public function transformFieldValue(
-        AbstractContent $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
+    public function support(string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ibexa_product_specification';
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ProductInterface {
         return $this->productService->getProductFromContent($content);

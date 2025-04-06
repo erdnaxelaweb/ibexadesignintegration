@@ -19,17 +19,22 @@ use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitio
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
 use Ibexa\FieldTypeRichText\FieldType\RichText\Value as RichtextValue;
 
-class RichtextBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class RichtextBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
     public function __construct(
         protected RichTextConverterInterface $richTextOutputConverter,
     ) {
     }
 
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'richtext';
+    }
+
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): bool|string {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)

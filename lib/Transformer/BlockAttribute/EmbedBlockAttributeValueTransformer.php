@@ -17,17 +17,22 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class EmbedBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class EmbedBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
     public function __construct(
         protected ContentTransformer $contentTransformer
     ) {
     }
 
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'embeed';
+    }
+
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): ?\ErdnaxelaWeb\IbexaDesignIntegration\Value\Content {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)

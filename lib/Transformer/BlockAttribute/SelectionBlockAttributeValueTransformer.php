@@ -16,15 +16,20 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 
-class SelectionBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class SelectionBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return in_array($ibexaBlockAttributeTypeIdentifier, ['multiple', 'select', 'radio'], true);
+    }
+
     /**
      * @return string[]
      */
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): array {
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)

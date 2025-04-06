@@ -16,11 +16,12 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\BlockAttribut
 use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockAttributeDefinition;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
+use InvalidArgumentException;
 
 class BlockAttributeValueTransformer
 {
     /**
-     * @var BlockAttributeValueTransformerInterface[]
+     * @var array<string, BlockAttributeValueTransformerInterface[]>
      */
     protected array $blockAttributeValueTransformers = [];
 
@@ -34,20 +35,49 @@ class BlockAttributeValueTransformer
         }
     }
 
+    public function registerTransformer(
+        string $type,
+        BlockAttributeValueTransformerInterface $blockAttributeValueTransformer
+    ): void {
+        if (array_key_exists($type, $this->blockAttributeValueTransformers)) {
+            $this->blockAttributeValueTransformers[$type] = [];
+        }
+        $this->blockAttributeValueTransformers[$type][] = $blockAttributeValueTransformer;
+    }
+
+    public function getTransformer(string $blockAttributeTypeIdentifier, string $ibexaBlockAttributeTypeIdentifier): BlockAttributeValueTransformerInterface
+    {
+        if (!array_key_exists($blockAttributeTypeIdentifier, $this->blockAttributeValueTransformers)) {
+            throw new InvalidArgumentException(sprintf('No transformer found for type "%s".', $blockAttributeTypeIdentifier));
+        }
+
+        $transformers = $this->blockAttributeValueTransformers[$blockAttributeTypeIdentifier];
+        foreach ($transformers as $transformer) {
+            if ($transformer->support($ibexaBlockAttributeTypeIdentifier)) {
+                return $transformer;
+            }
+        }
+
+        throw new InvalidArgumentException(sprintf('No transformer found for type "%s".', $blockAttributeTypeIdentifier));
+    }
+
     public function transform(
-        BlockValue $blockValue,
-        BlockDefinition $blockDefinition,
-        string $attributeIdentifier,
+        BlockValue               $blockValue,
+        BlockDefinition          $ibexaBlockDefinition,
+        string                   $attributeIdentifier,
         BlockAttributeDefinition $attributeDefinition,
     ): mixed {
-        $attribute = $blockDefinition->getAttribute($attributeIdentifier);
+        $attribute = $ibexaBlockDefinition->getAttribute($attributeIdentifier);
 
         if ($attribute) {
-            $transformer = $this->blockAttributeValueTransformers[$attribute->getType()];
-            return $transformer->transformAttributeValue(
+            $attributeValueTransformer = $this->getTransformer(
+                $attributeDefinition->getType(),
+                $attribute->getType()
+            );
+            return ($attributeValueTransformer)(
                 $blockValue,
                 $attributeIdentifier,
-                $blockDefinition,
+                $ibexaBlockDefinition,
                 $attributeDefinition
             );
         }

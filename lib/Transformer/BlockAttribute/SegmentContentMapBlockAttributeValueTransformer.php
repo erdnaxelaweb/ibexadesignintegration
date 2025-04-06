@@ -22,7 +22,7 @@ use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinition;
 use Ibexa\Contracts\Segmentation\SegmentationServiceInterface;
 
-class SegmentContentMapBlockAttributeValueTransformer implements BlockAttributeValueTransformerInterface
+class SegmentContentMapBlockAttributeValueTransformer extends AbstractBlockAttributeValueTransformer
 {
     public function __construct(
         protected PermissionResolver $permissionResolver,
@@ -32,10 +32,15 @@ class SegmentContentMapBlockAttributeValueTransformer implements BlockAttributeV
     ) {
     }
 
-    public function transformAttributeValue(
-        BlockValue $blockValue,
-        string $attributeIdentifier,
-        BlockDefinition $blockDefinition,
+    public function support(string $ibexaBlockAttributeTypeIdentifier): bool
+    {
+        return $ibexaBlockAttributeTypeIdentifier === 'segment_content_map';
+    }
+
+    protected function transformAttributeValue(
+        BlockValue               $blockValue,
+        string                   $attributeIdentifier,
+        BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): ?Content {
         return $this->getContentMapLocationId($blockValue, $attributeIdentifier);
