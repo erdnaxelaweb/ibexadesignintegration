@@ -12,11 +12,14 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\SearchTypeFactoryInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionInterface;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerDefinitionTransformer as NativePagerDefinitionTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerFilterDefinitionTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\PagerSortDefinitionTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\VarExporter\Instantiator;
 
 class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
 {
@@ -41,6 +44,23 @@ class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
         foreach ($searchTypeFactories as $type => $searchTypeFactory) {
             $this->availableSearchTypes[] = $type;
         }
+    }
+
+    public function fromHash(array $hash): PagerDefinition
+    {
+        return $this->lazyFromHash(Instantiator::instantiate(PagerDefinition::class, [
+            'identifier' => $hash['identifier'],
+        ]), $hash['hash']);
+    }
+
+    /**
+     * @param PagerDefinition $definition
+     */
+    public function toHash(DefinitionInterface $definition): array
+    {
+        $hash = parent::toHash($definition);
+        $hash['searchType'] = $definition->getSearchType();
+        return $hash;
     }
 
     public function configureOptions(OptionsResolver $optionsResolver, array $options): void
