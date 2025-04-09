@@ -5,6 +5,7 @@ services:
             $layoutDefinitionRegistry: '@Ibexa\FieldTypePage\Registry\LayoutDefinitionRegistry'
             $blockTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockTransformer'
             $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+            $parameterProviderRegistry: '@Ibexa\Core\MVC\Symfony\FieldType\View\ParameterProviderRegistry'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'blocks' }
 
