@@ -16,8 +16,6 @@ services:
             $blockDefinitionFactory: '@Ibexa\FieldTypePage\FieldType\Page\Block\Definition\CachedBlockDefinitionFactory'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttributeValueTransformer:
-        arguments:
-            $transformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', index_by: 'type' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber\LandingPageBlockSubscriber:
         arguments:
@@ -96,5 +94,5 @@ services:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\ContentTypeListBlockAttributeValueTransformer
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'content'}
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'selection'}
 

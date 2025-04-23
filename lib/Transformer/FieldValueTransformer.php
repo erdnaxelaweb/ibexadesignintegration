@@ -24,19 +24,9 @@ class FieldValueTransformer
      */
     protected array $fieldValueTransformers = [];
 
-    /**
-     * @param iterable<FieldValueTransformerInterface> $transformers
-     */
-    public function __construct(iterable $transformers)
-    {
-        foreach ($transformers as $type => $fieldValueTransformer) {
-            $this->registerTransformer($type, $fieldValueTransformer);
-        }
-    }
-
     public function registerTransformer(string $type, FieldValueTransformerInterface $fieldValueTransformer): void
     {
-        if (array_key_exists($type, $this->fieldValueTransformers)) {
+        if (!array_key_exists($type, $this->fieldValueTransformers)) {
             $this->fieldValueTransformers[$type] = [];
         }
         $this->fieldValueTransformers[$type][] = $fieldValueTransformer;
@@ -45,7 +35,7 @@ class FieldValueTransformer
     public function getTransformer(string $contentFieldType, string $ibexaFieldTypeIdentifier): FieldValueTransformerInterface
     {
         if (!array_key_exists($contentFieldType, $this->fieldValueTransformers)) {
-            throw new InvalidArgumentException(sprintf('No transformer found for type "%s".', $contentFieldType));
+            throw new InvalidArgumentException(sprintf('No transformer found for field type "%s".', $contentFieldType));
         }
 
         $transformers = $this->fieldValueTransformers[$contentFieldType];
@@ -54,8 +44,7 @@ class FieldValueTransformer
                 return $transformer;
             }
         }
-
-        throw new InvalidArgumentException(sprintf('No transformer found for type "%s".', $contentFieldType));
+        throw new InvalidArgumentException(sprintf('No transformer found for ibexa field type "%s".', $ibexaFieldTypeIdentifier));
     }
 
     public function transform(

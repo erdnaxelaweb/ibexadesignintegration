@@ -26,7 +26,7 @@ class EmbedBlockAttributeValueTransformer extends AbstractBlockAttributeValueTra
 
     public function support(string $ibexaBlockAttributeTypeIdentifier): bool
     {
-        return $ibexaBlockAttributeTypeIdentifier === 'embeed';
+        return $ibexaBlockAttributeTypeIdentifier === 'embed';
     }
 
     protected function transformAttributeValue(

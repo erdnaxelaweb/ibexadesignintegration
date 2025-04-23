@@ -15,8 +15,6 @@ services:
             $responseTagger: '@Ibexa\HttpCache\Handler\TagHandler'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer:
-        arguments:
-            $transformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezboolean:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
