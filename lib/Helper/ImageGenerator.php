@@ -117,7 +117,7 @@ class ImageGenerator
 
         $sources = [];
         foreach ($variationConfig as $sourceReqs) {
-            $sourceVariationName = "{$variationName}_{$sourceReqs['suffix']}";
+            $sourceVariationName = "{$variationName}_{$sourceReqs->getSuffix()}";
             $typeVariationNames = [
                 '' => $sourceVariationName,
                 ' 2x' => $sourceVariationName . '_retina',
@@ -142,7 +142,7 @@ class ImageGenerator
 
             $source = $this->getImageVariationSource(
                 $uris,
-                $sourceReqs['media'],
+                $sourceReqs->getMedia(),
                 $baseVariation,
                 $sourceVariationName
             );
