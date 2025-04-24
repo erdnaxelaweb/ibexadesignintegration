@@ -45,6 +45,7 @@ class TaxonomyEntryTransformer
         ]);
         $skippedProperties = [
             'id' => true,
+            'innerTaxonomy' => true,
         ];
         return $this->createLazyTaxonomyEntry([], $skippedProperties, $instance);
     }
