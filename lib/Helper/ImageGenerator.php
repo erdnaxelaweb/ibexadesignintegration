@@ -53,7 +53,7 @@ class ImageGenerator
             return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
         }
         if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
-            $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
+            $relatedContent = $this->contentService->loadContent((int) $fieldValue->destinationContentId);
             return $this->generateImage(($this->contentTransformer)($relatedContent), 'image', $variationName);
         }
         return null;
