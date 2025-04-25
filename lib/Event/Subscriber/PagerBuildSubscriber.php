@@ -42,19 +42,23 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $pagerDefinition = $event->pagerDefinition;
         $searchData = $event->searchData;
 
-        if (isset($eventContext['location']) && $eventContext['location'] instanceof Location && $eventContext['location']->id) {
-            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
+        if (isset($eventContext['location'])) {
+            $parentLocationId = $eventContext['location'] instanceof Location && $eventContext['location']->id ?
+                $eventContext['location']->id :
+                $eventContext['location'];
+
+            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
         }
 
-        if (!empty($pagerDefinition->getContentTypes())) {
+        if (!empty($pagerDefinition->getResultTypes())) {
             $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
-                $pagerDefinition->getContentTypes()
+                $pagerDefinition->getResultTypes()
             );
         }
 
-        if (!empty($pagerDefinition->getExcludedContentTypes())) {
+        if (!empty($pagerDefinition->getExcludedResultTypes())) {
             $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
-                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedContentTypes())
+                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedResultTypes())
             );
         }
 
