@@ -107,6 +107,8 @@ class PagerFilterDefinitionTransformer extends NativePagerFilterDefinitionTransf
                 ]);
             }
             $options['nested'] = $nestedFilters;
+        } else{
+            $options['nested'] = [];
         }
         return parent::lazyInitialize($instance, $options);
     }

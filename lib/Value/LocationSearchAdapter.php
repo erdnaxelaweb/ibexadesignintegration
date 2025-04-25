@@ -14,6 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 
 class LocationSearchAdapter extends AbstractSearchAdapter
@@ -23,9 +24,12 @@ class LocationSearchAdapter extends AbstractSearchAdapter
      */
     protected function executeQuery(
         SearchService $searchService,
-        LocationQuery $query,
+        Query $query,
         array $languageFilter
     ): SearchResult {
+        if(!$query instanceof LocationQuery) {
+            throw new \InvalidArgumentException('Query must be an instance of LocationQuery');
+        }
         return $searchService->findLocations($query, $languageFilter);
     }
 }
