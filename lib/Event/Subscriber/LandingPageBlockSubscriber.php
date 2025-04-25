@@ -31,7 +31,7 @@ class LandingPageBlockSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            BlockRenderEvents::GLOBAL_BLOCK_RENDER_PRE => 'onBlockPreRender',
+            BlockRenderEvents::GLOBAL_BLOCK_RENDER_PRE => ['onBlockPreRender', 10],
         ];
     }
 
