@@ -35,7 +35,7 @@ class ContentSearchTypeFactory implements SearchTypeFactoryInterface
     public function __invoke(
         string $searchFormName,
         PagerDefinition $pagerDefinition,
-        Request $request,
+        ?Request $request,
         SearchData $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
         return new ContentSearchType(

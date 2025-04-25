@@ -13,22 +13,31 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\LocationSearchType;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\DocumentSearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use Novactive\EzSolrSearchExtra\Repository\DocumentSearchService;
 use Symfony\Component\HttpFoundation\Request;
 
-class LocationSearchTypeFactory extends ContentSearchTypeFactory
+class DocumentSearchTypeFactory implements SearchTypeFactoryInterface
 {
+    public function __construct(
+        protected DocumentSearchService         $documentSearchService,
+        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
+        protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+    ) {
+    }
+
     public function __invoke(
-        string $searchFormName,
+        string          $searchFormName,
         PagerDefinition $pagerDefinition,
-        ?Request $request,
-        SearchData $defaultSearchData = new SearchData()
+        ?Request         $request,
+        SearchData      $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
-        return new LocationSearchType(
-            $this->searchService,
-            $this->contentTransformer,
+        return new DocumentSearchType(
+            $this->documentSearchService,
             $this->pagerSearchFormBuilder,
             $this->pagerActiveFiltersListBuilder,
             $searchFormName,

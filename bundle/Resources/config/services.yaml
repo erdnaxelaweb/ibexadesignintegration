@@ -7,6 +7,25 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\DefaultViewController:
     public: true
 
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\PagerRenderController:
+    arguments:
+      $httpClient: '@http_client'
+      $searchAppUrl: '%ibexa_design_integration.pager_renderer.node_url%'
+      $searchAppDevUrl: '%ibexa_design_integration.pager_renderer.node_dev_url%'
+    tags:
+      - { name: controller.service_arguments }
+
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\Api\PagerController:
+    arguments:
+      $pagerBuilder: '@ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder'
+      $pagerGenerator: '@ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\PagerGenerator'
+      $configResolver: '@ibexa.config.resolver'
+      $serializer: '@Symfony\Component\Serializer\SerializerInterface'
+      $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+      $formViewNormalizer: '@ErdnaxelaWeb\IbexaDesignIntegration\Normalizer\FormViewNormalizer'
+    tags:
+      - { name: controller.service_arguments }
+
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator:
@@ -38,3 +57,6 @@ services:
     parent: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
     arguments:
       $renderTemplate: '%ibexa_design_integration.display_functions_render_template%'
+      $fragmentHandler: '@fragment.handler'
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Normalizer\FormViewNormalizer:

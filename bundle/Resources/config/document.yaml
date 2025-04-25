@@ -1,0 +1,13 @@
+services:
+    ErdnaxelaWeb\IbexaDesignIntegration\Document\DocumentIndexer:
+        arguments:
+            $searchFieldResolver: '@ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver'
+            $documentBuilder: '@ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder'
+            $documentSearchHandler: '@Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver:
+        lazy: true
+        arguments:
+            $fieldNameGeneratorMap: '%ibexa.search.common.field_name_generator.map%'
+            $searchFieldTypesMap: []

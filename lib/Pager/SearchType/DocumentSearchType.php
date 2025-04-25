@@ -15,28 +15,23 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
-use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentSearchAdapter;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\DocumentSearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
-use Ibexa\Contracts\Core\Repository\SearchService;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Novactive\EzSolrSearchExtra\Query\DocumentQuery;
+use Novactive\EzSolrSearchExtra\Repository\DocumentSearchService;
 use Symfony\Component\HttpFoundation\Request;
 
-/**
- * @extends \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\AbstractSearchType<Query>
- */
-class ContentSearchType extends AbstractSearchType
+class DocumentSearchType extends AbstractSearchType
 {
     public function __construct(
-        protected SearchService $searchService,
-        protected ContentTransformer $contentTransformer,
-        PagerSearchFormBuilder $pagerSearchFormBuilder,
-        PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
-        string $searchFormName,
-        PagerDefinition $pagerDefinition,
-        ?Request $request,
-        SearchData $defaultSearchData = new SearchData()
+        protected DocumentSearchService $searchService,
+        PagerSearchFormBuilder          $pagerSearchFormBuilder,
+        PagerActiveFiltersListBuilder   $pagerActiveFiltersListBuilder,
+        string                          $searchFormName,
+        PagerDefinition                 $pagerDefinition,
+        ?Request                         $request,
+        SearchData                      $defaultSearchData = new SearchData()
     ) {
         parent::__construct(
             $pagerSearchFormBuilder,
@@ -50,10 +45,9 @@ class ContentSearchType extends AbstractSearchType
 
     public function getAdapter(): PagerAdapterInterface
     {
-        return new ContentSearchAdapter(
+        return new DocumentSearchAdapter(
             $this->query,
             $this->searchService,
-            $this->contentTransformer,
             [$this, 'getFiltersForm'],
             [$this, 'getActiveFilters']
         );
@@ -61,6 +55,6 @@ class ContentSearchType extends AbstractSearchType
 
     protected function initializeQuery(): void
     {
-        $this->query = new Query();
+        $this->query = new DocumentQuery();
     }
 }
