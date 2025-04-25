@@ -40,11 +40,11 @@ abstract class AbstractSearchType implements SearchTypeInterface
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         protected string $searchFormName,
         protected PagerDefinition $pagerDefinition,
-        protected Request $request,
+        protected ?Request $request,
         protected SearchData $defaultSearchData = new SearchData()
     ) {
         $this->initializeQuery();
-        $rawSearchData = $request->get($searchFormName, null);
+        $rawSearchData = $request?->get($searchFormName, null);
         $this->searchData = $rawSearchData !== null ? SearchData::createFromRequest(
             $rawSearchData
         ) : $this->defaultSearchData;
