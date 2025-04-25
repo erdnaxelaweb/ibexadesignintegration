@@ -1,0 +1,5 @@
+ibexa_design_integration.api.pager:
+    path: /api/pager/{type}
+    controller: ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\Api\PagerController::getPager
+    methods: [GET]
+

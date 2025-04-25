@@ -23,7 +23,7 @@ class LocationSearchTypeFactory extends ContentSearchTypeFactory
     public function __invoke(
         string $searchFormName,
         PagerDefinition $pagerDefinition,
-        Request $request,
+        ?Request $request,
         SearchData $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
         return new LocationSearchType(

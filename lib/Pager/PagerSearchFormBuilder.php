@@ -20,7 +20,6 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 
@@ -64,9 +63,6 @@ class PagerSearchFormBuilder
                 'block_prefix' => 'sort',
             ]);
         }
-        $builder->add('search', SubmitType::class, [
-            'label' => 'search',
-        ]);
 
         return $builder;
     }

@@ -14,6 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle;
 
 use ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection\Compiler\BlockAttributeValueTransformerPass;
 use ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection\Compiler\FieldValueTransformerPass;
+use ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection\Compiler\SearchFieldTypesMapPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -25,5 +26,6 @@ class IbexaDesignIntegrationBundle extends Bundle
 
         $container->addCompilerPass(new FieldValueTransformerPass());
         $container->addCompilerPass(new BlockAttributeValueTransformerPass());
+        $container->addCompilerPass(new SearchFieldTypesMapPass());
     }
 }

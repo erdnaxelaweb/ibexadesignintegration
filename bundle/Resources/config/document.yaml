@@ -1,0 +1,18 @@
+services:
+    ErdnaxelaWeb\IbexaDesignIntegration\Document\DocumentIndexer:
+        arguments:
+            $searchFieldResolver: '@ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver'
+            $documentBuilder: '@ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder'
+            $documentSearchHandler: '@Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+            $contentDocumentLocationFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\ContentDocumentLocationFields'
+            $blockDocumentsBaseContentFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields'
+            $blockDocumentsMetaFields: '@Ibexa\Solr\FieldMapper\ContentTranslationFieldMapper\BlockDocumentsMetaFields'
+            $persistenceHandler: '@Ibexa\Contracts\Core\Persistence\Handler'
+            $purgeClient: '@ibexa.http_cache.purge_client'
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver:
+        lazy: true
+        arguments:
+            $fieldNameGeneratorMap: '%ibexa.search.common.field_name_generator.map%'
+            $searchFieldTypesMap: []

@@ -22,3 +22,7 @@ services:
     ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\LocationSearchTypeFactory:
         tags:
             - { name: erdnaxelaweb.ibexa_design_integration.pager.search_type, type: location }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\DocumentSearchTypeFactory:
+        tags:
+            - { name: erdnaxelaweb.ibexa_design_integration.pager.search_type, type: document }

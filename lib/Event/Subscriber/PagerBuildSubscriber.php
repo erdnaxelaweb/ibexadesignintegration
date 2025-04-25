@@ -53,15 +53,23 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['content']->locationId);
         }
 
-        if (!empty($pagerDefinition->getContentTypes())) {
-            $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
-                $pagerDefinition->getContentTypes()
-            );
+        if (!empty($pagerDefinition->getResultTypes())) {
+            if (in_array($pagerDefinition->getSearchType(), ['content', 'location'], true)) {
+                $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
+                    $pagerDefinition->getResultTypes()
+                );
+            } elseif ($pagerDefinition->getSearchType() === 'document') {
+                $event->filtersCriterions['documentType'] = new Criterion\CustomField(
+                    'type_s',
+                    Criterion\Operator::IN,
+                    $pagerDefinition->getResultTypes()
+                );
+            }
         }
 
-        if (!empty($pagerDefinition->getExcludedContentTypes())) {
+        if (!empty($pagerDefinition->getExcludedResultTypes())) {
             $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
-                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedContentTypes())
+                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedResultTypes())
             );
         }
 

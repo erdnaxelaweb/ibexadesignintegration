@@ -35,7 +35,7 @@ class LocationSearchType extends AbstractSearchType
         PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         string $searchFormName,
         PagerDefinition $pagerDefinition,
-        Request $request,
+        ?Request $request,
         SearchData $defaultSearchData = new SearchData()
     ) {
         parent::__construct(

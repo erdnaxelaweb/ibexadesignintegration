@@ -34,6 +34,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('transformer.yaml');
         $loader->load('showroom.yaml');
         $loader->load('definitions.yaml');
+        $loader->load('document.yaml');
 
         $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         if (in_array('eZMigrationBundle', $activatedBundles, true)) {
