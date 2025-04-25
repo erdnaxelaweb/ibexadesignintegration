@@ -39,7 +39,7 @@ class LocationListBlockAttributeValueTransformer extends AbstractBlockAttributeV
         BlockDefinition          $ibexaBlockDefinition,
         BlockAttributeDefinition $attributeDefinition
     ): Content|array|null {
-        $max = $attributeDefinition['options']['max'];
+        $max = $attributeDefinition->getOptions()->get('max');
         $attributeValue = $blockValue->getAttribute($attributeIdentifier)
             ->getValue();
         if (empty($attributeValue)) {
