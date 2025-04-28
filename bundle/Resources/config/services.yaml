@@ -13,6 +13,8 @@ services:
       $pagerGenerator: '@ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\PagerGenerator'
       $configResolver: '@ibexa.config.resolver'
       $serializer: '@Symfony\Component\Serializer\SerializerInterface'
+      $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+      $liform: '@Limenius\Liform\Liform'
     tags:
       - { name: controller.service_arguments }
 

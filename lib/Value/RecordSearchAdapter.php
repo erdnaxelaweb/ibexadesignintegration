@@ -10,7 +10,7 @@ use Symfony\Component\Form\FormView;
 
 class RecordSearchAdapter implements PagerAdapterInterface
 {
-    private ?FormInterface $filtersFormBuilder = null;
+    private ?FormInterface $filtersForm = null;
 
     /**
      * @param callable(AggregationResultCollection): FormInterface $filtersCallback
@@ -35,20 +35,20 @@ class RecordSearchAdapter implements PagerAdapterInterface
 
     public function getFilters(): FormView
     {
-        return $this->getFiltersFormBuilder()
+        return $this->getFiltersForm()
                     ->createView();
     }
 
     public function getActiveFilters(): array
     {
-        return call_user_func($this->activeFiltersCallback, $this->getFiltersFormBuilder());
+        return call_user_func($this->activeFiltersCallback, $this->getFiltersForm());
     }
 
-    protected function getFiltersFormBuilder(): FormInterface
+    public function getFiltersForm(): FormInterface
     {
-        if (!$this->filtersFormBuilder) {
-            $this->filtersFormBuilder = call_user_func($this->filtersCallback, $this->getAggregations());
+        if (!$this->filtersForm) {
+            $this->filtersForm = call_user_func( $this->filtersCallback, $this->getAggregations());
         }
-        return $this->filtersFormBuilder;
+        return $this->filtersForm;
     }
 }
