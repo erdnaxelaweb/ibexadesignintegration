@@ -51,7 +51,7 @@ class PagerBuilder
         string $type,
         array $context = [],
         SearchData $defaultSearchData = new SearchData()
-    ): PagerfantaInterface {
+    ): Pager {
         $request = $this->requestStack->getCurrentRequest();
         /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition $pagerDefinition */
         $pagerDefinition = $this->definitionManager->getDefinition(PagerDefinition::class, $type);
