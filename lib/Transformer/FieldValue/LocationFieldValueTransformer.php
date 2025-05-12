@@ -25,6 +25,11 @@ class LocationFieldValueTransformer implements FieldValueTransformerInterface
     ) {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
+
+        if ($fieldValue->latitude === null || $fieldValue->longitude === null) {
+            return null;
+        }
+
         return new Coordinates($fieldValue->latitude, $fieldValue->longitude, $fieldValue->address);
     }
 }
