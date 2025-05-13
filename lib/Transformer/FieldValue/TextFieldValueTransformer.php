@@ -19,7 +19,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 class TextFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'eztext';
     }
@@ -27,7 +27,7 @@ class TextFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?TextFieldValue {
         /** @var \Ibexa\Core\FieldType\TextBlock\Value $fieldValue */

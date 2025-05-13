@@ -22,10 +22,10 @@ abstract class AbstractFieldValueTransformer implements FieldValueTransformerInt
     public function __invoke(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): mixed {
-        if (!$this->support($ibexaFieldDefinition->getFieldTypeIdentifier())) {
+        if (!$this->support($ibexaFieldDefinition?->getFieldTypeIdentifier())) {
             throw new InvalidArgumentException(
                 sprintf(
                     'The field type "%s" is not supported by the transformer "%s".',
@@ -49,7 +49,7 @@ abstract class AbstractFieldValueTransformer implements FieldValueTransformerInt
     abstract protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     );
 }

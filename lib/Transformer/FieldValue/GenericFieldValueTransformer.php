@@ -27,7 +27,7 @@ class GenericFieldValueTransformer extends AbstractFieldValueTransformer
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return in_array($ibexaFieldTypeIdentifier, $this->supportedTypes, true);
     }
@@ -35,7 +35,7 @@ class GenericFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): mixed {
         $fieldValue = $content->getFieldValue($fieldIdentifier);

@@ -26,7 +26,7 @@ class RichtextFieldValueTransformer extends AbstractFieldValueTransformer
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return in_array($ibexaFieldTypeIdentifier, ['ezrichtext'], true);
     }
@@ -34,7 +34,7 @@ class RichtextFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): bool|string|null {
         /** @var \Ibexa\FieldTypeRichText\FieldType\RichText\Value $fieldValue */

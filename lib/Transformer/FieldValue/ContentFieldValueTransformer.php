@@ -27,7 +27,7 @@ class ContentFieldValueTransformer extends AbstractFieldValueTransformer
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return in_array($ibexaFieldTypeIdentifier, ['ezobjectrelation', 'ezobjectrelationlist'], true);
     }
@@ -38,7 +38,7 @@ class ContentFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Content|array|null {
         $max = $contentFieldDefinition->getOption('max');

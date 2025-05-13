@@ -130,6 +130,13 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'url' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\PagerFieldValueTransformer:
+        lazy: true
+        arguments:
+            $pagerBuilder: '@ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'pager' }
+
     # form
     # taxo
     # block

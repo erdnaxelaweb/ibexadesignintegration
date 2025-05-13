@@ -13,34 +13,35 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
-use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
-use Ibexa\Taxonomy\FieldType\TaxonomyEntry\Value as TaxonomyEntryValue;
 
-class TaxonomyEntryFieldValueTransformer extends AbstractFieldValueTransformer
+class PagerFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
-        protected TaxonomyEntryTransformer $taxonomyEntryTransformer
+        protected PagerBuilder $pagerBuilder,
     ) {
     }
 
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ibexa_taxonomy_entry';
+        return $ibexaFieldTypeIdentifier === null;
     }
-
 
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
         ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
-    ): ?TaxonomyEntry {
-        /** @var TaxonomyEntryValue $fieldValue */
-        $fieldValue = $content->getFieldValue($fieldIdentifier);
-        $taxonomyEntry = $fieldValue->getTaxonomyEntry();
-        return $taxonomyEntry ? ($this->taxonomyEntryTransformer)($taxonomyEntry) : null;
+    ) {
+        $pagerType = $contentFieldDefinition->getOption('type');
+        $context = $contentFieldDefinition->getOption('context');
+        return $this->pagerBuilder->build(
+            $pagerType,
+            array_merge([
+                'content' => $content,
+            ], $context)
+        );
     }
 }

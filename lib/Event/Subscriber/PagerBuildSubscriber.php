@@ -15,6 +15,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
@@ -42,8 +43,14 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $pagerDefinition = $event->pagerDefinition;
         $searchData = $event->searchData;
 
-        if (isset($eventContext['location']) && $eventContext['location'] instanceof Location && $eventContext['location']->id) {
-            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['location']->id);
+        if (isset($eventContext['location'])) {
+            $parentLocationId = $eventContext['location'] instanceof Location && $eventContext['location']->id ?
+                $eventContext['location']->id :
+                $eventContext['location'];
+
+            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
+        } elseif (isset($eventContext['content']) && $eventContext['content'] instanceof Content) {
+            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['content']->locationId);
         }
 
         if (!empty($pagerDefinition->getContentTypes())) {

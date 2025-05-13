@@ -25,7 +25,7 @@ class ProductSpecificationTransformer extends AbstractFieldValueTransformer
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ibexa_product_specification';
     }
@@ -33,7 +33,7 @@ class ProductSpecificationTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ProductInterface {
         return $this->productService->getProductFromContent($content);

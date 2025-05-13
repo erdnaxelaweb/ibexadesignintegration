@@ -34,7 +34,8 @@ class PagerDefinition extends NativePagerDefinition
         protected readonly array $filters,
         protected readonly array $excludedContentTypes,
         protected readonly int $headlineCount,
-        protected readonly string $searchType
+        protected readonly string $searchType,
+        protected readonly bool $disablePagination
     ) {
     }
 
@@ -59,5 +60,10 @@ class PagerDefinition extends NativePagerDefinition
             throw new InvalidArgumentException("Filter \"$name\" does not exist.");
         }
         return $this->filters[$name];
+    }
+
+    public function isPaginationDisabled(): bool
+    {
+        return $this->disablePagination;
     }
 }

@@ -60,6 +60,7 @@ class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
     {
         $hash = parent::toHash($definition);
         $hash['searchType'] = $definition->getSearchType();
+        $hash['disablePagination'] = $definition->isPaginationDisabled();
         return $hash;
     }
 
@@ -71,5 +72,9 @@ class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
             ->default('location')
             ->allowedTypes('string')
             ->allowedValues(...$this->availableSearchTypes);
+
+        $optionsResolver->define('disablePagination')
+            ->default(false)
+            ->allowedTypes('bool');
     }
 }

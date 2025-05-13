@@ -29,7 +29,7 @@ class FileFieldValueTransformer extends AbstractFieldValueTransformer
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ezbinaryfile';
     }
@@ -37,7 +37,7 @@ class FileFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?File {
         /** @var \Ibexa\Core\FieldType\BinaryFile\Value $fieldValue */

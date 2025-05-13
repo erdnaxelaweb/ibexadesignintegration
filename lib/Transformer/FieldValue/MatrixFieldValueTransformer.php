@@ -18,7 +18,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 class MatrixFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ezmatrix';
     }
@@ -29,7 +29,7 @@ class MatrixFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array {
         /** @var \Ibexa\FieldTypeMatrix\FieldType\Value $fieldValue */

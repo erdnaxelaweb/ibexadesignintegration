@@ -19,7 +19,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 class LocationFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ezgmaplocation';
     }
@@ -27,12 +27,12 @@ class LocationFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): ?Coordinates {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
-        if($fieldValue->latitude === null || $fieldValue->longitude === null) {
+        if ($fieldValue->latitude === null || $fieldValue->longitude === null) {
             return null;
         }
         return new Coordinates($fieldValue->latitude, $fieldValue->longitude, $fieldValue->address);

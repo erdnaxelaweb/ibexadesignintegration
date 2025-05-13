@@ -27,7 +27,7 @@ class LocationSearchAdapter extends AbstractSearchAdapter
         Query $query,
         array $languageFilter
     ): SearchResult {
-        if(!$query instanceof LocationQuery) {
+        if (!$query instanceof LocationQuery) {
             throw new \InvalidArgumentException('Query must be an instance of LocationQuery');
         }
         return $searchService->findLocations($query, $languageFilter);

@@ -32,7 +32,7 @@ class FieldValueTransformer
         $this->fieldValueTransformers[$type][] = $fieldValueTransformer;
     }
 
-    public function getTransformer(string $contentFieldType, string $ibexaFieldTypeIdentifier): FieldValueTransformerInterface
+    public function getTransformer(string $contentFieldType, ?string $ibexaFieldTypeIdentifier): FieldValueTransformerInterface
     {
         if (!array_key_exists($contentFieldType, $this->fieldValueTransformers)) {
             throw new InvalidArgumentException(sprintf('No transformer found for field type "%s".', $contentFieldType));
@@ -52,20 +52,16 @@ class FieldValueTransformer
         string $fieldIdentifier,
         ContentFieldDefinition $contentFieldDefinition
     ): mixed {
-        $ibexaFieldDefinition = $content->getContentType()
-            ->getFieldDefinition($fieldIdentifier);
-        if ($ibexaFieldDefinition) {
-            $fieldValueTransformer = $this->getTransformer(
-                $contentFieldDefinition->getType(),
-                $ibexaFieldDefinition->getFieldTypeIdentifier()
-            );
-            return ($fieldValueTransformer)(
-                $content,
-                $fieldIdentifier,
-                $ibexaFieldDefinition,
-                $contentFieldDefinition
-            );
-        }
-        return null;
+        $ibexaFieldDefinition = $content->getContentType()->getFieldDefinition($fieldIdentifier);
+        $fieldValueTransformer = $this->getTransformer(
+            $contentFieldDefinition->getType(),
+            $ibexaFieldDefinition?->getFieldTypeIdentifier()
+        );
+        return ($fieldValueTransformer)(
+            $content,
+            $fieldIdentifier,
+            $ibexaFieldDefinition,
+            $contentFieldDefinition
+        );
     }
 }

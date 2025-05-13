@@ -96,6 +96,7 @@ pagers:
         searchType: 'content'
         maxPerPage: 12
         headlineCount: 3
+        disablePagination: true # When true, the returned pager iterator autoswitch page
         sortOptions:
             - { field: 'published_date', order: 'desc', label: 'Most recent' }
             - { field: 'title', order: 'asc', label: 'Alphabetical' }

@@ -21,9 +21,9 @@ interface FieldValueTransformerInterface
     public function __invoke(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): mixed;
 
-    public function support(string $ibexaFieldTypeIdentifier): bool;
+    public function support(?string $ibexaFieldTypeIdentifier): bool;
 }

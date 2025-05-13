@@ -18,7 +18,7 @@ use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 
 class SelectionFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return in_array($ibexaFieldTypeIdentifier, ['ezselection'], true);
     }
@@ -29,7 +29,7 @@ class SelectionFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array {
         /** @var \Ibexa\Core\FieldType\Selection\Value $fieldValue */

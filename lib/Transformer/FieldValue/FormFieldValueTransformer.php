@@ -20,7 +20,7 @@ use Symfony\Component\Form\FormView;
 
 class FormFieldValueTransformer extends AbstractFieldValueTransformer
 {
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ezform';
     }
@@ -28,7 +28,7 @@ class FormFieldValueTransformer extends AbstractFieldValueTransformer
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): Closure {
         return function ($modelData = null) use ($content, $fieldIdentifier): FormView {

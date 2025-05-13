@@ -26,7 +26,7 @@ class TaxonomyEntryAssignementFieldValueTransformer extends AbstractFieldValueTr
     ) {
     }
 
-    public function support(string $ibexaFieldTypeIdentifier): bool
+    public function support(?string $ibexaFieldTypeIdentifier): bool
     {
         return $ibexaFieldTypeIdentifier === 'ibexa_taxonomy_entry_assignment';
     }
@@ -37,7 +37,7 @@ class TaxonomyEntryAssignementFieldValueTransformer extends AbstractFieldValueTr
     protected function transformFieldValue(
         AbstractContent        $content,
         string                 $fieldIdentifier,
-        FieldDefinition        $ibexaFieldDefinition,
+        ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
     ): array|TaxonomyEntry {
         $max = $contentFieldDefinition->getOption('max');
