@@ -29,9 +29,12 @@ class LocationFieldValueTransformer extends AbstractFieldValueTransformer
         string                 $fieldIdentifier,
         FieldDefinition        $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
-    ): Coordinates {
+    ): ?Coordinates {
         /** @var \Ibexa\Core\FieldType\MapLocation\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
+        if($fieldValue->latitude === null || $fieldValue->longitude === null) {
+            return null;
+        }
         return new Coordinates($fieldValue->latitude, $fieldValue->longitude, $fieldValue->address);
     }
 }
