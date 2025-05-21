@@ -90,7 +90,7 @@ class PagerBuilder
             $query->aggregations = $event->aggregations;
         }
 
-        $pagerFanta = new Pager($searchType->getAdapter());
+        $pagerFanta = new Pager($type, $searchType->getAdapter());
         $pagerFanta->setMaxPerPage($pagerDefinition->getMaxPerPage());
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
