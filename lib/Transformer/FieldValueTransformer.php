@@ -53,10 +53,21 @@ class FieldValueTransformer
         ContentFieldDefinition $contentFieldDefinition
     ): mixed {
         $ibexaFieldDefinition = $content->getContentType()->getFieldDefinition($fieldIdentifier);
-        $fieldValueTransformer = $this->getTransformer(
-            $contentFieldDefinition->getType(),
-            $ibexaFieldDefinition?->getFieldTypeIdentifier()
-        );
+        try {
+            $fieldValueTransformer = $this->getTransformer(
+                $contentFieldDefinition->getType(),
+                $ibexaFieldDefinition?->getFieldTypeIdentifier()
+            );
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            if (!$ibexaFieldDefinition) {
+                return null;
+            }
+            throw new InvalidArgumentException(
+                sprintf('[%s][%s] %s', $content->type, $fieldIdentifier, $invalidArgumentException->getMessage()),
+                $invalidArgumentException->getCode(),
+                $invalidArgumentException
+            );
+        }
         return ($fieldValueTransformer)(
             $content,
             $fieldIdentifier,

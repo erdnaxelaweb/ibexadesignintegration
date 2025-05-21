@@ -137,6 +137,13 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'pager' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ExpressionFieldValueTransformer:
+        lazy: true
+        arguments:
+            $expressionResolver: '@ErdnaxelaWeb\StaticFakeDesign\Expression\ExpressionResolver'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'expression' }
+
     # form
     # taxo
     # block
