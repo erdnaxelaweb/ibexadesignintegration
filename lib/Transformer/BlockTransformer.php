@@ -14,11 +14,11 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Block;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\BlockAttributesCollection;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\LazyTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionNotFoundException;
 use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException;
+use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitionFactoryInterface;
 use Symfony\Component\VarExporter\Instantiator;
@@ -49,7 +49,7 @@ class BlockTransformer
         foreach ($blockAttributesDefinitions as $attributeIdentifier => $blockAttributeDefinition) {
             $blockAttributes->set(
                 $attributeIdentifier,
-                new LazyTransformer(
+                new LazyValue(
                     function () use (
                         $blockAttributeDefinition,
                         $attributeIdentifier,

@@ -18,9 +18,9 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\LazyTransformer;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
+use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\LocationService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
@@ -161,7 +161,7 @@ class ContentTransformer
                 foreach ($contentDefinition->getFields() as $fieldIdentifier => $contentFieldDefinition) {
                     $contentFields->set(
                         $fieldIdentifier,
-                        new LazyTransformer(
+                        new LazyValue(
                             function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
                                 return $this->fieldValueTransformers->transform(
                                     $instance,

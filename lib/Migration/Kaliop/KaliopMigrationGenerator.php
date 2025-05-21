@@ -46,7 +46,7 @@ class KaliopMigrationGenerator extends MigrationGenerator
 
     public function generate(): void
     {
-        $contentTypes = $this->definitionManager->getDefinitionsByType(ContentDefinition::class);
+        $contentTypes = $this->definitionManager->getDefinitionsIdentifierByType(ContentDefinition::class);
         foreach ($contentTypes as $contentType) {
             /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentDefinition $contentDefinition */
             $contentDefinition = $this->definitionManager->getDefinition(ContentDefinition::class, $contentType);

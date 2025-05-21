@@ -15,9 +15,9 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 use DateTime;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\TaxonomyEntryDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\LazyTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 use Ibexa\HttpCache\Handler\TagHandler;
@@ -77,7 +77,7 @@ class TaxonomyEntryTransformer
                 foreach ($taxonomyEntryDefinition->getFields() as $fieldIdentifier => $contentFieldDefinition) {
                     $contentFields->set(
                         $fieldIdentifier,
-                        new LazyTransformer(
+                        new LazyValue(
                             function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
                                 return $this->fieldValueTransformers->transform(
                                     $instance,

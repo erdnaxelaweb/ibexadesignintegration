@@ -12,10 +12,8 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
-use ErdnaxelaWeb\IbexaDesignIntegration\Trait\LazyCollection;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection as BaseContentFieldsCollection;
 
 class ContentFieldsCollection extends BaseContentFieldsCollection
 {
-    use LazyCollection;
 }
