@@ -43,18 +43,16 @@ class PagerController extends AbstractController
 
         $form = $this->liform->transform($pager->getFiltersForm());
 
-
-        return new JsonResponse($this->serializer->serialize([
+        $response = new JsonResponse($this->serializer->serialize([
             'currentPage' => $pager->getCurrentPage(),
             'itemsPerPage' => $pager->getMaxPerPage(),
             'totalItems' => $pager->getNbResults(),
             'items' => $pager->getCurrentPageResults(),
             'filters' => $form
         ], 'json'),
-            headers: [
-                'Access-Control-Allow-Origin' => '*',
-                                ],
             json: true
         );
+
+        return $response;
     }
 }

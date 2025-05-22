@@ -40,12 +40,12 @@ class ImageFieldValueTransformer extends AbstractFieldValueTransformer
         string                 $fieldIdentifier,
         ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
-    ): Closure {
-        return function (string $variationName) use ($content, $fieldIdentifier): ?Image {
-            if ($this->fieldHelper->isFieldEmpty($content, $fieldIdentifier)) {
-                return null;
-            }
+    ): ?Closure {
+        if ($this->fieldHelper->isFieldEmpty($content, $fieldIdentifier)) {
+            return null;
+        }
 
+        return function (string $variationName) use ($content, $fieldIdentifier): ?Image {
             return $this->imageGenerator->generateImage($content, $fieldIdentifier, $variationName);
         };
     }
