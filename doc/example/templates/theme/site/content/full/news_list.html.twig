@@ -1,0 +1,67 @@
+{# @var pager \ErdnaxelaWeb\StaticFakeDesign\Value\Pager #}
+{# @var content \ErdnaxelaWeb\IbexaDesignIntegration\Value\Content #}
+{% extends '@ibexadesign/layout_default.html.twig' %}
+
+{% component {
+    name: "Page liste actualité",
+    specifications: "",
+    properties: {
+        pager: 'pager("news_list")',
+        content: 'content("news_list")',
+    }
+} %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{#    {{ encore_entry_link_tags('news_list', null, 'site') }}#}
+{% endblock %}
+
+{% block footer_scripts %}
+    {{ parent() }}
+{#    {{ encore_entry_script_tags('news_list', null, 'site') }}#}
+{% endblock %}
+
+{% set searchForm = pager.filters %}
+{% set headlines = pager.getHeadlineResults %}
+{% set results = pager.currentPageResults %}
+
+{% block content %}
+    <h1>{{ content.fields.title }}</h1>
+    <div>
+        {% include '@ibexadesign/components/breadcrumb.html.twig' with {breadcrumb: content.breadcrumb} only %}
+    </div>
+
+    {% if headlines is not empty %}
+        <ul>
+            {% for headline in headlines %}
+                <li>
+                    {{ display_content('@ibexadesign/content/list/%type%.html.twig', headline) }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ form_start(searchForm) }}
+    {{ form_end(searchForm) }}
+
+    {% if pager.filters.vars.submitted is defined and pager.filters.vars.submitted %}
+        <p>{{ 'search.nbresults'|trans({'%count%': pager.nbResults })|desc('{0} Aucun résultat ne correspond à votre recherche. Modifiez vos critères et relancer votre recherche. |{1} Un résultat|]1,Inf[ %count% résultats') }}</p>
+    {% endif %}
+    {% if results|length %}
+        <div>
+            <ul>
+                {% for result in results %}
+                    <li>
+                        {{ display_content('@ibexadesign/content/list/%type%.html.twig', result) }}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% if pager.haveToPaginate %}
+                {{ display_component('@ibexadesign/components/pagination.html.twig', {content: content, pager: pager}) }}
+            {% endif %}
+        </div>
+    {% endif %}
+    {% block page %}
+        {% include '@ibexadesign/include/field_page.html.twig' with {field: content.fields.page} only %}
+    {% endblock %}
+{% endblock %}

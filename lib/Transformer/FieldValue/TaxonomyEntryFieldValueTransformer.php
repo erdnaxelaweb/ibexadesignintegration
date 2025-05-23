@@ -1,34 +1,42 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\TaxonomyEntryTransformer;
-use ErdnaxelaWeb\StaticFakeDesign\Value\TaxonomyEntry;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Taxonomy\FieldType\TaxonomyEntry\Value as TaxonomyEntryValue;
 
-class TaxonomyEntryFieldValueTransformer implements FieldValueTransformerInterface
+class TaxonomyEntryFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected TaxonomyEntryTransformer $taxonomyEntryTransformer
     ) {
     }
 
-    public function transformFieldValue(
-        Content         $content,
-        string          $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
+    public function support(?string $ibexaFieldTypeIdentifier): bool
+    {
+        return $ibexaFieldTypeIdentifier === 'ibexa_taxonomy_entry';
+    }
+
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        ?FieldDefinition       $ibexaFieldDefinition,
+        ContentFieldDefinition $contentFieldDefinition
     ): ?TaxonomyEntry {
         /** @var TaxonomyEntryValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);

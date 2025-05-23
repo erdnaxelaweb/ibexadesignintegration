@@ -1,16 +1,18 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
@@ -22,15 +24,18 @@ use Symfony\Component\HttpFoundation\RequestStack;
 class PagerActiveFiltersListBuilder
 {
     public function __construct(
-        protected ChainFilterHandler            $filterHandler,
-        protected RequestStack              $requestStack,
+        protected ChainFilterHandler $filterHandler,
+        protected RequestStack $requestStack,
         protected LinkGenerator $linkGenerator,
     ) {
     }
 
+    /**
+     * @return ItemInterface[]
+     */
     public function buildList(
-        string     $searchFormName,
-        array      $pagerConfiguration,
+        string $searchFormName,
+        PagerDefinition $pagerDefinition,
         FormInterface $filtersFormBuilder,
         SearchData $searchData
     ): array {
@@ -39,10 +44,10 @@ class PagerActiveFiltersListBuilder
             if (empty($filterValue)) {
                 continue;
             }
-            $filterConfiguration = $pagerConfiguration['filters'][$filter];
+            $pagerFilterDefinition = $pagerDefinition->getFilter($filter);
 
             $labels = $this->filterHandler->getValuesLabels(
-                $filterConfiguration['type'],
+                $pagerFilterDefinition->getType(),
                 is_array($filterValue) ? $filterValue : [$filterValue],
                 $filtersFormBuilder->get('filters')
                     ->get($filter)
@@ -55,7 +60,7 @@ class PagerActiveFiltersListBuilder
 
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
-                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? []);
+                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? [], true);
                     unset($query[$searchFormName]['filters'][$filter][$valueKey]);
                     $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
                         'extras' => [
@@ -83,6 +88,10 @@ class PagerActiveFiltersListBuilder
         return $this->requestStack->getCurrentRequest();
     }
 
+    /**
+     * @param array<string, mixed>  $query
+     * @param array<string, mixed>  $options
+     */
     protected function generateLink(string $label, array $query, array $options): ItemInterface
     {
         return $this->linkGenerator->generateLink(

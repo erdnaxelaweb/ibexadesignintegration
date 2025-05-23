@@ -1,32 +1,38 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoice;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoiceInterface;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
-use Ibexa\Contracts\Core\Repository\Values\ValueObject;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
+use Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult;
+use Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry;
+use Symfony\Component\Form\ChoiceList\Loader\CallbackChoiceLoader;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CustomFieldFilterHandler extends AbstractFilterHandler
+class CustomFieldFilterHandler extends AbstractFilterHandler implements NestableFilterHandlerInterface
 {
     public function __construct(
         protected FakerGenerator $fakerGenerator
@@ -34,93 +40,33 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
     }
 
     /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
+     * @param RawTermAggregationResult $aggregationResult
      */
     public function addForm(
         FormBuilderInterface $formBuilder,
-        string               $filterName,
-        ?AggregationResult   $aggregationResult = null,
-        array                $options = []
+        string $filterName,
+        DefinitionOptions $options,
+        ?AggregationResult $aggregationResult = null,
     ): void {
-        $options = $this->resolveOptions($options);
-
-        $formOptions['label'] = sprintf('searchform.%s', $filterName);
-        $formOptions['block_prefix'] = "filter_$filterName";
-        $formOptions['required'] = false;
-        $formOptions['multiple'] = $options['multiple'];
-        $formOptions['expanded'] = $options['expanded'];
-        $choices = $this->getChoices($aggregationResult);
-        ;
-        $formOptions['choices'] = $choices;
-
-        $formOptions['choice_value'] = function ($entry): ?string {
-            return $entry instanceof ValueObject ? $this->getChoiceValue($entry) : $entry;
-        };
-        $formOptions['choice_label'] = function ($entry): ?string {
-            return $entry instanceof ValueObject ? $this->getChoiceLabel($entry) : $entry;
-        };
-        $formOptions['choice_attr'] = function ($entry): array {
-            return $entry instanceof ValueObject ? $this->getChoiceAttributes($entry) : [];
-        };
-        $formBuilder->add($filterName, ChoiceType::class, $formOptions);
+        $formBuilder->add(
+            $filterName,
+            ChoiceType::class,
+            $this->getFormOptions($formBuilder, $filterName, $aggregationResult, $options)
+        );
     }
 
-    /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
-     */
-    protected function getChoiceValue(ValueObject $entry): string
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
     {
-        return $entry->getKey();
-    }
-
-    /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
-     */
-    protected function getChoiceLabel(ValueObject $entry): string
-    {
-        return $this->getValueLabel($entry->getName());
-    }
-
-    protected function getValueLabel(string $value): string
-    {
-        return $value;
-    }
-
-    /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry $entry
-     */
-    protected function getChoiceAttributes(ValueObject $entry): array
-    {
-        return [];
-    }
-
-    /**
-     * @param \Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult $aggregationResult
-     */
-    protected function getChoices(?AggregationResult $aggregationResult = null): array
-    {
-        $choices = [];
-        if ($aggregationResult) {
-            foreach ($aggregationResult->getEntries() as $entry) {
-                $choices[] = $entry;
-            }
-        }
-        return $choices;
-    }
-
-    public function getCriterion(string $filterName, $value, array $options = []): Criterion
-    {
-        $options = $this->resolveOptions($options);
         $operator = is_array($value) ? Operator::IN : Operator::EQ;
         $criterion = new CustomField($options['field'], $operator, $value);
         return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName, array $options = []): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
     {
-        $options = $this->resolveOptions($options);
         $aggregation = new RawTermAggregation($filterName, $options['field'], [$filterName]);
         $aggregation->setLimit($options['limit']);
+
         return $aggregation;
     }
 
@@ -139,6 +85,21 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('limit')
             ->default(10)
             ->allowedTypes('integer');
+        $optionsResolver->define('choice_label_format')
+            ->default('%name% (%count%)')
+            ->allowedTypes('string')
+            ->info('Available placeholders : %name% / %value% / %count%');
+        $optionsResolver->define('sort')
+            ->default('count')
+            ->allowedTypes('string')
+            ->allowedValues('count', 'label');
+        $optionsResolver->define('sort_direction')
+            ->default('asc')
+            ->allowedTypes('string')
+            ->allowedValues('asc', 'desc');
+        $optionsResolver->define('is_nested')
+            ->default(false)
+            ->allowedTypes('bool');
 
         // only used for static
         $optionsResolver->define('choices')
@@ -190,10 +151,10 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
                     $choice->value = $value;
                     $choice->attr = [];
                     return $choice;
-                }, $words, range(0, count($words))),
+                }, $words, range(1, count($words))),
                 'expanded' => false,
                 'multiple' => false,
-                'choice_value' => function ($entry): ?string {
+                'choice_value' => function ($entry): ?int {
                     return is_object($entry) ? $entry->value : $entry;
                 },
                 'choice_label' => function ($entry): ?string {
@@ -213,12 +174,114 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
             ->getAttribute('choice_list')
             ->getChoices();
 
-        $labels = array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
-            return isset($choices[$activeValue]) ? $this->getChoiceLabel($choices[$activeValue]) : $this->getValueLabel(
-                $activeValue
-            );
+        return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
+            $choice = $choices[$activeValue] ?? $this->getValueLabel($activeValue);
+            return $choice instanceof FilterChoiceInterface ? $choice->getLabel() : $choice;
         }, $activeValues));
+    }
 
-        return $labels;
+    /**
+     * @param RawTermAggregationResult|null $aggregationResult
+     *
+     * @return array<string, mixed>
+     */
+    protected function getFormOptions(
+        FormBuilderInterface $formBuilder,
+        string $filterName,
+        ?AggregationResult $aggregationResult,
+        DefinitionOptions $options
+    ): array {
+        $formOptions['label'] = sprintf('searchform.%s', $filterName);
+        $formOptions['block_prefix'] = "filter_$filterName";
+        $formOptions['required'] = false;
+        $formOptions['multiple'] = $options['multiple'];
+        $formOptions['expanded'] = $options['expanded'];
+
+        $formOptions['choice_loader'] = new CallbackChoiceLoader(function () use (
+            $aggregationResult,
+            $filterName,
+            $options
+        ): array {
+            if ($options['is_nested']) {
+                $choices = [];
+                foreach ($aggregationResult->getEntries() as $entry) {
+                    $nestedAggregationResult = $entry->getNestedResults()[$filterName] ?? [];
+                    if (!$nestedAggregationResult instanceof RawTermAggregationResult) {
+                        continue;
+                    }
+                    $choices[$entry->getName()] = $this->getChoices($nestedAggregationResult, $filterName, $options);
+                }
+                return $choices;
+            }
+            return $this->getChoices($aggregationResult, $filterName, $options);
+        });
+
+        $formOptions['choice_value'] = 'value';
+        $formOptions['choice_label'] = 'label';
+        $formOptions['choice_attr'] = 'attr';
+        return $formOptions;
+    }
+
+    protected function getValueLabel(mixed $value): string
+    {
+        return $value;
+    }
+
+    /**
+     * @return FilterChoiceInterface[]
+     */
+    protected function buildChoicesFromAggregationResult(
+        ?AggregationResult $aggregationResult,
+        string $filterName,
+        DefinitionOptions $options
+    ): array {
+        $choices = [];
+        if ($aggregationResult && method_exists($aggregationResult, 'getEntries')) {
+            foreach ($aggregationResult->getEntries() as $entry) {
+                $choices[] = $this->buildChoiceFromAggregationResultEntry($entry, $options);
+            }
+        }
+        return $choices;
+    }
+
+    /**
+     * @return FilterChoiceInterface[]
+     */
+    protected function getChoices(
+        ?AggregationResult $aggregationResult,
+        string $filterName,
+        DefinitionOptions $options
+    ): array {
+        $choices = $this->buildChoicesFromAggregationResult($aggregationResult, $filterName, $options);
+        switch ($options['sort']) {
+            case 'label':
+                usort(
+                    $choices,
+                    static function (FilterChoiceInterface $choice1, FilterChoiceInterface $choice2) use ($options) {
+                        if ($options['sort_direction'] === 'asc') {
+                            return strnatcasecmp($choice1->getLabel(), $choice2->getLabel());
+                        } else {
+                            return strnatcasecmp($choice2->getLabel(), $choice1->getLabel());
+                        }
+                    }
+                );
+                break;
+            default:
+                break;
+        }
+        return $choices;
+    }
+
+    protected function buildChoiceFromAggregationResultEntry(
+        RawTermAggregationResultEntry $entry,
+        DefinitionOptions $options
+    ): FilterChoiceInterface {
+        return new FilterChoice(
+            $entry->getName(),
+            $entry->getKey(),
+            $entry->getCount(),
+            [],
+            $options['choice_label_format']
+        );
     }
 }

@@ -1,50 +1,78 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
-use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
+use InvalidArgumentException;
 
 class FieldValueTransformer
 {
     /**
-     * @var \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FieldValueTransformerInterface[]
+     * @var array<string, FieldValueTransformerInterface[]>
      */
     protected array $fieldValueTransformers = [];
 
-    public function __construct(
-        iterable $transformers
-    ) {
-        foreach ($transformers as $type => $fieldValueTransformer) {
-            $this->fieldValueTransformers[$type] = $fieldValueTransformer;
+    public function registerTransformer(string $type, FieldValueTransformerInterface $fieldValueTransformer): void
+    {
+        if (!array_key_exists($type, $this->fieldValueTransformers)) {
+            $this->fieldValueTransformers[$type] = [];
         }
+        $this->fieldValueTransformers[$type][] = $fieldValueTransformer;
+    }
+
+    public function getTransformer(string $contentFieldType, ?string $ibexaFieldTypeIdentifier): FieldValueTransformerInterface
+    {
+        if (!array_key_exists($contentFieldType, $this->fieldValueTransformers)) {
+            throw new InvalidArgumentException(sprintf('No transformer found for field type "%s".', $contentFieldType));
+        }
+
+        $transformers = $this->fieldValueTransformers[$contentFieldType];
+        foreach ($transformers as $transformer) {
+            if ($transformer->support($ibexaFieldTypeIdentifier)) {
+                return $transformer;
+            }
+        }
+        throw new InvalidArgumentException(sprintf('No transformer found for ibexa field type "%s".', $ibexaFieldTypeIdentifier));
     }
 
     public function transform(
-        IbexaContent $ibexaContent,
-        ContentType $contentType,
+        AbstractContent $content,
         string $fieldIdentifier,
-        array $fieldConfiguration
-    ) {
-        $fieldDefinition = $contentType->getFieldDefinition($fieldIdentifier);
-        if ($fieldDefinition) {
-            $fieldValueTransformer = $this->fieldValueTransformers[$fieldDefinition->fieldTypeIdentifier];
-            return $fieldValueTransformer->transformFieldValue(
-                $ibexaContent,
-                $fieldIdentifier,
-                $fieldDefinition,
-                $fieldConfiguration
+        ContentFieldDefinition $contentFieldDefinition
+    ): mixed {
+        $ibexaFieldDefinition = $content->getContentType()->getFieldDefinition($fieldIdentifier);
+        try {
+            $fieldValueTransformer = $this->getTransformer(
+                $contentFieldDefinition->getType(),
+                $ibexaFieldDefinition?->getFieldTypeIdentifier()
+            );
+        } catch (InvalidArgumentException $invalidArgumentException) {
+            if (!$ibexaFieldDefinition) {
+                return null;
+            }
+            throw new InvalidArgumentException(
+                sprintf('[%s][%s] %s', $content->type, $fieldIdentifier, $invalidArgumentException->getMessage()),
+                $invalidArgumentException->getCode(),
+                $invalidArgumentException
             );
         }
-        return null;
+        return ($fieldValueTransformer)(
+            $content,
+            $fieldIdentifier,
+            $ibexaFieldDefinition,
+            $contentFieldDefinition
+        );
     }
 }

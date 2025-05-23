@@ -1,0 +1,7 @@
+services:
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ProductSpecificationTransformer:
+        lazy: true
+        arguments:
+            $productService: '@Ibexa\Contracts\ProductCatalog\Local\LocalProductServiceInterface'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'product_specification' }

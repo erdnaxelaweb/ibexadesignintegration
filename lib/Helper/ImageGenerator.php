@@ -1,16 +1,19 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Helper;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Image;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ImageFocusPoint;
@@ -19,7 +22,6 @@ use Ibexa\Bundle\Core\Imagine\IORepositoryResolver;
 use Ibexa\Contracts\Core\Exception\InvalidArgumentException;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\Exceptions\InvalidVariationException;
-use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Field;
 use Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo;
 use Ibexa\Contracts\Core\Variation\Values\ImageVariation;
@@ -36,15 +38,32 @@ use ReflectionException;
 class ImageGenerator
 {
     public function __construct(
-        protected VariationHandler   $imageVariationService,
+        protected VariationHandler $imageVariationService,
         protected ImageConfiguration $imageConfiguration,
-        protected ContentService     $contentService,
-        protected LoggerInterface    $imageVariationLogger
+        protected ContentService $contentService,
+        protected LoggerInterface $imageVariationLogger,
+        protected ContentTransformer $contentTransformer
     ) {
     }
 
-    protected function getImageVariationIfExist(Field $field, VersionInfo $versionInfo, $variationName): ?Variation
+    public function generateImage(AbstractContent $content, string $fieldIdentifier, string $variationName): ?Image
     {
+        $fieldValue = $content->getFieldValue($fieldIdentifier);
+        if ($fieldValue instanceof ImageValue) {
+            return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
+        }
+        if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
+            $relatedContent = $this->contentService->loadContent((int) $fieldValue->destinationContentId);
+            return $this->generateImage(($this->contentTransformer)($relatedContent), 'image', $variationName);
+        }
+        return null;
+    }
+
+    protected function getImageVariationIfExist(
+        Field $field,
+        VersionInfo $versionInfo,
+        string $variationName
+    ): Variation {
         try {
             return $this->imageVariationService->getVariation($field, $versionInfo, $variationName);
         } catch (SourceImageNotFoundException $e) {
@@ -64,23 +83,9 @@ class ImageGenerator
             }
             throw $e;
         }
-
-        return null;
     }
 
-    public function generateImage(IbexaContent $content, string $fieldIdentifier, string $variationName)
-    {
-        $fieldValue = $content->getFieldValue($fieldIdentifier);
-        if ($fieldValue instanceof ImageValue) {
-            return $this->getImage($content, $content->getField($fieldIdentifier), $variationName);
-        }
-        if ($fieldValue instanceof ImageAssetValue && $fieldValue->destinationContentId) {
-            $relatedContent = $this->contentService->loadContent($fieldValue->destinationContentId);
-            return $this->generateImage($relatedContent, 'image', $variationName);
-        }
-    }
-
-    protected function getImage(IbexaContent $content, Field $field, string $variationName = 'original'): ?Image
+    protected function getImage(AbstractContent $content, Field $field, string $variationName = 'original'): Image
     {
         /** @var ImageValue $imageFieldValue */
         $imageFieldValue = $field->value;
@@ -88,12 +93,15 @@ class ImageGenerator
 
         return new Image(
             $imageFieldValue->alternativeText,
-            $content->getFieldValue('caption'),
-            $content->getFieldValue('credits'),
+            (string) $content->fields->get('caption'),
+            (string) $content->fields->get('credits'),
             $sources,
         );
     }
 
+    /**
+     * @return ImageSource[]
+     */
     protected function getImageSources(Field $field, VersionInfo $versionInfo, string $variationName): array
     {
         if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
@@ -109,7 +117,7 @@ class ImageGenerator
 
         $sources = [];
         foreach ($variationConfig as $sourceReqs) {
-            $sourceVariationName = "{$variationName}_{$sourceReqs['suffix']}";
+            $sourceVariationName = "{$variationName}_{$sourceReqs->getSuffix()}";
             $typeVariationNames = [
                 '' => $sourceVariationName,
                 ' 2x' => $sourceVariationName . '_retina',
@@ -121,7 +129,7 @@ class ImageGenerator
                 try {
                     $variation = $this->getImageVariationIfExist($field, $versionInfo, $typeVariationName);
                     $uris[] = $variation->uri . $variationType;
-                    if (! $baseVariation) {
+                    if (!$baseVariation) {
                         $baseVariation = $variation;
                     }
                 } catch (NonExistingFilterException|SourceImageNotFoundException $e) {
@@ -134,7 +142,7 @@ class ImageGenerator
 
             $source = $this->getImageVariationSource(
                 $uris,
-                $sourceReqs['media'],
+                $sourceReqs->getMedia(),
                 $baseVariation,
                 $sourceVariationName
             );
@@ -143,14 +151,17 @@ class ImageGenerator
         return $sources;
     }
 
+    /**
+     * @param string[]                                                 $uris
+     */
     private function getImageVariationSource(
-        array      $uris,
-        $media,
+        array $uris,
+        string $media,
         ?Variation $baseVariation,
-        string     $sourceVariationName
+        string $sourceVariationName
     ): ImageSource {
-        $source = new ImageSource(
-            implode(', ', $uris),
+        return new ImageSource(
+            $uris,
             $media,
             $baseVariation instanceof ImageVariation ? $baseVariation->width : null,
             $baseVariation instanceof ImageVariation ? $baseVariation->height : null,
@@ -159,9 +170,8 @@ class ImageGenerator
                 $baseVariation->focusPoint->getPosX(),
                 $baseVariation->focusPoint->getPosY()
             ) : null,
-            $baseVariation ? $baseVariation->mimeType : null,
+            $baseVariation?->mimeType,
             $sourceVariationName
         );
-        return $source;
     }
 }

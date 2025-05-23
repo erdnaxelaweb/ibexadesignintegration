@@ -1,0 +1,16 @@
+parameters:
+    erdnaxelaweb.static_fake_design.generator.locale: 'fr_FR'
+    erdnaxelaweb.static_fake_design.showroom.preview_layout: '@@ibexadesign/layout_component_preview.html.twig'
+    erdnaxelaweb.static_fake_design.image.breakpoints:
+        -
+            suffix: desktop
+            media: '(min-width: 1440px)'
+            previewSize: '100%'
+        -
+            suffix: tablet
+            media: '(min-width: 768px)'
+            previewSize: '768px'
+        -
+            suffix: mobile
+            media: '(min-width: 0)'
+            previewSize: '375px'

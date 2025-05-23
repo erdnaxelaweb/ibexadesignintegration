@@ -1,18 +1,22 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -23,16 +27,16 @@ use Symfony\Component\Form\FormFactoryInterface;
 class PagerSearchFormBuilder
 {
     public function __construct(
-        protected ChainFilterHandler            $filterHandler,
-        protected FormFactoryInterface          $formFactory
+        protected ChainFilterHandler $filterHandler,
+        protected FormFactoryInterface $formFactory
     ) {
     }
 
     public function build(
-        string                      $type,
-        array                       $pagerConfiguration,
+        string $type,
+        PagerDefinition $pagerDefinition,
         AggregationResultCollection $aggregationResultCollection,
-        SearchData                  $searchData
+        SearchData $searchData
     ): FormBuilderInterface {
         $builder = $this->formFactory->createNamedBuilder($type, FormType::class, $searchData, [
             'method' => 'GET',
@@ -43,22 +47,19 @@ class PagerSearchFormBuilder
             'block_prefix' => 'filters',
         ]);
 
-        foreach ($pagerConfiguration['filters'] as $filterName => $filter) {
-            $this->filterHandler->addForm(
-                $filter['type'],
-                $formFilters,
-                $filterName,
-                $aggregationResultCollection->has($filterName) ?
-                    $aggregationResultCollection->get($filterName) : null,
-                $filter['options'],
-            );
+        foreach ($pagerDefinition->getFilters() as $filterName => $filter) {
+            $aggregationResult = $aggregationResultCollection->has($filterName) ?
+                $aggregationResultCollection->get($filterName) : null;
+
+            $this->resolveFilter($formFilters, $filterName, $filter, $aggregationResult);
         }
+
         $builder->add($formFilters);
-        if (count($pagerConfiguration['sorts']) > 1) {
+        if (count($pagerDefinition->getSorts()) > 0) {
             $builder->add('sort', ChoiceType::class, [
                 'choices' => array_combine(
-                    array_keys($pagerConfiguration['sorts']),
-                    array_keys($pagerConfiguration['sorts'])
+                    array_keys($pagerDefinition->getSorts()),
+                    array_keys($pagerDefinition->getSorts())
                 ),
                 'block_prefix' => 'sort',
             ]);
@@ -68,5 +69,26 @@ class PagerSearchFormBuilder
         ]);
 
         return $builder;
+    }
+
+    protected function resolveFilter(
+        FormBuilderInterface $formFilters,
+        string $filterName,
+        PagerFilterDefinition $filterDefinition,
+        ?AggregationResult $aggregationResult = null
+    ): void {
+        $this->filterHandler->addForm(
+            $filterDefinition->getType(),
+            $formFilters,
+            $filterName,
+            $filterDefinition->getOptions(),
+            $aggregationResult,
+        );
+
+        if (!empty($filterDefinition->getNestedFilters())) {
+            foreach ($filterDefinition->getNestedFilters() as $filterName => $filterDefinition) {
+                $this->resolveFilter($formFilters, $filterName, $filterDefinition, $aggregationResult);
+            }
+        }
     }
 }

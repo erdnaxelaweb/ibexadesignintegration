@@ -1,0 +1,43 @@
+parameters:
+    pager.filters.choice_label_format: '%%name%%'
+    pager.filters.choices_sort: 'label'
+    pager.filters.choices_sort_direction: 'asc'
+    pager.filters.choices_limit: 100
+
+    erdnaxelaweb.static_fake_design.pager_definition:
+        news_list:
+            contentTypes: [news]
+            filters:
+                thematic:
+                    type: taxonomy_field
+                    options:
+                        field: 'news_thematic_id_mi'
+                        choice_label_format: '%pager.filters.choice_label_format%'
+                        sort: '%pager.filters.choices_sort%'
+                        sort_direction: '%pager.filters.choices_sort_direction%'
+                        limit: '%pager.filters.choices_limit%'
+                        multiple: true
+                date_from:
+                    type: date
+                    options:
+                        field: 'news_news_date_value_dt'
+                        operator: !php/const Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator::GTE
+                        format: 'dd-mm-yyyy'
+                        input_format: 'd-m-Y'
+                        html5: false
+                date_to:
+                    type: date
+                    options:
+                        field: 'news_news_date_value_dt'
+                        operator: !php/const Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator::LTE
+                        format: 'dd-mm-yyyy'
+                        input_format: 'd-m-Y'
+                        html5: false
+            headlineCount: 3
+            maxPerPage: 10
+            sorts:
+                start_date:
+                    type: custom_field
+                    options:
+                        field: news_news_date_value_dt
+                        sortDirection: !php/const Ibexa\Contracts\Core\Repository\Values\Content\Query::SORT_DESC

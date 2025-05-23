@@ -9,6 +9,7 @@ services:
         arguments:
             $kernelProjectDir: '%kernel.project_dir%'
             $eZMigrationDirectory: '%ez_migration_bundle.version_directory%'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $attributeMigrationGenerators: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator', index_by: 'type' }
 
     erdnaxelaweb.ibexa_design_integration.kaliop_migration.attribute_generator.blocks:

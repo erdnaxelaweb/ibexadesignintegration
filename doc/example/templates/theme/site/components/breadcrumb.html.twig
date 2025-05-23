@@ -1,0 +1,41 @@
+{% component {
+    name: 'Fil d\'ariane',
+    description: '',
+    specifications: '',
+    parameters: {
+        breadcrumb: 'link[5]'
+    }
+} %}
+
+
+{% set length = breadcrumb|length %}
+
+{% macro attributes(attributes) %}
+    {% for name, value in attributes %}
+        {%- if value is not none and value is not same as(false) -%}
+            {{- ' %s="%s"'|format(name, value is same as(true) ? name|e : value|e)|raw -}}
+        {%- endif -%}
+    {%- endfor -%}
+{% endmacro %}
+{% import _self as macros %}
+
+<nav class="js-breadcrumb" aria-label="{{ 'breadcrumb'|trans|desc('Vous êtes ici :') }}">
+    <ol class="breadcrumb">
+        {# @var link \Knp\Menu\ItemInterface #}
+        {% for link in breadcrumb %}
+            {% if loop.last %}
+                <li class="breadcrumb-item active" aria-current="page">
+                    <span{{ macros.attributes(link.labelAttributes|merge({'class': 'nav-link'})) }}>
+                        {{ link.label|u.truncate(30, '...', false) }}
+                    </span>
+                </li>
+            {% else %}
+                <li class="breadcrumb-item">
+                    <a href="{{ link.uri }}"{{ macros.attributes(link.linkAttributes|merge({'class': 'nav-link'})) }}>
+                        {{ link.label|u.truncate(30, '...', false) }}
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ol>
+</nav>

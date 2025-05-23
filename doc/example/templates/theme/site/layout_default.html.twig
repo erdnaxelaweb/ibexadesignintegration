@@ -1,0 +1,16 @@
+{% extends showroom.isPreviewActive ? '@ibexadesign/layout_preview.html.twig' : '@ibexadesign/layout_base.html.twig' %}
+
+{% block body %}
+    {% block header %}
+        {{ display_component('@ibexadesign/components/header.html.twig', {}, 'App\\Controller\\LayoutController::viewHeader', true ) }}
+    {% endblock %}
+
+    <main id="main" role="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    {% block footer %}
+        {{ display_component('@ibexadesign/components/footer.html.twig', {}, 'App\\Controller\\LayoutController::viewFooter', true ) }}
+    {% endblock %}
+{% endblock %}

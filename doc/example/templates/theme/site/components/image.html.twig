@@ -1,0 +1,52 @@
+{# @var image \ErdnaxelaWeb\StaticFakeDesign\Value\Image #}
+{% component {
+    name: 'Image',
+    description: '',
+    specifications: '',
+    parameters: {
+        image: 'image("raw")',
+        linkParameters: {default: {}},
+        display_caption: {
+            default: true
+        },
+        empty_alt: {
+            default: false
+        },
+    }
+} %}
+
+{% if image %}
+    {% if image and display_caption and (image.caption or image.credits) %}
+        <figure class='fr-content-media' role="figure" aria-label="{{ image.caption }}{% if image.credits %} / {{ image.credits }}{% endif %}">
+    {% endif %}
+
+
+    <picture class="enhancedimage--wrapper enhancedimage--focused-img--wrapper">
+        {% if image and image.hasSource %}
+            {% for source in image.sources %}
+                <source {% for attrname, attrvalue in source.getTagAttributes|filter(attrvalue => attrvalue is not empty) %}{{ attrname }}="{{ attrvalue }}" {% endfor %}>
+            {% endfor %}
+
+            {% set defaultSource = image.defaultSource %}
+            <img loading="lazy" alt="{% if image.alt is defined and empty_alt == null %}{{ image.alt }}{% endif %}"
+                 src="{{ defaultSource.uris|first }}"
+            {% for attrname, attrvalue in defaultSource.getTagAttributes({class: 'enhancedimage--img img-fluid'})|filter((attrvalue, attrname) => attrvalue is not empty and attrname not in ['media', 'type']) %}{{ attrname }}="{{ attrvalue }}" {% endfor %}
+            />
+        {% endif %}
+    </picture>
+
+    {% if image and display_caption and (image.caption or image.credits) %}
+        <figcaption class="fr-content-media__caption">
+            {% if linkParameters is defined and linkParameters is not empty %}
+                <a href="{{ linkParameters.resourceType|default() == 'LOCATION' ? url( 'ibexa.url.alias', {'locationId': linkParameters.resourceId} ) : linkParameters.href }}" title="{{ linkParameters.title ?? ''}}" target="{{ linkParameters.target ?? '_self' }}"> {{ 'Label lien'|trans}}</a>
+            {% endif %}
+            {% if image.credits %}
+                <p class="m-0">©  {{ image.credits|raw }}</p>
+            {% endif %}
+            {% if image.caption %}
+                <p class="m-0">{{ image.caption|raw }}</p>
+            {% endif %}
+        </figcaption>
+        </figure>
+    {% endif %}
+{% endif %}

@@ -1,24 +1,26 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
-declare(strict_types=1);
-
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator;
 
 use DOMDocument;
-use DOMElement;
+use DOMNode;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\RichTextGenerator as BaseRichTextGenerator;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter;
 
+/**
+ * @phpstan-type allowedTags = 'richtext'|'para'|'link'|'table'|'thead'|'tbody'|'tr'|'td'|'th'|'itemizedlist'|'listitem'|'title'|'emphasis'
+ */
 class RichTextGenerator extends BaseRichTextGenerator
 {
     public const TYPE = 'richtext';
@@ -51,7 +53,7 @@ class RichTextGenerator extends BaseRichTextGenerator
 
     public function __construct(
         protected Converter $richTextOutputConverter,
-        FakerGenerator      $fakerGenerator
+        FakerGenerator $fakerGenerator
     ) {
         parent::__construct($fakerGenerator);
     }
@@ -69,7 +71,6 @@ xmlns:ezcustom="http://ibexa.co/xmlns/dxp/docbook/custom"
 version="5.0-variant ezpublish-1.0"></section>'
         );
 
-        /** @var DOMElement $root */
         $body = $domDocument->firstChild;
         $this->addRandomSubTree($body, $maxWidth, $allowedTags);
 
@@ -80,7 +81,10 @@ version="5.0-variant ezpublish-1.0"></section>'
             ->saveHTML() ?: '';
     }
 
-    protected function addRandomSubTree(DOMElement $root, int $maxWidth = 10, array $allowedTags = []): DOMElement
+    /**
+     * @param array<allowedTags> $allowedTags
+     */
+    protected function addRandomSubTree(DOMNode $root, int $maxWidth = 10, array $allowedTags = []): DOMNode
     {
         $siblings = $this->fakerGenerator->numberBetween(1, $maxWidth);
 
@@ -91,9 +95,12 @@ version="5.0-variant ezpublish-1.0"></section>'
         return $root;
     }
 
-    protected function addRandomLeaf(DOMElement $node, array $allowedTags = [])
+    /**
+     * @param array<allowedTags> $allowedTags
+     */
+    protected function addRandomLeaf(DOMNode $node, array $allowedTags = []): void
     {
-        $tag = $this->fakerGenerator->randomElement(! empty($allowedTags) ? $allowedTags : self::ALLOWED_TAGS);
+        $tag = $this->fakerGenerator->randomElement(!empty($allowedTags) ? $allowedTags : self::ALLOWED_TAGS);
 
         switch ($tag) {
             case 'a':
@@ -126,14 +133,14 @@ version="5.0-variant ezpublish-1.0"></section>'
         }
     }
 
-    protected function addRandomP(DOMElement $element, $maxLength = 10)
+    protected function addRandomP(DOMNode $element, int $maxLength = 10): void
     {
         $node = $element->ownerDocument->createElement(static::P_TAG);
         $node->textContent = $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength));
         $element->appendChild($node);
     }
 
-    protected function addRandomA(DOMElement $element, $maxLength = 10)
+    protected function addRandomA(DOMNode $element, int $maxLength = 10): void
     {
         $text = $element->ownerDocument->createTextNode(
             $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
@@ -148,7 +155,7 @@ version="5.0-variant ezpublish-1.0"></section>'
         $element->appendChild($node);
     }
 
-    protected function addRandomH(DOMElement $element, $maxLength = 10)
+    protected function addRandomH(DOMNode $element, int $maxLength = 10): void
     {
         $text = $element->ownerDocument->createTextNode(
             $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
@@ -159,7 +166,7 @@ version="5.0-variant ezpublish-1.0"></section>'
         $element->appendChild($node);
     }
 
-    protected function addRandomB(DOMElement $element, $maxLength = 10)
+    protected function addRandomB(DOMNode $element, int $maxLength = 10): void
     {
         $text = $element->ownerDocument->createTextNode(
             $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
@@ -170,7 +177,7 @@ version="5.0-variant ezpublish-1.0"></section>'
         $element->appendChild($node);
     }
 
-    protected function addRandomI(DOMElement $element, $maxLength = 10)
+    protected function addRandomI(DOMNode $element, int $maxLength = 10): void
     {
         $text = $element->ownerDocument->createTextNode(
             $this->fakerGenerator->sentence($this->fakerGenerator->numberBetween(1, $maxLength))
@@ -180,8 +187,13 @@ version="5.0-variant ezpublish-1.0"></section>'
         $element->appendChild($node);
     }
 
-    protected function addRandomTable(DOMElement $element, $maxRows = 10, $maxCols = 6, $maxTitle = 4, $maxLength = 10)
-    {
+    protected function addRandomTable(
+        DOMNode $element,
+        int $maxRows = 10,
+        int $maxCols = 6,
+        int $maxTitle = 4,
+        int $maxLength = 10
+    ): void {
         $rows = $this->fakerGenerator->numberBetween(1, $maxRows);
         $cols = $this->fakerGenerator->numberBetween(1, $maxCols);
 
@@ -218,7 +230,7 @@ version="5.0-variant ezpublish-1.0"></section>'
         $element->appendChild($table);
     }
 
-    protected function addRandomUL(DOMElement $element, $maxItems = 11, $maxLength = 4)
+    protected function addRandomUL(DOMNode $element, int $maxItems = 11, int $maxLength = 4): void
     {
         $num = $this->fakerGenerator->numberBetween(1, $maxItems);
         $list = $element->ownerDocument->createElement(static::UL_TAG);

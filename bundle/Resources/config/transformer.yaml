@@ -5,102 +5,144 @@ services:
         public: false
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer:
+        lazy: true
+        arguments:
+            $breadcrumbGenerator: '@ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator'
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+            $fieldValueTransformers: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer'
+            $contentService: '@Ibexa\Contracts\Core\Repository\ContentService'
+            $locationService: '@Ibexa\Contracts\Core\Repository\LocationService'
+            $responseTagger: '@Ibexa\HttpCache\Handler\TagHandler'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer:
-        arguments:
-            $transformers: !tagged_iterator { tag: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', index_by: 'type' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezboolean:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'bool'
+            $supportedTypes: [ 'ezboolean' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezboolean' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'boolean' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezdate:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'date'
+            $supportedTypes: [ 'ezdate' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezdate' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'date' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezemail:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'email'
+            $supportedTypes: [ 'ezemail' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezemail' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'email' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezstring:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'text'
+            $supportedTypes: [ 'ezstring' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezstring' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'string' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.eztime:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'time'
+            $supportedTypes: [ 'eztime' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'eztime' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'time' }
 
     erdnaxelaweb.ibexa_design_integration.transformer.field_value.generic:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
+        arguments:
+            $supportedTypes: [ 'ezbinaryfile', 'ezfloat', 'ezinteger', 'eztext' ]
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezdatetime' }
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezfloat' }
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezinteger' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'datetime' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'float' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'integer' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\FileFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezbinaryfile' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'file' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\SvgFieldValueTransformer:
+        lazy: true
+        arguments:
+            $ioService: "@ibexa.field_type.ezbinaryfile.io_service"
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'svg' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\TextFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'eztext' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'text' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\LocationFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezgmaplocation' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'location' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\RichtextFieldValueTransformer:
         lazy: true
         arguments:
             $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
+            $fieldHelper: '@Ibexa\Core\Helper\FieldHelper'
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezrichtext' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'richtext' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\SelectionFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezselection' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'selection' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\MatrixFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezmatrix' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'matrix' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ImageFieldValueTransformer:
         lazy: true
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimage' }
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezimageasset' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'image' }
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ContentFieldValueTransformer:
         lazy: true
+        arguments:
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
         tags:
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezobjectrelation' }
-            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'ezobjectrelationlist' }
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'content' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\UrlFieldValueTransformer:
+        lazy: true
+        arguments:
+            $factory: '@knp_menu.factory'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'url' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\PagerFieldValueTransformer:
+        lazy: true
+        arguments:
+            $pagerBuilder: '@ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'pager' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\ExpressionFieldValueTransformer:
+        lazy: true
+        arguments:
+            $expressionResolver: '@ErdnaxelaWeb\StaticFakeDesign\Expression\ExpressionResolver'
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'expression' }
 
     # form
     # taxo

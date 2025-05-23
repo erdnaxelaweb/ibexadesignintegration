@@ -1,35 +1,49 @@
 <?php
+
+declare(strict_types=1);
+
 /*
- * ibexadesignbundle.
+ * Ibexa Design Bundle.
  *
- * @package   ibexadesignbundle
- *
- * @author    florian
+ * @author    Florian ALEXANDRE
  * @copyright 2023-present Florian ALEXANDRE
  * @license   https://github.com/erdnaxelaweb/ibexadesignintegration/blob/main/LICENSE
  */
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue;
 
-use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\ContentFieldDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\AbstractContent;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\FieldDefinition;
 use Ibexa\Contracts\FieldTypeRichText\RichText\Converter as RichTextConverterInterface;
+use Ibexa\Core\Helper\FieldHelper;
 
-class RichtextFieldValueTransformer implements FieldValueTransformerInterface
+class RichtextFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function __construct(
         protected RichTextConverterInterface $richTextOutputConverter,
+        protected FieldHelper $fieldHelper,
     ) {
     }
 
-    public function transformFieldValue(
-        Content $content,
-        string $fieldIdentifier,
-        FieldDefinition $fieldDefinition,
-        array $fieldConfiguration
-    ) {
+    public function support(?string $ibexaFieldTypeIdentifier): bool
+    {
+        return in_array($ibexaFieldTypeIdentifier, ['ezrichtext'], true);
+    }
+
+    protected function transformFieldValue(
+        AbstractContent        $content,
+        string                 $fieldIdentifier,
+        ?FieldDefinition       $ibexaFieldDefinition,
+        ContentFieldDefinition $contentFieldDefinition
+    ): bool|string|null {
         /** @var \Ibexa\FieldTypeRichText\FieldType\RichText\Value $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
+
+        if ($this->fieldHelper->isFieldEmpty($content, $fieldIdentifier)) {
+            return null;
+        }
+
         return $this->richTextOutputConverter->convert($fieldValue->xml)
             ->saveHTML();
     }

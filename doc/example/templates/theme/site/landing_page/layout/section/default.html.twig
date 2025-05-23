@@ -1,0 +1,6 @@
+{# @var block \ErdnaxelaWeb\StaticFakeDesign\Value\Block #}
+{% for block in blocks %}
+    <div class="landing-page__block" data-ez-block-id="{{ block.id }}">
+        {{ display_block(block, false) }}
+    </div>
+{% endfor %}

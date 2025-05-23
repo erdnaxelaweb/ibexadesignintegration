@@ -20,11 +20,7 @@ services:
     arguments:
       $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
 
-  ErdnaxelaWeb\IbexaDesignIntegration\Configuration\ContentConfigurationManager:
-    decorates: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
-    parent: ErdnaxelaWeb\StaticFakeDesign\Configuration\ContentConfigurationManager
-
-  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateParametersCommand:
+  ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateDefinitionCommand:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateMigrationCommand:
@@ -32,5 +28,13 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\ChainGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
     parent: ErdnaxelaWeb\StaticFakeDesign\Fake\ChainGenerator
+    calls:
+      - ['setConfigResolver', ['@Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface']]
 
   ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig\Extension:
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Twig\Renderer:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
+    parent: ErdnaxelaWeb\StaticFakeDesign\Templating\Twig\Renderer
+    arguments:
+      $renderTemplate: '%ibexa_design_integration.display_functions_render_template%'
