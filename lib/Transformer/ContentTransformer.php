@@ -18,6 +18,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
+use ErdnaxelaWeb\IbexaDesignIntegration\Value\ReverseRelationsRelationsIterator;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
 use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
@@ -200,6 +201,13 @@ class ContentTransformer
                 return $instance->innerLocation ?
                     $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
                     new Breadcrumb();
+            },
+            "reverseRelatedContents" => function (Content $instance, string $propertyName, ?string $propertyScope): ReverseRelationsRelationsIterator {
+                return new ReverseRelationsRelationsIterator(
+                    $this->contentService,
+                    $this,
+                    $instance->innerContent->contentInfo
+                );
             },
         ];
 
