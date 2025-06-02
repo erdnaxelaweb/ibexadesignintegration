@@ -53,7 +53,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['content']->locationId);
         }
 
-        if (!empty($pagerDefinition->getResultTypes())) {
+        if (!empty($pagerDefinition->getResultTypes()) && in_array($pagerDefinition->getSearchType(), ['content', 'location'] )) {
             $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
                 $pagerDefinition->getResultTypes()
             );

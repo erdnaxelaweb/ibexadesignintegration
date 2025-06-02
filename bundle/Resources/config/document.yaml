@@ -5,6 +5,10 @@ services:
             $documentBuilder: '@ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder'
             $documentSearchHandler: '@Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler'
             $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+            $contentDocumentLocationFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\ContentDocumentLocationFields'
+            $blockDocumentsBaseContentFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields'
+            $blockDocumentsMetaFields: '@Ibexa\Solr\FieldMapper\ContentTranslationFieldMapper\BlockDocumentsMetaFields'
+            $persistenceHandler: '@Ibexa\Contracts\Core\Persistence\Handler'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver:
         lazy: true

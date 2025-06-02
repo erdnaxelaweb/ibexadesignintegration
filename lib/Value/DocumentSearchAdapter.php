@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use ErdnaxelaWeb\StaticFakeDesign\Definition\DocumentDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
@@ -43,7 +45,8 @@ class DocumentSearchAdapter implements PagerAdapterInterface
         protected DocumentSearchService $searchService,
         protected $filtersCallback,
         protected $activeFiltersCallback,
-        protected array                 $languageFilter = []
+        protected array                 $languageFilter = [],
+        protected DefinitionManager $definitionManager
     ) {
     }
 
@@ -95,9 +98,20 @@ class DocumentSearchAdapter implements PagerAdapterInterface
 
         $searchHits = $searchResult->searchHits;
         $list = [];
-        foreach ($searchHits as $searchHit) {
-            $list[] = Instantiator::instantiate(Document::class, $searchHit->valueObject);
+
+        foreach ($searchHits as $key => $searchHit) {
+            $result = json_decode(json_encode($searchHit->valueObject), true);
+            $documentType = $result['type_s'];
+            $pagerDefinition = $this->definitionManager->getDefinition(DocumentDefinition::class, $documentType);
+            $list[$key] = Instantiator::instantiate(Document::class, $result);
+            foreach ($pagerDefinition->getFields() as $field => $value) {
+                if (!array_key_exists($field, $result)) {
+                    continue;
+                }
+                $list[$key]->fields[$field] =  $result[$field];
+            }
         }
+
         return $list;
     }
 

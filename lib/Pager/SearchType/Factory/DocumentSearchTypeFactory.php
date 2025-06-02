@@ -18,6 +18,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\DocumentSearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchService;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,6 +28,7 @@ class DocumentSearchTypeFactory implements SearchTypeFactoryInterface
         protected DocumentSearchService         $documentSearchService,
         protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+        protected DefinitionManager            $definitionManager
     ) {
     }
 
@@ -43,7 +45,8 @@ class DocumentSearchTypeFactory implements SearchTypeFactoryInterface
             $searchFormName,
             $pagerDefinition,
             $request,
-            $defaultSearchData
+            $defaultSearchData,
+            $this->definitionManager
         );
     }
 }

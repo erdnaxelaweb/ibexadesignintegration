@@ -17,10 +17,14 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DocumentDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
+use Ibexa\Contracts\Core\Persistence\Handler as PersistenceHandler;
 use Ibexa\Contracts\Core\Search\Document as IbexaDocument;
 use Ibexa\Contracts\Core\Search\Field;
 use Ibexa\Contracts\Core\Search\FieldType\IdentifierField;
 use Ibexa\Contracts\Core\Search\FieldType\StringField;
+use Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields;
+use Ibexa\Solr\FieldMapper\ContentFieldMapper\ContentDocumentLocationFields;
+use Ibexa\Solr\FieldMapper\ContentTranslationFieldMapper\BlockDocumentsMetaFields;
 use Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler;
 
 class DocumentIndexer
@@ -30,6 +34,10 @@ class DocumentIndexer
         protected DocumentBuilder       $documentBuilder,
         protected DocumentSearchHandler $documentSearchHandler,
         protected DefinitionManager     $definitionManager,
+        protected ContentDocumentLocationFields $contentDocumentLocationFields,
+        protected BlockDocumentsBaseContentFields $blockDocumentsBaseContentFields,
+        protected BlockDocumentsMetaFields $blockDocumentsMetaFields,
+        protected PersistenceHandler $persistenceHandler
     ) {
     }
 
@@ -57,12 +65,28 @@ class DocumentIndexer
         foreach ($documentTypes as $documentType) {
             $configuration = $this->definitionManager->getDefinition(DocumentDefinition::class, $documentType);
 
-            foreach ($content->languageCodes as $languageCode) {
+            foreach ($content->languageCodes as $key => $languageCode) {
                 $documents[] = ($this->documentBuilder)(
                     $documentType,
                     $content,
                     $configuration->getFields(),
                     $languageCode
+                );
+
+                $contentPersistance = $this->persistenceHandler->contentHandler()->load(
+                    $content->innerContent->getVersionInfo()->getContentInfo()->id,
+                    $content->innerContent->getVersionInfo()->versionNo
+                );
+
+                $additionalFields = array_merge(
+                    $this->contentDocumentLocationFields->mapFields($contentPersistance),
+                    $this->blockDocumentsBaseContentFields->mapFields($contentPersistance),
+                    $this->blockDocumentsMetaFields->mapFields($contentPersistance, $languageCode)
+                );
+
+                $documents[$key]->fields = array_merge(
+                    $documents[$key]->fields,
+                    $additionalFields
                 );
             }
         }
@@ -73,14 +97,18 @@ class DocumentIndexer
     {
         $fields = [];
         foreach ($document->fields as $fieldIdentifier => $value) {
-            $value = $this->resolveFieldValue(
-                $fieldIdentifier,
-                $value
-            );
-            if (!$value) {
-                continue;
+            if (!is_string($fieldIdentifier)) {
+                $fields[] = $value;
+            } else {
+                $value = $this->resolveFieldValue(
+                    $fieldIdentifier,
+                    $value
+                );
+                if (!$value) {
+                    continue;
+                }
+                $fields[$fieldIdentifier] = $value;
             }
-            $fields[$fieldIdentifier] = $value;
         }
 
         $fields[] = new Field(
