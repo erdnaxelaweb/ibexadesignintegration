@@ -102,9 +102,9 @@ class DocumentSearchAdapter implements PagerAdapterInterface
         foreach ($searchHits as $key => $searchHit) {
             $result = json_decode(json_encode($searchHit->valueObject), true);
             $documentType = $result['type_s'];
-            $pagerDefinition = $this->definitionManager->getDefinition(DocumentDefinition::class, $documentType);
+            $documentDefinition = $this->definitionManager->getDefinition(DocumentDefinition::class, $documentType);
             $list[$key] = Instantiator::instantiate(Document::class, $result);
-            foreach ($pagerDefinition->getFields() as $field => $value) {
+            foreach ($documentDefinition->getFields() as $field => $value) {
                 if (!array_key_exists($field, $result)) {
                     continue;
                 }

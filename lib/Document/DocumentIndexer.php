@@ -44,12 +44,13 @@ class DocumentIndexer
     /**
      * @param Document[] $documents
      */
-    public function __invoke(array $documents): void
+    public function __invoke(array $documents, Content $content): void
     {
         $indexableDocuments = [];
         foreach ($documents as $document) {
-            $indexableDocuments[] = $this->transformToIndexableDocument($document);
+            $indexableDocuments[] = $this->transformToIndexableDocument($document, $content);
         }
+
         $this->documentSearchHandler->bulkIndexDocuments($indexableDocuments);
     }
 
@@ -72,43 +73,24 @@ class DocumentIndexer
                     $configuration->getFields(),
                     $languageCode
                 );
-
-                $contentPersistance = $this->persistenceHandler->contentHandler()->load(
-                    $content->innerContent->getVersionInfo()->getContentInfo()->id,
-                    $content->innerContent->getVersionInfo()->versionNo
-                );
-
-                $additionalFields = array_merge(
-                    $this->contentDocumentLocationFields->mapFields($contentPersistance),
-                    $this->blockDocumentsBaseContentFields->mapFields($contentPersistance),
-                    $this->blockDocumentsMetaFields->mapFields($contentPersistance, $languageCode)
-                );
-
-                $documents[$key]->fields = array_merge(
-                    $documents[$key]->fields,
-                    $additionalFields
-                );
             }
         }
-        $this->__invoke($documents);
+        $this->__invoke($documents, $content);
     }
 
-    protected function transformToIndexableDocument(Document $document): IbexaDocument
+    protected function transformToIndexableDocument(Document $document, Content $content): IbexaDocument
     {
         $fields = [];
+
         foreach ($document->fields as $fieldIdentifier => $value) {
-            if (!is_string($fieldIdentifier)) {
-                $fields[] = $value;
-            } else {
-                $value = $this->resolveFieldValue(
-                    $fieldIdentifier,
-                    $value
-                );
-                if (!$value) {
-                    continue;
-                }
-                $fields[$fieldIdentifier] = $value;
+            $value = $this->resolveFieldValue(
+                $fieldIdentifier,
+                $value
+            );
+            if (!$value) {
+                continue;
             }
+            $fields[$fieldIdentifier] = $value;
         }
 
         $fields[] = new Field(
@@ -121,6 +103,23 @@ class DocumentIndexer
             $document->type,
             new StringField()
         );
+
+        $contentPersistance = $this->persistenceHandler->contentHandler()->load(
+            $content->innerContent->getVersionInfo()->getContentInfo()->id,
+            $content->innerContent->getVersionInfo()->versionNo
+        );
+
+        $additionalFields = array_merge(
+            $this->contentDocumentLocationFields->mapFields($contentPersistance),
+            $this->blockDocumentsBaseContentFields->mapFields($contentPersistance),
+            $this->blockDocumentsMetaFields->mapFields(
+                $contentPersistance,
+                $document->languageCode
+            )
+        );
+
+        $fields = array_merge($fields, $additionalFields);
+
         return new IbexaDocument(
             [
                 'id' => $document->id,
