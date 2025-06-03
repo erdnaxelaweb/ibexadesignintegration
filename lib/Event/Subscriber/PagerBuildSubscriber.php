@@ -65,7 +65,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         if ($pagerDefinition->getSearchType() === 'document') {
             $event->filtersCriterions[] = new Criterion\CustomField(
                 'type_s',
-                Criterion\Operator::EQ, $pagerDefinition->getIdentifier()
+                Criterion\Operator::IN, $pagerDefinition->getResultTypes()
             );
         }
 
