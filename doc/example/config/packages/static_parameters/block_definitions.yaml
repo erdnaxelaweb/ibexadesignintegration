@@ -1,24 +1,20 @@
-parameters:
-    block_sections: &block_sections
-        default:
-            blocks: []
-            template: '@@ibexadesign/landing_page/layout/section/default.html.twig'
-
 ibexa_design_integration:
     system:
         default:
             block_layout_definition:
                 default:
-                    template: '@@ibexadesign/landing_page/layout/default.html.twig'
+                    template: '@ibexadesign/landing_page/layout/default.html.twig'
                     zones:
                         - default
                     sections:
-                        <<: *block_sections
+                        default:
+                            blocks: []
+                            template: '@ibexadesign/landing_page/layout/section/default.html.twig'
 
             block_definition:
                 test:
                     views:
-                        default: '@@ibexadesign/landing_page/block/test.html.twig'
+                        default: '@ibexadesign/landing_page/block/test.html.twig'
                     attributes:
                         integer:
                             type: "integer"

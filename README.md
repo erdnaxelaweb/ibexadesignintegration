@@ -96,11 +96,13 @@ parameters:
 Create custom landing page blocks:
 
 ```yaml
-parameters:
-    erdnaxelaweb.static_fake_design.block_definition:
+ibexa_design_integration:
+  system:
+    default:
+      block_definition:
         featured_articles:
             views:
-                default: '@@ibexadesign/landing_page/block/featured_articles.html.twig'
+                default: '@ibexadesign/landing_page/block/featured_articles.html.twig'
             attributes:
                 title:
                     type: "string"

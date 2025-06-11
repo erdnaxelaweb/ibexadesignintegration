@@ -287,7 +287,7 @@ ibexa_design_integration:
          block_definition:
             last_articles:
                views:
-                   default: '@@ibexadesign/landing_page/block/last_articles.html.twig'
+                   default: '@ibexadesign/landing_page/block/last_articles.html.twig'
                attributes:
                    title:
                        type: "string"
