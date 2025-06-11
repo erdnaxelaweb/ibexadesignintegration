@@ -15,6 +15,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Event\Subscriber;
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
@@ -27,6 +28,7 @@ class PagerBuildSubscriber implements EventSubscriberInterface
     public function __construct(
         protected ChainFilterHandler $filterHandler,
         protected ChainSortHandler $sortHandler,
+        protected ContentTransformer $contentTransformer
     ) {
     }
 
@@ -39,29 +41,41 @@ class PagerBuildSubscriber implements EventSubscriberInterface
 
     public function onPagerBuild(PagerBuildEvent $event): void
     {
-        $eventContext = $event->buildContext;
         $pagerDefinition = $event->pagerDefinition;
         $searchData = $event->searchData;
 
-        if (isset($eventContext['location'])) {
-            $parentLocationId = $eventContext['location'] instanceof Location && $eventContext['location']->id ?
-                $eventContext['location']->id :
-                $eventContext['location'];
+        if (isset($event->buildContext['location'])) {
+            $parentLocationId = $event->buildContext['location'] instanceof Location && $event->buildContext['location']->id ?
+                $event->buildContext['location']->id :
+                $event->buildContext['location'];
 
             $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
-        } elseif (isset($eventContext['content']) && $eventContext['content'] instanceof Content) {
-            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($eventContext['content']->locationId);
         }
 
-        if (!empty($pagerDefinition->getContentTypes())) {
-            $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
-                $pagerDefinition->getContentTypes()
-            );
+        if (isset($event->buildContext['content'])) {
+            if (!$event->buildContext['content'] instanceof Content) {
+                $event->buildContext['content'] = $this->contentTransformer->lazyTransformContentFromContentId((int) $event->buildContext['content']);
+            }
+            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($event->buildContext['content']->locationId);
         }
 
-        if (!empty($pagerDefinition->getExcludedContentTypes())) {
+        if (!empty($pagerDefinition->getResultTypes())) {
+            if (in_array($pagerDefinition->getSearchType(), ['content', 'location'], true)) {
+                $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
+                    $pagerDefinition->getResultTypes()
+                );
+            } elseif ($pagerDefinition->getSearchType() === 'document') {
+                $event->filtersCriterions['documentType'] = new Criterion\CustomField(
+                    'type_s',
+                    Criterion\Operator::IN,
+                    $pagerDefinition->getResultTypes()
+                );
+            }
+        }
+
+        if (!empty($pagerDefinition->getExcludedResultTypes())) {
             $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
-                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedContentTypes())
+                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedResultTypes())
             );
         }
 

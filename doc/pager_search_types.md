@@ -31,10 +31,13 @@ The bundle provides several search types, which are registered as services :
 To use the ContentSearchType in your pager configuration:
 
 ```yaml
-erdnaxelaweb.static_fake_design.pager_definition:
-    article_list:
-        searchType: 'content'
-        # Other configuration options...
+ibexa_design_integration:
+   system:
+      default:
+         pager_definition:
+            article_list:
+              searchType: 'content'
+              # Other configuration options...
 ```
 
 ### location search type
@@ -51,10 +54,13 @@ erdnaxelaweb.static_fake_design.pager_definition:
 To use the LocationSearchType in your pager configuration:
 
 ```yaml
-erdnaxelaweb.static_fake_design.pager_definition:
-    article_list:
-        searchType: 'location'
-        # Other configuration options...
+ibexa_design_integration:
+   system:
+      default:
+         pager_definition:
+            article_list:
+              searchType: 'location'
+              # Other configuration options...
 ```
 
 ## Implementing a Custom Search Type

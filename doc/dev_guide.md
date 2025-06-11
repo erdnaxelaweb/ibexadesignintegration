@@ -8,52 +8,54 @@ This guide documents the step-by-step process for extending Ibexa CMS with new c
 Add the content type definition in `ibexa/config/packages/project/static_parameters/content_definition.yaml`:
 
 ```yaml
-parameters:
-    erdnaxelaweb.static_fake_design.content_definition:
-        article:
-            name:
-                fre-FR: 'Article'
-            description:
-                fre-FR: ''
-            nameSchema: '<title>'
-            urlAliasSchema: '<title>'
-            defaultAlwaysAvailable: true
-            defaultSortField: published
-            defaultSortOrder: desc
-            container: false
-            fields:
-                title:
-                    name: { fre-FR: Titre }
-                    description: { fre-FR: '' }
-                    type: string
-                    required: true
-                    searchable: true
-                    translatable: true
-                    category: Content
-                intro:
-                    name: { fre-FR: Introduction }
-                    description: { fre-FR: '' }
-                    type: richtext
-                    required: false
-                    searchable: true
-                    translatable: true
-                    category: Content
-                body:
-                    name: { fre-FR: Corps de texte }
-                    description: { fre-FR: '' }
-                    type: richtext
-                    required: false
-                    searchable: true
-                    translatable: true
-                    category: Content
-                image:
-                    name: { fre-FR: Image }
-                    description: { fre-FR: '' }
-                    type: image
-                    required: false
-                    searchable: false
-                    translatable: false
-                    category: Content
+ibexa_design_integration:
+   system:
+      default:
+          content_definition:
+              article:
+                  name:
+                      fre-FR: 'Article'
+                  description:
+                      fre-FR: ''
+                  nameSchema: '<title>'
+                  urlAliasSchema: '<title>'
+                  defaultAlwaysAvailable: true
+                  defaultSortField: published
+                  defaultSortOrder: desc
+                  container: false
+                  fields:
+                      title:
+                          name: { fre-FR: Titre }
+                          description: { fre-FR: '' }
+                          type: string
+                          required: true
+                          searchable: true
+                          translatable: true
+                          category: Content
+                      intro:
+                          name: { fre-FR: Introduction }
+                          description: { fre-FR: '' }
+                          type: richtext
+                          required: false
+                          searchable: true
+                          translatable: true
+                          category: Content
+                      body:
+                          name: { fre-FR: Corps de texte }
+                          description: { fre-FR: '' }
+                          type: richtext
+                          required: false
+                          searchable: true
+                          translatable: true
+                          category: Content
+                      image:
+                          name: { fre-FR: Image }
+                          description: { fre-FR: '' }
+                          type: image
+                          required: false
+                          searchable: false
+                          translatable: false
+                          category: Content
 ```
 
 the available field types can be found in [content.md](../ibexa/vendor/erdnaxelaweb/staticfakedesign/doc/value_types/content.md)
@@ -138,27 +140,29 @@ This step can be omitted for content without views
 Add the taxonomy entry definition in `ibexa/config/packages/project/static_parameters/taxonomy_definitions.yaml`:
 
 ```yaml
-parameters:
-    erdnaxelaweb.static_fake_design.taxonomy_entry_definition:
-        theme_tag:
-            models:
-                - name: tag1
-                  identifier: tag1
-                - name: tag2
-                  identifier: tag2
-            fields:
-                name:
-                    required: true
-                    type: string
-                identifier:
-                    required: true
-                    type: string
-                parent:
-                    required: false
-                    type: taxonomy_entry
-                    options:
-                        type: theme_tag
-                        max: 1
+ibexa_design_integration:
+   system:
+      default:
+         taxonomy_entry_definition:
+            theme_tag:
+               models:
+                   - name: tag1
+                     identifier: tag1
+                   - name: tag2
+                     identifier: tag2
+               fields:
+                   name:
+                       required: true
+                       type: string
+                   identifier:
+                       required: true
+                       type: string
+                   parent:
+                       required: false
+                       type: taxonomy_entry
+                       options:
+                           type: theme_tag
+                           max: 1
 ```
 
 the available field types can be found in [taxonomy_entry.md](../ibexa/vendor/erdnaxelaweb/staticfakedesign/doc/value_types/taxonomy_entry.md)
@@ -277,21 +281,23 @@ ibexa_taxonomy:
 Add the block definition in `ibexa/config/packages/project/static_parameters/block_definitions.yaml`:
 
 ```yaml
-parameters:
-    erdnaxelaweb.static_fake_design.block_definition:
-        last_articles:
-            views:
-                default: '@@ibexadesign/landing_page/block/last_articles.html.twig'
-            attributes:
-                title:
-                    type: "string"
-                    required: false
-                articles:
-                    type: "content"
-                    required: true
-                    options:
-                        type: article
-                        max: 5
+ibexa_design_integration:
+   system:
+      default:
+         block_definition:
+            last_articles:
+               views:
+                   default: '@@ibexadesign/landing_page/block/last_articles.html.twig'
+               attributes:
+                   title:
+                       type: "string"
+                       required: false
+                   articles:
+                       type: "content"
+                       required: true
+                       options:
+                           type: article
+                           max: 5
 ```
 
 the available attributes types can be found in [block.md](../ibexa/vendor/erdnaxelaweb/staticfakedesign/doc/value_types/block.md)

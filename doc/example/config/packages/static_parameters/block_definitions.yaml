@@ -4,79 +4,82 @@ parameters:
             blocks: []
             template: '@@ibexadesign/landing_page/layout/section/default.html.twig'
 
-    erdnaxelaweb.static_fake_design.block_layout_definition:
+ibexa_design_integration:
+    system:
         default:
-            template: '@@ibexadesign/landing_page/layout/default.html.twig'
-            zones:
-                - default
-            sections:
-                <<: *block_sections
+            block_layout_definition:
+                default:
+                    template: '@@ibexadesign/landing_page/layout/default.html.twig'
+                    zones:
+                        - default
+                    sections:
+                        <<: *block_sections
 
-    erdnaxelaweb.static_fake_design.block_definition:
-        test:
-            views:
-                default: '@@ibexadesign/landing_page/block/test.html.twig'
-            attributes:
-                integer:
-                    type: "integer"
-                    required: true
-                string:
-                    type: "string"
-                    required: true
-                url:
-                    type: "url"
-                    required: true
-                text:
-                    type: "text"
-                    required: true
-                richtext:
-                    type: "richtext"
-                    required: true
-                embed:
-                    type: "content"
-                    required: true
-                    options:
-                        type: news
-                        max: 1
-                select:
-                    type: "selection"
-                    required: true
-                    options:
-                        options:
-                            - choice 1
-                            - choice 2
-                            - choice 3
-                checkbox:
-                    type: "boolean"
-                    required: true
-                multiple:
-                    type: "selection"
-                    required: true
-                    options:
-                        isMultiple: true
-                        options:
-                            - choice 1
-                            - choice 2
-                            - choice 3
-                radio:
-                    type: "selection"
-                    required: true
-                    options:
-                        options:
-                            - choice 1
-                            - choice 2
-                            - choice 3
-                locationlist:
-                    type: "content"
-                    required: true
-                    options:
-                        type: news
-                contenttypelist:
-                    type: "selection"
-                    required: true
-                    options:
-                        isMultiple: true
-                        options:
-                            - choice 1
-                            - choice 2
-                            - choice 3
+            block_definition:
+                test:
+                    views:
+                        default: '@@ibexadesign/landing_page/block/test.html.twig'
+                    attributes:
+                        integer:
+                            type: "integer"
+                            required: true
+                        string:
+                            type: "string"
+                            required: true
+                        url:
+                            type: "url"
+                            required: true
+                        text:
+                            type: "text"
+                            required: true
+                        richtext:
+                            type: "richtext"
+                            required: true
+                        embed:
+                            type: "content"
+                            required: true
+                            options:
+                                type: news
+                                max: 1
+                        select:
+                            type: "selection"
+                            required: true
+                            options:
+                                options:
+                                    - choice 1
+                                    - choice 2
+                                    - choice 3
+                        checkbox:
+                            type: "boolean"
+                            required: true
+                        multiple:
+                            type: "selection"
+                            required: true
+                            options:
+                                isMultiple: true
+                                options:
+                                    - choice 1
+                                    - choice 2
+                                    - choice 3
+                        radio:
+                            type: "selection"
+                            required: true
+                            options:
+                                options:
+                                    - choice 1
+                                    - choice 2
+                                    - choice 3
+                        locationlist:
+                            type: "content"
+                            required: true
+                            options:
+                                type: news
+                        contenttypelist:
+                            type: "selection"
+                            required: true
+                            options:
+                                isMultiple: true
+                                options:
+                                    - choice 1
+                                    - choice 2
+                                    - choice 3

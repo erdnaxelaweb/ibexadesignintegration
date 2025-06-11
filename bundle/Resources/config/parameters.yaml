@@ -1,5 +1,11 @@
 parameters:
+    env(IBEXA_DESIGN_INTEGRATION_PAGER_RENDERER_NODE_URL): 'http://localhost:3000'
+    env(IBEXA_DESIGN_INTEGRATION_PAGER_RENDERER_NODE_DEV_URL): 'https://localhost:3000'
+
     ibexa_design_integration.default.enable_fake_generation: false
     ibexa_design_integration.static_group.enable_fake_generation: true
 
     ibexa_design_integration.display_functions_render_template: '@@ibexadesign/static/display_functions.html.twig'
+
+    ibexa_design_integration.pager_renderer.node_url: '%env(IBEXA_DESIGN_INTEGRATION_PAGER_RENDERER_NODE_URL)%'
+    ibexa_design_integration.pager_renderer.node_dev_url: '%env(IBEXA_DESIGN_INTEGRATION_PAGER_RENDERER_NODE_DEV_URL)%'

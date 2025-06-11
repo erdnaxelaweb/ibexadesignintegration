@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection;
 
+use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -25,6 +26,19 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $configuration = new Configuration();
+
+        $config = $this->processConfiguration($configuration, $configs);
+        $processor = new ConfigurationProcessor($container, 'ibexa_design_integration');
+
+        $processor->mapConfigArray('block_definition', $config);
+        $processor->mapConfigArray('block_layout_definition', $config);
+        $processor->mapConfigArray('content_definition', $config);
+        $processor->mapConfigArray('pager_definition', $config);
+        $processor->mapConfigArray('pager_definition', $config);
+        $processor->mapConfigArray('document_definition', $config);
+        $processor->mapConfigArray('image', $config);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('parameters.yaml');
         $loader->load('services.yaml');
@@ -34,6 +48,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('transformer.yaml');
         $loader->load('showroom.yaml');
         $loader->load('definitions.yaml');
+        $loader->load('document.yaml');
 
         $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         if (in_array('eZMigrationBundle', $activatedBundles, true)) {

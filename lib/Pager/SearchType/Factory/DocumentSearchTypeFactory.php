@@ -15,32 +15,32 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
-use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\ContentSearchType;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\DocumentSearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
-use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
-use Ibexa\Contracts\Core\Repository\SearchService;
+use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class ContentSearchTypeFactory implements SearchTypeFactoryInterface
+class DocumentSearchTypeFactory implements SearchTypeFactoryInterface
 {
     public function __construct(
-        protected SearchService $searchService,
-        protected ContentTransformer $contentTransformer,
-        protected PagerSearchFormBuilder $pagerSearchFormBuilder,
+        protected DocumentSearchServiceInterface         $documentSearchService,
+        protected PagerSearchFormBuilder        $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+        protected DefinitionManager            $definitionManager
     ) {
     }
 
     public function __invoke(
-        string $searchFormName,
+        string          $searchFormName,
         PagerDefinition $pagerDefinition,
-        ?Request $request,
-        SearchData $defaultSearchData = new SearchData()
+        ?Request         $request,
+        SearchData      $defaultSearchData = new SearchData()
     ): SearchTypeInterface {
-        return new ContentSearchType(
-            $this->searchService,
-            $this->contentTransformer,
+        return new DocumentSearchType(
+            $this->documentSearchService,
+            $this->definitionManager,
             $this->pagerSearchFormBuilder,
             $this->pagerActiveFiltersListBuilder,
             $searchFormName,
