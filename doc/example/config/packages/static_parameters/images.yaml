@@ -1,3 +1,6 @@
-parameters:
-    erdnaxelaweb.static_fake_design.image.variations:
-        raw: [[~,~]]
+ibexa_design_integration:
+    system:
+        default:
+            image:
+                variations:
+                    raw: [[~,~]]

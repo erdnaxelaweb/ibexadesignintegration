@@ -60,3 +60,16 @@ services:
       $fragmentHandler: '@fragment.handler'
 
   ErdnaxelaWeb\IbexaDesignIntegration\Normalizer\FormViewNormalizer:
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Configuration\SiteaccessAwareDefinitionManager:
+    decorates: 'ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+    parent: 'ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+    arguments:
+      $configResolver: '@ibexa.config.resolver'
+      $siteaccessService: '@Ibexa\Core\MVC\Symfony\SiteAccess\SiteAccessService'
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Configuration\SiteaccessAwareImageConfiguration:
+    decorates: 'ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration'
+    parent: 'ErdnaxelaWeb\StaticFakeDesign\Configuration\ImageConfiguration'
+    arguments:
+      $configResolver: '@ibexa.config.resolver'
