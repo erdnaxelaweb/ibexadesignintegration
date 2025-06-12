@@ -90,14 +90,17 @@ class DocumentIndexer
         $fields = [];
 
         foreach ($document->fields as $fieldIdentifier => $value) {
-            $value = $this->resolveFieldValue(
+            if ($value === null) {
+                continue;
+            }
+            $resolvedValue = $this->resolveFieldValue(
                 $fieldIdentifier,
                 $value
             );
-            if (!$value) {
+            if ($resolvedValue === null) {
                 continue;
             }
-            $fields[$fieldIdentifier] = $value;
+            $fields[$fieldIdentifier] = $resolvedValue;
         }
 
         $fields[] = new Field(

@@ -90,6 +90,7 @@ class FormViewNormalizer
                     'label' => $choiceOrChoices->label,
                     'value' => $choiceOrChoices->value,
                     'attr' => $choiceOrChoices->attr,
+                    'data' => $choiceOrChoices->data,
                 ];
             }
         }

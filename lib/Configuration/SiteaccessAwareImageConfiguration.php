@@ -52,8 +52,6 @@ class SiteaccessAwareImageConfiguration extends ImageConfiguration
     }
 
     /**
-     * @param string $id
-     *
      * @return mixed[]
      */
     protected function getSaConfig(string $id): array

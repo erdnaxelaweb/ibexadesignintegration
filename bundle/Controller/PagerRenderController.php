@@ -12,15 +12,23 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller;
 
+use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class PagerRenderController
 {
     public function __construct(
+        protected ConfigResolverInterface $configResolver,
+        protected UrlAliasGenerator $urlAliasGenerator,
         protected HttpClientInterface $httpClient,
         protected RequestStack    $requestStack,
         protected RouterInterface $router,
@@ -29,7 +37,7 @@ class PagerRenderController
     ) {
     }
 
-    public function __invoke(string $id, string $pagerType): Response
+    public function __invoke(string $id, string $pagerType, array $parameters = []): Response
     {
         $request = $this->requestStack->getMainRequest();
 
@@ -40,9 +48,10 @@ class PagerRenderController
                     'ibexa_design_integration.api.pager',
                     [
                         'type' => $pagerType,
-                    ],
+                    ] + $parameters,
                     UrlGeneratorInterface::ABSOLUTE_URL
                 ),
+                'pathPrefix' => $this->getRootPathPrefix(),
             ]
         );
         if (null !== $requestQs = $request->getQueryString()) {
@@ -61,26 +70,38 @@ class PagerRenderController
             ]
         );
 
-        $content = $response->getContent();
-        if (strpos($content, '/@vite/client')) {
+        try {
+            $content = $response->getContent();
+            if (strpos($content, '/@vite/client')) {
+                $content = str_replace(
+                    [
+                        'src="/',
+                        'from "/',
+                    ],
+                    [
+                        sprintf('src="%s/', $this->searchAppDevUrl),
+                        sprintf('from "%s/', $this->searchAppDevUrl),
+                    ],
+                    $content
+                );
+            }
+
             $content = str_replace(
-                [
-                    'src="/',
-                    'from "/',
-                ],
-                [
-                    sprintf('src="%s/', $this->searchAppDevUrl),
-                    sprintf('from "%s/', $this->searchAppDevUrl),
-                ],
+                '<script',
+                '<script async=""',
                 $content
             );
+        } catch (ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {
+            $content = $e->getMessage();
         }
-
-        $content = str_replace(
-            '<script',
-            '<script async=""',
-            $content
-        );
         return new Response($content);
+    }
+
+    public function getRootPathPrefix(): string
+    {
+        $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
+        return $this->urlAliasGenerator->getPathPrefixByRootLocationId(
+            $rootLocationId
+        );
     }
 }

@@ -32,13 +32,15 @@ class Renderer extends BaseRenderer
     public function renderPager(
         Environment $environment,
         string      $id,
-        string      $pagerType
+        string      $pagerType,
+        array $parameters = []
     ): ?string {
         $uri = new ControllerReference(
             PagerRenderController::class,
             [
                 'id' => $id,
                 'pagerType' => $pagerType,
+                'parameters' => $parameters,
             ]
         );
 

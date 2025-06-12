@@ -35,6 +35,9 @@ class SearchFieldResolver
                 if (!$fieldType) {
                     return null;
                 }
+                if ($fieldType === FieldType\StringField::class && !is_scalar($value)) {
+                    $value = serialize($value);
+                }
 
                 $name = substr($fieldIdentifier, 0, -strlen("_$suffix"));
                 return new Field(

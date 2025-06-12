@@ -130,6 +130,19 @@ class DocumentSearchAdapter implements PagerAdapterInterface
                     $value = unserialize($value);
                 }
 
+                if (str_ends_with($field, '_dt')) {
+                    $date = \Datetime::createFromFormat('Y-m-d\\TH:i:s\\Z', $value);
+                    $value = $date;
+                }
+
+                if (str_ends_with($field, '_gl')) {
+                    $location = explode(',', $value);
+                    $value = [
+                        'latitude' => (float) $location[0],
+                        'longitude' => (float) $location[1],
+                    ];
+                }
+
                 $document->fields[$field] = $value;
             }
             $list[] = $document;
