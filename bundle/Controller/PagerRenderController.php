@@ -58,7 +58,15 @@ class PagerRenderController
             $qs .= '&' . $requestQs;
         }
 
-        $uri = $this->searchAppUrl . $request->getPathInfo() . '?' . $qs;
+        $searchAppUrl = $this->searchAppUrl;
+        if (str_starts_with($searchAppUrl, '/')) {
+            $searchAppUrl = sprintf(
+                '%s%s',
+                $request->getSchemeAndHttpHost(),
+                $searchAppUrl
+            );
+        }
+        $uri = $searchAppUrl . $request->getPathInfo() . '?' . $qs;
 
         $response = $this->httpClient->request(
             'GET',
