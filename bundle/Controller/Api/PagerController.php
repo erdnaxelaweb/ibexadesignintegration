@@ -55,6 +55,7 @@ class PagerController extends AbstractController
             $this->serializer->serialize([
                 'currentPage' => $pager->getCurrentPage(),
                 'itemsPerPage' => $pager->getMaxPerPage(),
+                'totalPages' => $pager->getNbPages(),
                 'totalItems' => $pager->getNbResults(),
                 'items' => $pager->getCurrentPageResults(),
                 'filters' => $form,

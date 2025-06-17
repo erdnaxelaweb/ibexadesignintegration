@@ -43,15 +43,18 @@ class PagerRenderController
 
         $qs = http_build_query(
             [
-                'appId' => $id,
-                'apiUrl' => $this->router->generate(
-                    'ibexa_design_integration.api.pager',
-                    [
-                        'type' => $pagerType,
-                    ] + $parameters,
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-                'pathPrefix' => $this->getRootPathPrefix(),
+                'context' => [
+                    'appId' => $id,
+                    'apiUrl' => $this->router->generate(
+                        'ibexa_design_integration.api.pager',
+                        [
+                            'type' => $pagerType,
+                        ] + $parameters,
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                    'pathPrefix' => $this->getRootPathPrefix(),
+                    'locale' => $request->getLocale(),
+                ],
             ]
         );
         if (null !== $requestQs = $request->getQueryString()) {
@@ -68,7 +71,7 @@ class PagerRenderController
         }
         $uri = $searchAppUrl . $request->getPathInfo() . '?' . $qs;
 
-        $response = $this->httpClient->request(
+        $appResponse = $this->httpClient->request(
             'GET',
             $uri,
             [
@@ -79,7 +82,7 @@ class PagerRenderController
         );
 
         try {
-            $content = $response->getContent();
+            $content = $appResponse->getContent();
             if (strpos($content, '/@vite/client')) {
                 $content = str_replace(
                     [
@@ -102,7 +105,13 @@ class PagerRenderController
         } catch (ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {
             $content = $e->getMessage();
         }
-        return new Response($content);
+
+        $response = new Response(
+            $content,
+            $appResponse->getStatusCode(),
+            $appResponse->getHeaders()
+        );
+        return $response;
     }
 
     public function getRootPathPrefix(): string
