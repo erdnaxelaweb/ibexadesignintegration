@@ -66,9 +66,10 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         }
 
         if (! empty($configuration['sorts'])) {
-            $sortIdentifier = $searchData->sort ?? array_key_first($configuration['sorts']);
-            $sortConfig = $configuration['sorts'][$sortIdentifier];
-            $this->sortHandler->addSortClause($event->pagerQuery, $sortConfig['type'], $sortConfig['options']);
+            $sortIdentifier = $searchData->sort ?? $configuration['sorts'];
+            foreach ($sortIdentifier as $sort) {
+                $this->sortHandler->addSortClause($event->pagerQuery, $sort['type'], $sort['options']);
+            }
         }
     }
 }
