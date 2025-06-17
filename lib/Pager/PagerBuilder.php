@@ -95,7 +95,9 @@ class PagerBuilder
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
 
         $page = $request ? $request->get('page', 1) : 1;
-        $pagerFanta->setCurrentPage(min(is_numeric($page) ? (int) $page : 1, $pagerFanta->getNbPages()));
+        $pagerFanta->setCurrentPage(
+            is_numeric($page) ? (int) $page : 1
+        );
 
         return $pagerFanta;
     }

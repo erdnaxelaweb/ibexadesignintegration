@@ -44,39 +44,45 @@ class PagerBuildSubscriber implements EventSubscriberInterface
         $pagerDefinition = $event->pagerDefinition;
         $searchData = $event->searchData;
 
-        if (isset($event->buildContext['location'])) {
-            $parentLocationId = $event->buildContext['location'] instanceof Location && $event->buildContext['location']->id ?
-                $event->buildContext['location']->id :
-                $event->buildContext['location'];
 
-            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
-        }
+        if (in_array($pagerDefinition->getSearchType(), ['content', 'location'], true)) {
+            if (isset($event->buildContext['location'])) {
+                $parentLocationId = $event->buildContext['location'] instanceof Location && $event->buildContext['location']->id ?
+                    $event->buildContext['location']->id :
+                    $event->buildContext['location'];
 
-        if (isset($event->buildContext['content'])) {
-            if (!$event->buildContext['content'] instanceof Content) {
-                $event->buildContext['content'] = $this->contentTransformer->lazyTransformContentFromContentId((int) $event->buildContext['content']);
+                $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
             }
-            $event->filtersCriterions['location'] = new Criterion\ParentLocationId($event->buildContext['content']->locationId);
-        }
 
-        if (!empty($pagerDefinition->getResultTypes())) {
-            if (in_array($pagerDefinition->getSearchType(), ['content', 'location'], true)) {
+            if (isset($event->buildContext['content'])) {
+                if (!$event->buildContext['content'] instanceof Content) {
+                    $event->buildContext['content'] = $this->contentTransformer->lazyTransformContentFromContentId(
+                        (int)$event->buildContext['content']
+                    );
+                }
+                $event->filtersCriterions['location'] = new Criterion\ParentLocationId(
+                    $event->buildContext['content']->locationId
+                );
+            }
+            if (!empty($pagerDefinition->getResultTypes())) {
                 $event->filtersCriterions['contentTypes'] = new Criterion\ContentTypeIdentifier(
                     $pagerDefinition->getResultTypes()
                 );
-            } elseif ($pagerDefinition->getSearchType() === 'document') {
+            }
+
+            if (!empty($pagerDefinition->getExcludedResultTypes())) {
+                $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
+                    new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedResultTypes())
+                );
+            }
+        } elseif ($pagerDefinition->getSearchType() === 'document') {
+            if (!empty($pagerDefinition->getResultTypes())) {
                 $event->filtersCriterions['documentType'] = new Criterion\CustomField(
                     'type_s',
                     Criterion\Operator::IN,
                     $pagerDefinition->getResultTypes()
                 );
             }
-        }
-
-        if (!empty($pagerDefinition->getExcludedResultTypes())) {
-            $event->filtersCriterions['excludedContentTypes'] = new Criterion\LogicalNot(
-                new Criterion\ContentTypeIdentifier($pagerDefinition->getExcludedResultTypes())
-            );
         }
 
         ['criterions' => $criterions, 'aggregations' => $aggregations] = $this->resolveFilters(

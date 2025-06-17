@@ -49,6 +49,7 @@ class PagerController extends AbstractController
             $pager = $this->pagerBuilder->build($type, $context);
         }
 
+        $currentPageResults = $pager->getCurrentPageResults();
         $form = ($this->formViewNormalizer)($pager->getFiltersForm());
 
         $response = new JsonResponse(
@@ -57,7 +58,7 @@ class PagerController extends AbstractController
                 'itemsPerPage' => $pager->getMaxPerPage(),
                 'totalPages' => $pager->getNbPages(),
                 'totalItems' => $pager->getNbResults(),
-                'items' => $pager->getCurrentPageResults(),
+                'items' => $currentPageResults,
                 'filters' => $form,
             ], 'json'),
             json: true
