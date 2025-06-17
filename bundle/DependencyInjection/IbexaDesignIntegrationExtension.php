@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\DependencyInjection;
 
+use Ibexa\Bundle\Core\DependencyInjection\Configuration\SiteAccessAware\ConfigurationProcessor;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -25,6 +26,22 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $configuration = new Configuration();
+
+        $config = $this->processConfiguration($configuration, $configs);
+        $processor = new ConfigurationProcessor($container, 'ibexa_design_integration');
+
+        $processor->mapConfigArray('block_definition', $config);
+        $processor->mapConfigArray('block_layout_definition', $config);
+        $processor->mapConfigArray('content_definition', $config);
+        $processor->mapConfigArray('pager_definition', $config);
+        $processor->mapConfigArray('pager_definition', $config);
+        $processor->mapConfigArray('document_definition', $config);
+        $processor->mapConfigArray('taxonomy_entry_definition', $config);
+        $processor->mapConfigArray('image', $config);
+
+        $this->addImageVariationConfig($container, $config);
+
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('parameters.yaml');
         $loader->load('services.yaml');
@@ -34,6 +51,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('transformer.yaml');
         $loader->load('showroom.yaml');
         $loader->load('definitions.yaml');
+        $loader->load('document.yaml');
 
         $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         if (in_array('eZMigrationBundle', $activatedBundles, true)) {
@@ -59,7 +77,6 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
     public function prepend(ContainerBuilder $container): void
     {
         $this->addTwigConfiguration($container);
-        $this->addImageVariationConfig($container);
     }
 
     protected function getParameter(ContainerBuilder $container, string $name, mixed $default): mixed
@@ -67,9 +84,13 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         return $container->hasParameter($name) ? $container->getParameter($name) : $default;
     }
 
-    protected function addImageVariationConfig(ContainerBuilder $container): void
+    protected function addImageVariationConfig(ContainerBuilder $container, array $config): void
     {
-        $variationsConfig = [];
+        $variationsConfig = [
+            'default' => [
+                'image_variations' => [],
+            ],
+        ];
 
         $useRetina = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.use_retina', true);
         $breakpoints = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.breakpoints', []);
@@ -79,14 +100,14 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 [$variationWidth, $variationHeight] = $variationSize;
                 $breakpoint = $breakpoints[$i];
                 $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
-                $variationsConfig[$variationFullName] = $this->getVariationConfig(
+                $variationsConfig['default']['image_variations'][$variationFullName] = $this->getVariationConfig(
                     $variationWidth,
                     $variationHeight
                 );
 
                 if ($useRetina) {
                     $variationRetinaFullName = "{$variationFullName}_retina";
-                    $variationsConfig[$variationRetinaFullName] = $this->getVariationConfig(
+                    $variationsConfig['default']['image_variations'][$variationRetinaFullName] = $this->getVariationConfig(
                         $variationWidth * 2,
                         $variationHeight * 2
                     );
@@ -94,14 +115,39 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
             }
         }
 
+        foreach ($config['system'] as $scope => $scopeConfig) {
+            $scopeVariations = $scopeConfig['image']['variations'] ?? null;
+
+            if ($scopeVariations) {
+                $variationsConfig[$scope] = [
+                    'image_variations' => [],
+                ];
+            }
+            foreach ($scopeVariations as $variationName => $variationSizes) {
+                foreach ($variationSizes as $i => $variationSize) {
+                    [$variationWidth, $variationHeight] = $variationSize;
+                    $breakpoint = $breakpoints[$i];
+                    $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
+                    $variationsConfig[$scope]['image_variations'][$variationFullName] = $this->getVariationConfig(
+                        $variationWidth,
+                        $variationHeight
+                    );
+
+                    if ($useRetina) {
+                        $variationRetinaFullName = "{$variationFullName}_retina";
+                        $variationsConfig[$scope]['image_variations'][$variationRetinaFullName] = $this->getVariationConfig(
+                            $variationWidth * 2,
+                            $variationHeight * 2
+                        );
+                    }
+                }
+            }
+        }
+
         $container->prependExtensionConfig(
             "ibexa",
             [
-                'system' => [
-                    'fo_group' => [
-                        'image_variations' => $variationsConfig,
-                    ],
-                ],
+                'system' => $variationsConfig,
             ]
         );
     }

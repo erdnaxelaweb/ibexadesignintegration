@@ -211,9 +211,10 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
                     }
                     $choices[$entry->getName()] = $this->getChoices($nestedAggregationResult, $filterName, $options);
                 }
-                return $choices;
+            } else {
+                $choices = $this->getChoices($aggregationResult, $filterName, $options);
             }
-            return $this->getChoices($aggregationResult, $filterName, $options);
+            return $choices;
         });
 
         $formOptions['choice_value'] = 'value';

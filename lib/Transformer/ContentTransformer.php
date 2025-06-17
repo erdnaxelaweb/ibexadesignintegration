@@ -182,6 +182,15 @@ class ContentTransformer
                 return $instance->getContentType()
                     ->identifier;
             },
+            "languageCodes" => function (Content $instance, string $propertyName, ?string $propertyScope): array {
+                return array_keys($instance->innerContent->versionInfo->getNames());
+            },
+            "mainLanguageCode" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
+                return $instance->innerContent->contentInfo->mainLanguageCode;
+            },
+            "alwaysAvailable" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
+                return $instance->innerContent->contentInfo->alwaysAvailable;
+            },
             "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
                 return $instance->innerContent->contentInfo->publishedDate;
             },
@@ -200,6 +209,11 @@ class ContentTransformer
                 return $instance->innerLocation ?
                     $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
                     new Breadcrumb();
+            },
+            "parent" => function (Content $instance, string $propertyName, ?string $propertyScope): ?Content {
+                return $instance->innerLocation ?
+                    $this->lazyTransformContentFromLocationId($instance->innerLocation->parentLocationId) :
+                    null;
             },
         ];
 

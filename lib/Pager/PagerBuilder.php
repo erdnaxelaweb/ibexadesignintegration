@@ -19,7 +19,6 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Pagerfanta\PagerfantaInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -51,7 +50,7 @@ class PagerBuilder
         string $type,
         array $context = [],
         SearchData $defaultSearchData = new SearchData()
-    ): PagerfantaInterface {
+    ): Pager {
         $request = $this->requestStack->getCurrentRequest();
         /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition $pagerDefinition */
         $pagerDefinition = $this->definitionManager->getDefinition(PagerDefinition::class, $type);
@@ -95,8 +94,10 @@ class PagerBuilder
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
 
-        $page = $request->get('page', 1);
-        $pagerFanta->setCurrentPage(min(is_numeric($page) ? (int) $page : 1, $pagerFanta->getNbPages()));
+        $page = $request ? $request->get('page', 1) : 1;
+        $pagerFanta->setCurrentPage(
+            is_numeric($page) ? (int) $page : 1
+        );
 
         return $pagerFanta;
     }
