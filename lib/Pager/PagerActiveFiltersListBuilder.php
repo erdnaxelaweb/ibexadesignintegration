@@ -56,13 +56,12 @@ class PagerActiveFiltersListBuilder
             $query = $this->getRequest()
                 ->query->all();
 
-            $query[$searchFormName]['search'] = '';
-
             if (is_array($filterValue)) {
                 foreach ($filterValue as $value) {
-                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? [], true);
-                    unset($query[$searchFormName]['filters'][$filter][$valueKey]);
-                    $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
+                    $iterationQuery = $query;
+                    $valueKey = array_search($value, $iterationQuery[$searchFormName]['filters'][$filter] ?? [], true);
+                    unset($iterationQuery[$searchFormName]['filters'][$filter][$valueKey]);
+                    $links[] = $this->generateLink($labels[$value] ?? $value, $iterationQuery, [
                         'extras' => [
                             'filter' => $filter,
                             'value' => $value,
@@ -94,6 +93,7 @@ class PagerActiveFiltersListBuilder
      */
     protected function generateLink(string $label, array $query, array $options): ItemInterface
     {
+        $options['extras']['query'] = http_build_query($query);
         return $this->linkGenerator->generateLink(
             $this->linkGenerator->generateUrl(
                 $this->getRequest()

@@ -35,6 +35,7 @@ class FormViewNormalizer
         $result = [
             'id' => $formView->vars['id'] ?? null,
             'name' => $formView->vars['full_name'] ?? null,
+            'identifier' => $formView->vars['name'] ?? null,
             'label' => $formView->vars['label'] ?? null,
             'block_prefixes' => $formView->vars['block_prefixes'],
             'value' => $formView->vars['value'] ?? null,

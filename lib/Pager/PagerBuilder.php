@@ -89,15 +89,15 @@ class PagerBuilder
             $query->aggregations = $event->aggregations;
         }
 
+        $defaultLimit = $pagerDefinition->getMaxPerPage();
+        $defaultPage = 1;
+        $requestedLimit = $request ? $request->get('limit', $defaultLimit) : $defaultLimit;
+        $requestedPage = $request ? $request->get('page', $defaultPage) : $defaultPage;
         $pagerFanta = new Pager($type, $searchType->getAdapter());
-        $pagerFanta->setMaxPerPage($pagerDefinition->getMaxPerPage());
+        $pagerFanta->setMaxPerPage((int) $requestedLimit);
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
-
-        $page = $request ? $request->get('page', 1) : 1;
-        $pagerFanta->setCurrentPage(
-            is_numeric($page) ? (int) $page : 1
-        );
+        $pagerFanta->setCurrentPage((int) $requestedPage);
 
         return $pagerFanta;
     }

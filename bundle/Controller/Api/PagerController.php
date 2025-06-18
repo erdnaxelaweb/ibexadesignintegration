@@ -18,6 +18,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\PagerGenerator;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Knp\Menu\ItemInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,15 +52,23 @@ class PagerController extends AbstractController
 
         $currentPageResults = $pager->getCurrentPageResults();
         $form = ($this->formViewNormalizer)($pager->getFiltersForm());
+        $activeFilters = array_map(function (ItemInterface $item) {
+            return [
+                'name' => $item->getName(),
+                'uri' => $item->getUri(),
+                'extras' => $item->getExtras(),
+            ];
+        }, $pager->getActiveFilters());
 
         $response = new JsonResponse(
             $this->serializer->serialize([
+                'activeFilters' => $activeFilters,
+                'searchForm' => $form,
                 'currentPage' => $pager->getCurrentPage(),
                 'itemsPerPage' => $pager->getMaxPerPage(),
                 'totalPages' => $pager->getNbPages(),
                 'totalItems' => $pager->getNbResults(),
                 'items' => $currentPageResults,
-                'filters' => $form,
             ], 'json'),
             json: true
         );
