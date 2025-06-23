@@ -18,6 +18,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\MultipleFieldsFullText;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class FulltextFilterHandler extends AbstractFilterHandler
@@ -72,5 +73,10 @@ class FulltextFilterHandler extends AbstractFilterHandler
         $optionsResolver->define('boostPublishDate')
             ->default(false)
             ->allowedTypes('boolean');
+    }
+
+    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    {
+        return $activeValues;
     }
 }

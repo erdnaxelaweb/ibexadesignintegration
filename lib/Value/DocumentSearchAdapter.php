@@ -143,7 +143,7 @@ class DocumentSearchAdapter implements PagerAdapterInterface
                     ];
                 }
 
-                $document->fields[$field] = $value;
+                $document->fields->{$field} = $value;
             }
             $list[] = $document;
         }

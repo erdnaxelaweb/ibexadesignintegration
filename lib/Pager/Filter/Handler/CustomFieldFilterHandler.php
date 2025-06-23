@@ -167,13 +167,14 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         ];
     }
 
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array
+    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
     {
         /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
         $choices = $formBuilder->getConfig()
             ->getAttribute('choice_list')
             ->getChoices();
 
+        $activeValues = (array) $activeValues;
         return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
             $choice = $choices[$activeValue] ?? $this->getValueLabel($activeValue);
             return $choice instanceof FilterChoiceInterface ? $choice->getLabel() : $choice;

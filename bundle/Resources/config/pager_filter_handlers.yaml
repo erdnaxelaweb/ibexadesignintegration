@@ -27,3 +27,8 @@ services:
         lazy: true
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'date' }
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\LocationFilterHandler:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.pager.filter_handler', type: 'location' }

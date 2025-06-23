@@ -41,9 +41,9 @@ interface FilterHandlerInterface
     public function getFakeFormType(): array;
 
     /**
-     * @param array<string, mixed>                                 $activeValues
+     * @param array<string, mixed>|mixed                                 $activeValues
      *
-     * @return array<string, string>
+     * @return array<string, string>|string
      */
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array;
+    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed;
 }
