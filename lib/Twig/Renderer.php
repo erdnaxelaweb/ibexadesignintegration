@@ -34,7 +34,8 @@ class Renderer extends BaseRenderer
         string      $id,
         string      $pagerType,
         array $apiParameters = [],
-        array $appContext = []
+        array $appContext = [],
+        array $additionalParameters = []
     ): ?string {
         $uri = new ControllerReference(
             PagerRenderController::class,
@@ -43,6 +44,7 @@ class Renderer extends BaseRenderer
                 'pagerType' => $pagerType,
                 'apiParameters' => $apiParameters,
                 'appContext' => $appContext,
+                'additionalParameters' => $additionalParameters,
             ]
         );
 

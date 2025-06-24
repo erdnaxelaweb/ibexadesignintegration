@@ -38,7 +38,7 @@ class PagerRenderController
     ) {
     }
 
-    public function __invoke(string $id, string $pagerType, array $apiParameters = [], array $appContext = []): Response
+    public function __invoke(string $id, string $pagerType, array $apiParameters = [], array $appContext = [], array $additionalParameters = []): Response
     {
         $request = $this->requestStack->getMainRequest();
 
@@ -60,11 +60,8 @@ class PagerRenderController
         $qs = http_build_query(
             [
                 'context' => json_encode($appContext),
-            ]
+            ] + $additionalParameters
         );
-        if (null !== $requestQs = $request->getQueryString()) {
-            $qs .= '&' . $requestQs;
-        }
 
         $searchAppUrl = $this->searchAppUrl;
         if (str_starts_with($searchAppUrl, '/')) {
@@ -111,10 +108,15 @@ class PagerRenderController
             $content = $e->getMessage();
         }
 
+        $appResponseHeaders = $appResponse->getHeaders();
+        $responseHeaders = [];
+        if (isset($appResponseHeaders['cache-control'])) {
+            $responseHeaders['cache-control'] = $appResponseHeaders['cache-control'];
+        }
         $response = new Response(
             $content,
             $appResponse->getStatusCode(),
-            $appResponse->getHeaders()
+            $responseHeaders
         );
         return $response;
     }
