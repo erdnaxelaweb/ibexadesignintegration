@@ -46,8 +46,9 @@ class PagerController extends AbstractController
         if ($this->configResolver->getParameter('enable_fake_generation', 'ibexa_design_integration') === true) {
             $pager = ($this->pagerGenerator)($type);
         } else {
-            $context = $request->get('context', []);
-            $pager = $this->pagerBuilder->build($type, $context);
+            $pagerParameters = $request->get($type, null);
+            $pagerContext = $pagerParameters['ctx'] ?? [];
+            $pager = $this->pagerBuilder->build($type, $pagerContext);
         }
 
         $currentPageResults = $pager->getCurrentPageResults();

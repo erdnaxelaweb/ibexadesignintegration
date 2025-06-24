@@ -13,11 +13,11 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Document\DocumentSearchResultParser;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\DocumentSearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
-use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Novactive\EzSolrSearchExtra\Query\DocumentQuery;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
@@ -30,7 +30,7 @@ class DocumentSearchType extends AbstractSearchType
 {
     public function __construct(
         protected DocumentSearchServiceInterface $searchService,
-        protected DefinitionManager $definitionManager,
+        protected DocumentSearchResultParser $documentSearchResultParser,
         PagerSearchFormBuilder          $pagerSearchFormBuilder,
         PagerActiveFiltersListBuilder   $pagerActiveFiltersListBuilder,
         string                          $searchFormName,
@@ -53,9 +53,9 @@ class DocumentSearchType extends AbstractSearchType
         return new DocumentSearchAdapter(
             $this->query,
             $this->searchService,
+            $this->documentSearchResultParser,
             [$this, 'getFiltersForm'],
             [$this, 'getActiveFilters'],
-            $this->definitionManager,
         );
     }
 

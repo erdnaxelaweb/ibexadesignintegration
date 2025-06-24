@@ -38,20 +38,20 @@ class PagerRenderController
     ) {
     }
 
-    public function __invoke(string $id, string $pagerType, array $parameters = []): Response
+    public function __invoke(string $id, string $pagerType, array $apiParameters = [], array $appContext = []): Response
     {
         $request = $this->requestStack->getMainRequest();
 
+        $apiParameters['type'] = $pagerType;
         $apiUrl = $this->router->generate(
             'ibexa_design_integration.api.pager',
-            [
-                'type' => $pagerType,
-            ] + $parameters,
+            $apiParameters,
             UrlGeneratorInterface::ABSOLUTE_URL
         );
         $baseUrl = $this->getRootUrl();
-        $context = [
+        $appContext = $appContext + [
             'appId' => $id,
+            'pagerType' => $pagerType,
             'apiUrl' => $apiUrl,
             'baseUrl' => $baseUrl,
             'pathPrefix' => $this->getRootPathPrefix(),
@@ -59,7 +59,7 @@ class PagerRenderController
         ];
         $qs = http_build_query(
             [
-                'context' => json_encode($context),
+                'context' => json_encode($appContext),
             ]
         );
         if (null !== $requestQs = $request->getQueryString()) {

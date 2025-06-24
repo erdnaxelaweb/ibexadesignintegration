@@ -179,11 +179,15 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
             ->getAttribute('choice_list')
             ->getChoices();
 
+        $isSingleValue = !is_array($activeValues);
+
         $activeValues = (array) $activeValues;
-        return array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
+        $labels = array_combine($activeValues, array_map(function ($activeValue) use ($choices) {
             $choice = $choices[$activeValue] ?? $this->getValueLabel($activeValue);
             return $choice instanceof FilterChoiceInterface ? $choice->getLabel() : $choice;
         }, $activeValues));
+
+        return $isSingleValue ? reset($labels) : $labels;
     }
 
     /**
