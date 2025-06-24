@@ -64,7 +64,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
 
     public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
     {
-        $aggregation = new RawTermAggregation($filterName, $options['field'], [$filterName]);
+        $excludeTags = $options->get('excludeTags');
+        $excludeTags[] = $filterName;
+        $aggregation = new RawTermAggregation($filterName, $options['field'], $excludeTags);
         $aggregation->setLimit($options['limit']);
 
         return $aggregation;
@@ -100,6 +102,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $optionsResolver->define('is_nested')
             ->default(false)
             ->allowedTypes('bool');
+        $optionsResolver->define('excludeTags')
+            ->default([])
+            ->allowedTypes('string[]');
 
         // only used for static
         $optionsResolver->define('choices')

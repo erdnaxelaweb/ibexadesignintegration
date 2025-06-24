@@ -52,7 +52,7 @@ class FulltextFilterHandler extends AbstractFilterHandler
     {
         $optionsResolver->define('fuzziness')
             ->default(1)
-            ->allowedTypes('int');
+            ->allowedTypes('float', 'int');
 
         $optionsResolver->define('boost')
             ->default([])

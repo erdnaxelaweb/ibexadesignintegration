@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller;
 
+use Ibexa\Bundle\Core\Routing\UrlAliasRouter;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -48,9 +49,11 @@ class PagerRenderController
             ] + $parameters,
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+        $baseUrl = $this->getRootUrl();
         $context = [
             'appId' => $id,
             'apiUrl' => $apiUrl,
+            'baseUrl' => $baseUrl,
             'pathPrefix' => $this->getRootPathPrefix(),
             'locale' => $request->getLocale(),
         ];
@@ -116,6 +119,17 @@ class PagerRenderController
         return $response;
     }
 
+    public function getRootUrl(): string
+    {
+        $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
+        return $this->router->generate(
+            UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+            [
+                'locationId' => $rootLocationId,
+            ],
+            UrlAliasRouter::ABSOLUTE_URL
+        );
+    }
     public function getRootPathPrefix(): string
     {
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
