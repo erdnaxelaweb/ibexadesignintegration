@@ -17,6 +17,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
 class ParseDocumentResultEvent
 {
     public const ON_PARSE = "erdnaxelaweb.ibexa_design_integration.document_search.parse_result";
+
     public function __construct(
         public object $source,
         public Document $document,
