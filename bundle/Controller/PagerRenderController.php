@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller;
 
 use Ibexa\Bundle\Core\Routing\UrlAliasRouter;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -124,13 +125,17 @@ class PagerRenderController
     public function getRootUrl(): string
     {
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
-        return $this->router->generate(
-            UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
-            [
-                'locationId' => $rootLocationId,
-            ],
-            UrlAliasRouter::ABSOLUTE_URL
-        );
+        try {
+            return $this->router->generate(
+                UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+                [
+                    'locationId' => $rootLocationId,
+                ],
+                UrlAliasRouter::ABSOLUTE_URL
+            );
+        } catch (NotFoundException $exception) {
+            return '';
+        }
     }
     public function getRootPathPrefix(): string
     {
