@@ -49,7 +49,7 @@ class PagerRenderController
             $apiParameters,
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $baseUrl = $this->getRootUrl();
+        $baseUrl = $this->getRootUrl() ?? $request->getSchemeAndHttpHost();
         $appContext = $appContext + [
             'appId' => $id,
             'pagerType' => $pagerType,
@@ -122,7 +122,7 @@ class PagerRenderController
         return $response;
     }
 
-    public function getRootUrl(): string
+    public function getRootUrl(): ?string
     {
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
         try {
@@ -134,7 +134,7 @@ class PagerRenderController
                 UrlAliasRouter::ABSOLUTE_URL
             );
         } catch (NotFoundException $exception) {
-            return '';
+            return null;
         }
     }
     public function getRootPathPrefix(): string
