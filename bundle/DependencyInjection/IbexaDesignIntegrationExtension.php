@@ -26,6 +26,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
      */
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
@@ -40,7 +41,11 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $processor->mapConfigArray('taxonomy_entry_definition', $config);
         $processor->mapConfigArray('image', $config);
 
-        $this->addImageVariationConfig($container, $config);
+        $this->addIbexaVariationConfig(
+            $container,
+            $config,
+            in_array('EzEnhancedImageAssetBundle', $activatedBundles, true)
+        );
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('parameters.yaml');
@@ -53,7 +58,6 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $loader->load('definitions.yaml');
         $loader->load('document.yaml');
 
-        $activatedBundles = array_keys($container->getParameter('kernel.bundles'));
         if (in_array('eZMigrationBundle', $activatedBundles, true)) {
             $loader->load('kaliop_migration_services.yaml');
         }
@@ -84,9 +88,9 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         return $container->hasParameter($name) ? $container->getParameter($name) : $default;
     }
 
-    protected function addImageVariationConfig(ContainerBuilder $container, array $config): void
+    protected function addIbexaVariationConfig(ContainerBuilder $container, array $config, bool $useWebp = false): void
     {
-        $variationsConfig = [
+        $ibexaVariationsConfig = [
             'default' => [
                 'image_variations' => [],
             ],
@@ -95,61 +99,102 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $useRetina = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.use_retina', true);
         $breakpoints = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.breakpoints', []);
         $variations = $this->getParameter($container, 'erdnaxelaweb.static_fake_design.image.variations', []);
-        foreach ($variations as $variationName => $variationSizes) {
-            foreach ($variationSizes as $i => $variationSize) {
-                [$variationWidth, $variationHeight] = $variationSize;
-                $breakpoint = $breakpoints[$i];
-                $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
-                $variationsConfig['default']['image_variations'][$variationFullName] = $this->getVariationConfig(
-                    $variationWidth,
-                    $variationHeight
-                );
 
-                if ($useRetina) {
-                    $variationRetinaFullName = "{$variationFullName}_retina";
-                    $variationsConfig['default']['image_variations'][$variationRetinaFullName] = $this->getVariationConfig(
-                        $variationWidth * 2,
-                        $variationHeight * 2
-                    );
-                }
-            }
-        }
+        $this->addVariations(
+            $variations,
+            $breakpoints,
+            $ibexaVariationsConfig,
+            $useWebp,
+            $useRetina
+        );
 
         foreach ($config['system'] as $scope => $scopeConfig) {
             $scopeVariations = $scopeConfig['image']['variations'] ?? null;
 
             if ($scopeVariations) {
-                $variationsConfig[$scope] = [
+                $ibexaVariationsConfig[$scope] = [
                     'image_variations' => [],
                 ];
-            }
-            foreach ($scopeVariations as $variationName => $variationSizes) {
-                foreach ($variationSizes as $i => $variationSize) {
-                    [$variationWidth, $variationHeight] = $variationSize;
-                    $breakpoint = $breakpoints[$i];
-                    $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
-                    $variationsConfig[$scope]['image_variations'][$variationFullName] = $this->getVariationConfig(
-                        $variationWidth,
-                        $variationHeight
-                    );
 
-                    if ($useRetina) {
-                        $variationRetinaFullName = "{$variationFullName}_retina";
-                        $variationsConfig[$scope]['image_variations'][$variationRetinaFullName] = $this->getVariationConfig(
-                            $variationWidth * 2,
-                            $variationHeight * 2
-                        );
-                    }
-                }
+                $this->addVariations(
+                    $scopeVariations,
+                    $breakpoints,
+                    $ibexaVariationsConfig,
+                    $useWebp,
+                    $useRetina,
+                    $scope
+                );
             }
         }
+
 
         $container->prependExtensionConfig(
             "ibexa",
             [
-                'system' => $variationsConfig,
+                'system' => $ibexaVariationsConfig,
             ]
         );
+    }
+
+    protected function addVariations(
+        mixed $variations,
+        mixed $breakpoints,
+        array &$ibexaVariationsConfig,
+        bool  $useWebp,
+        mixed $useRetina,
+        string $scope = 'default',
+    ): void {
+        foreach ($variations as $variationName => $variationSizes) {
+            foreach ($variationSizes as $i => $variationSize) {
+                [$variationWidth, $variationHeight] = $variationSize;
+                $breakpoint = $breakpoints[$i];
+                $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
+                $ibexaVariationsConfig[$scope]['image_variations'][$variationFullName] = $this->getVariationConfig(
+                    $variationWidth,
+                    $variationHeight
+                );
+                if ($useWebp) {
+                    $webpVariationName = $variationFullName . '_webp';
+                    $ibexaVariationsConfig[$scope]['image_variations'][$webpVariationName] = [
+                        'reference' => $variationFullName,
+                        'filters' => [
+                            [
+                                'name' => 'toFormat',
+                                'params' => [
+                                    'format' => 'webp',
+                                ],
+                            ],
+                        ],
+                    ];
+                }
+
+                if ($useRetina) {
+                    $variationRetinaFullName = "{$variationFullName}_retina";
+                    $ibexaVariationsConfig[$scope]['image_variations'][$variationRetinaFullName] = $this->getVariationConfig(
+                        $variationWidth * 2,
+                        $variationHeight * 2
+                    );
+                    if ($useWebp) {
+                        $webpVariationName = preg_replace(
+                            '/^(.+)(_retina)$/',
+                            '$1_webp$2',
+                            $variationRetinaFullName
+                        );
+                        $ibexaVariationsConfig[$scope]['image_variations'][$webpVariationName] = [
+                            'reference' => $variationFullName,
+                            'filters' => [
+                                [
+                                    'name' => 'toFormat',
+                                    'params' => [
+                                        'format' => 'webp',
+                                    ],
+                                ],
+                            ],
+                        ];
+                    }
+                }
+            }
+        }
     }
 
     /**
