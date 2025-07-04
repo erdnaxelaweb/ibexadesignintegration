@@ -13,6 +13,8 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Document\DocumentSearchResultParser;
+use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerPostSearchEvent;
+use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerPreSearchEvent;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
@@ -20,6 +22,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SpellcheckResult;
 use Novactive\EzSolrSearchExtra\Query\DocumentQuery;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
@@ -36,15 +39,18 @@ class DocumentSearchAdapter implements PagerAdapterInterface
     /**
      * @param callable(AggregationResultCollection): FormInterface                $filtersCallback
      * @param callable(FormInterface): \Knp\Menu\ItemInterface[]                  $activeFiltersCallback
+     * @param array<string, mixed> $context
      * @param array<string, mixed>|array<int, string>                             $languageFilter
      */
     public function __construct(
         protected DocumentQuery         $query,
         protected DocumentSearchServiceInterface $searchService,
         protected DocumentSearchResultParser $documentSearchResultParser,
+        protected EventDispatcherInterface $eventDispatcher,
         protected $filtersCallback,
         protected $activeFiltersCallback,
-        protected array                 $languageFilter = []
+        protected array $context = [],
+        protected array                 $languageFilter = [],
     ) {
     }
 
@@ -82,6 +88,13 @@ class DocumentSearchAdapter implements PagerAdapterInterface
         $query->limit = $length;
         $query->performCount = false;
 
+        $this->eventDispatcher->dispatch(
+            new PagerPreSearchEvent(
+                $query,
+                $this->context,
+            )
+        );
+
         $searchResult = $this->executeQuery(
             $this->searchService,
             $query,
@@ -105,6 +118,14 @@ class DocumentSearchAdapter implements PagerAdapterInterface
         foreach ($searchHits as $key => $searchHit) {
             $list[] = ($this->documentSearchResultParser)($searchHit->valueObject);
         }
+
+        $this->eventDispatcher->dispatch(
+            new PagerPostSearchEvent(
+                $searchResult,
+                $list,
+                $this->context,
+            )
+        );
 
         return $list;
     }

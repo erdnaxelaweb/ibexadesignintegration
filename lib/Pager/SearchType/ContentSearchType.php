@@ -21,6 +21,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -28,23 +29,39 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ContentSearchType extends AbstractSearchType
 {
+    /**
+     * @param \Ibexa\Contracts\Core\Repository\SearchService                           $searchService
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer      $contentTransformer
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface              $eventDispatcher
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder        $pagerSearchFormBuilder
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder
+     * @param string                                                                   $searchFormName
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition          $pagerDefinition
+     * @param \Symfony\Component\HttpFoundation\Request|null                           $request
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData                    $defaultSearchData
+     * @param array<string, mixed>                                                                    $context
+     */
     public function __construct(
         protected SearchService $searchService,
         protected ContentTransformer $contentTransformer,
+        EventDispatcherInterface $eventDispatcher,
         PagerSearchFormBuilder $pagerSearchFormBuilder,
         PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
         string $searchFormName,
         PagerDefinition $pagerDefinition,
         ?Request $request,
-        SearchData $defaultSearchData = new SearchData()
+        SearchData $defaultSearchData = new SearchData(),
+        array $context = []
     ) {
         parent::__construct(
             $pagerSearchFormBuilder,
             $pagerActiveFiltersListBuilder,
+            $eventDispatcher,
             $searchFormName,
             $pagerDefinition,
             $request,
-            $defaultSearchData
+            $defaultSearchData,
+            $context
         );
     }
 
@@ -54,8 +71,10 @@ class ContentSearchType extends AbstractSearchType
             $this->query,
             $this->searchService,
             $this->contentTransformer,
+            $this->eventDispatcher,
             [$this, 'getFiltersForm'],
-            [$this, 'getActiveFilters']
+            [$this, 'getActiveFilters'],
+            $this->context
         );
     }
 

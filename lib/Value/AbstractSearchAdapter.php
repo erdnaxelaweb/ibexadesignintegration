@@ -18,6 +18,7 @@ use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Ibexa\Core\Pagination\Pagerfanta\AbstractSearchResultAdapter;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
@@ -28,14 +29,17 @@ abstract class AbstractSearchAdapter extends AbstractSearchResultAdapter impleme
     /**
      * @param callable(AggregationResultCollection): FormInterface                $filtersCallback
      * @param callable(FormInterface): \Knp\Menu\ItemInterface[]                  $activeFiltersCallback
+     * @param array<string, mixed> $context
      * @param array<string, mixed>|array<int, string>                             $languageFilter
      */
     public function __construct(
         Query $query,
         SearchService $searchService,
         protected ContentTransformer $contentTransformer,
+        protected EventDispatcherInterface $eventDispatcher,
         protected $filtersCallback,
         protected $activeFiltersCallback,
+        protected array $context = [],
         array $languageFilter = []
     ) {
         parent::__construct($query, $searchService, $languageFilter);

@@ -51,16 +51,23 @@ class PagerBuilder
         array $context = [],
         SearchData $defaultSearchData = new SearchData()
     ): Pager {
-        $request = $this->requestStack->getCurrentRequest();
         /** @var \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition $pagerDefinition */
         $pagerDefinition = $this->definitionManager->getDefinition(PagerDefinition::class, $type);
+
+        $request = $this->requestStack->getCurrentRequest();
+
+        $defaultLimit = $pagerDefinition->getMaxPerPage();
+        $defaultPage = 1;
+        $requestedLimit = $request ? $request->get('limit', $defaultLimit) : $defaultLimit;
+        $requestedPage = $request ? $request->get('page', $defaultPage) : $defaultPage;
 
         $searchTypeFactory = $this->searchTypeFactories[$pagerDefinition->getSearchType()];
         $searchType = ($searchTypeFactory)(
             $type,
             $pagerDefinition,
             $request,
-            $defaultSearchData
+            $defaultSearchData,
+            $context
         );
 
         $query = $searchType->getQuery();
@@ -89,10 +96,6 @@ class PagerBuilder
             $query->aggregations = $event->aggregations;
         }
 
-        $defaultLimit = $pagerDefinition->getMaxPerPage();
-        $defaultPage = 1;
-        $requestedLimit = $request ? $request->get('limit', $defaultLimit) : $defaultLimit;
-        $requestedPage = $request ? $request->get('page', $defaultPage) : $defaultPage;
         $pagerFanta = new Pager($type, $searchType->getAdapter());
         $pagerFanta->setMaxPerPage((int) $requestedLimit);
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());

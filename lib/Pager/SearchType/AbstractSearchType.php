@@ -20,6 +20,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Knp\Menu\ItemInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -35,13 +36,25 @@ abstract class AbstractSearchType implements SearchTypeInterface
 
     protected SearchData $searchData;
 
+    /**
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder        $pagerSearchFormBuilder
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface              $eventDispatcher
+     * @param string                                                                   $searchFormName
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition          $pagerDefinition
+     * @param \Symfony\Component\HttpFoundation\Request|null                           $request
+     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData                    $defaultSearchData
+     * @param array<string, mixed>                                                                    $context
+     */
     public function __construct(
         protected PagerSearchFormBuilder $pagerSearchFormBuilder,
         protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+        protected EventDispatcherInterface $eventDispatcher,
         protected string $searchFormName,
         protected PagerDefinition $pagerDefinition,
         protected ?Request $request,
-        protected SearchData $defaultSearchData = new SearchData()
+        protected SearchData $defaultSearchData = new SearchData(),
+        protected array $context = []
     ) {
         $this->initializeQuery();
         $rawSearchData = $request?->get($searchFormName, null);
