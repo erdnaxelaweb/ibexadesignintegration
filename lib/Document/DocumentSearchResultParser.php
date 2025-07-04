@@ -26,7 +26,7 @@ class DocumentSearchResultParser
     ) {
     }
 
-    public function __invoke(object $object)
+    public function __invoke(object $object): Document
     {
         $document = new Document();
         $document->id = $object->id;
@@ -35,6 +35,7 @@ class DocumentSearchResultParser
         $document->isMainTranslation = $object->is_main_translation_b;
         $document->alwaysAvailable = $object->always_available_b;
         $document->type = $object->type_s;
+        $document->hidden = $object->hidden_b ?? false;
 
         $documentDefinition = $this->definitionManager->getDefinition(
             DocumentDefinition::class,

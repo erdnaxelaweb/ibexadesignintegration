@@ -85,6 +85,37 @@ class DocumentIndexer
         $this->__invoke($documents);
     }
 
+    /**
+     * @param string[]      $documentTypes
+     * @param int        $contentId
+     * @param string[]|null $languageCodes
+     *
+     * @return void
+     */
+    public function deleteContentDocuments(array $documentTypes, int $contentId, ?array $languageCodes = null): void
+    {
+        $documentIds = [];
+        foreach ($documentTypes as $documentType) {
+            if ($languageCodes) {
+                foreach ($languageCodes as $key => $languageCode) {
+                    $documentId = ($this->documentBuilder)->generateDocumentId(
+                        $documentType,
+                        $contentId,
+                        $languageCode
+                    );
+                    $documentIds[] = $documentId;
+                }
+            } else {
+                $documentId = ($this->documentBuilder)->generateDocumentId(
+                    $documentType,
+                    $contentId
+                );
+                $documentIds[] = $documentId;
+            }
+        }
+        $this->documentSearchHandler->deleteDocuments($documentIds);
+    }
+
     protected function transformToIndexableDocument(Document $document): IbexaDocument
     {
         $fields = [];
@@ -121,6 +152,11 @@ class DocumentIndexer
         $fields[] = new Field(
             'always_available',
             $document->alwaysAvailable,
+            new BooleanField()
+        );
+        $fields[] = new Field(
+            'hidden',
+            $document->hidden,
             new BooleanField()
         );
         $fields[] = new Field(

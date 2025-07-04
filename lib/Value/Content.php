@@ -37,6 +37,7 @@ class Content extends AbstractContent implements ContentInterface
         public readonly array                  $languageCodes,
         public readonly string                    $mainLanguageCode,
         public readonly bool                    $alwaysAvailable,
+        public readonly bool                    $hidden,
         public readonly string $url,
         public readonly Breadcrumb $breadcrumb,
         public readonly ?Content $parent

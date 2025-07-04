@@ -191,6 +191,9 @@ class ContentTransformer
             "alwaysAvailable" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
                 return $instance->innerContent->contentInfo->alwaysAvailable;
             },
+            "hidden" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
+                return $instance->innerContent->contentInfo->isHidden;
+            },
             "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
                 return $instance->innerContent->contentInfo->publishedDate;
             },
