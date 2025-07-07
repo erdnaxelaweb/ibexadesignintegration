@@ -99,16 +99,16 @@ class TaxonomyEntryTransformer
                 return $instance->innerContent->getContentType()
                     ->identifier;
             },
-            "languageCodes" => function (Content $instance, string $propertyName, ?string $propertyScope): array {
+            "languageCodes" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): array {
                 return array_keys($instance->innerContent->versionInfo->getNames());
             },
-            "mainLanguageCode" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
+            "mainLanguageCode" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
                 return $instance->innerContent->contentInfo->mainLanguageCode;
             },
-            "alwaysAvailable" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
+            "alwaysAvailable" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool {
                 return $instance->innerContent->contentInfo->alwaysAvailable;
             },
-            "hidden" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
+            "hidden" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool {
                 return $instance->innerContent->contentInfo->isHidden;
             },
             "creationDate" => function (
