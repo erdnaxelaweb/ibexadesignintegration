@@ -60,6 +60,7 @@ class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
     {
         $hash = parent::toHash($definition);
         $hash['disablePagination'] = $definition->isPaginationDisabled();
+        $hash['rawFilters'] = $definition->getRawFilters();
         return $hash;
     }
 
@@ -76,5 +77,9 @@ class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
         $optionsResolver->define('disablePagination')
             ->default(false)
             ->allowedTypes('bool');
+
+        $optionsResolver->define('rawFilters')
+            ->default([])
+            ->allowedTypes('array');
     }
 }

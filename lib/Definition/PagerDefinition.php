@@ -24,6 +24,7 @@ class PagerDefinition extends NativePagerDefinition
      * @param array<string, PagerSortDefinition>   $sorts               Array of sort options
      * @param array<string, PagerFilterDefinition> $filters             Array of filter options
      * @param array<string>                        $excludedResultTypes Array of content types to exclude
+     * @param array<string>                        $rawFilters          Array of raw filters
      * @param int                                  $headlineCount       Number of headline items
      */
     public function __construct(
@@ -32,6 +33,7 @@ class PagerDefinition extends NativePagerDefinition
         protected readonly int $maxPerPage,
         protected readonly array $sorts,
         protected readonly array $filters,
+        protected readonly array $rawFilters,
         protected readonly array $excludedResultTypes,
         protected readonly int $headlineCount,
         protected readonly string $searchType,
@@ -60,5 +62,13 @@ class PagerDefinition extends NativePagerDefinition
     public function isPaginationDisabled(): bool
     {
         return $this->disablePagination;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getRawFilters(): array
+    {
+        return $this->rawFilters;
     }
 }

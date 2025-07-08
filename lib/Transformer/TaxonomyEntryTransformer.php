@@ -14,7 +14,6 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Transformer;
 
 use DateTime;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\TaxonomyEntryDefinition;
-use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;

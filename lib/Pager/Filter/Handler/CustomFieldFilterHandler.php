@@ -21,6 +21,7 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResult;
@@ -39,34 +40,52 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
     ) {
     }
 
-    /**
-     * @param RawTermAggregationResult $aggregationResult
-     */
     public function addForm(
         FormBuilderInterface $formBuilder,
         string $filterName,
         DefinitionOptions $options,
-        ?AggregationResult $aggregationResult = null,
+        AggregationResultCollection $aggregationResultCollection,
     ): void {
+        if (!$options->get('use_form')) {
+            return;
+        }
+        $aggregationResult = $aggregationResultCollection->has($filterName) ?
+            $aggregationResultCollection->get($filterName) : null;
+
         $formBuilder->add(
             $filterName,
             ChoiceType::class,
-            $this->getFormOptions($formBuilder, $filterName, $aggregationResult, $options)
+            $this->getFormOptions(
+                $formBuilder,
+                $filterName,
+                $aggregationResult,
+                $options
+            )
         );
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
-        $operator = is_array($value) ? Operator::IN : Operator::EQ;
+        $operator = $options->get('operator');
+        if (!$operator) {
+            $operator = is_array($value) ? Operator::IN : Operator::EQ;
+        }
         $criterion = new CustomField($options['field'], $operator, $value);
         return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation
     {
+        if (!$options->get('use_aggregation')) {
+            return null;
+        }
         $excludeTags = $options->get('excludeTags');
         $excludeTags[] = $filterName;
-        $aggregation = new RawTermAggregation($filterName, $options['field'], $excludeTags);
+        $aggregation = new RawTermAggregation(
+            $filterName,
+            $options['field'],
+            $excludeTags,
+        );
         $aggregation->setLimit($options['limit']);
 
         return $aggregation;
@@ -102,9 +121,18 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $optionsResolver->define('is_nested')
             ->default(false)
             ->allowedTypes('bool');
+        $optionsResolver->define('use_aggregation')
+            ->default(true)
+            ->allowedTypes('bool');
+        $optionsResolver->define('use_form')
+            ->default(true)
+            ->allowedTypes('bool');
         $optionsResolver->define('excludeTags')
             ->default([])
             ->allowedTypes('string[]');
+        $optionsResolver->define('operator')
+            ->default(null)
+            ->allowedTypes('string', 'null');
 
         // only used for static
         $optionsResolver->define('choices')
@@ -287,10 +315,11 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         RawTermAggregationResultEntry $entry,
         DefinitionOptions $options
     ): FilterChoiceInterface {
+        $count = $entry->getNestedResults()['parent_count'] ?? $entry->getCount();
         return new FilterChoice(
             $entry->getName(),
             $entry->getKey(),
-            $entry->getCount(),
+            $count,
             [],
             $options['choice_label_format']
         );

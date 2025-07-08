@@ -15,7 +15,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use InvalidArgumentException;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\LocationDistance;
@@ -33,7 +33,7 @@ class LocationFilterHandler extends AbstractFilterHandler
         FormBuilderInterface $formBuilder,
         string               $filterName,
         DefinitionOptions    $options,
-        ?AggregationResult   $aggregationResult = null,
+        AggregationResultCollection $aggregationResultCollection
     ): void {
         $options = [];
         $options['label'] = sprintf('searchform.%s', $filterName);
@@ -67,7 +67,7 @@ class LocationFilterHandler extends AbstractFilterHandler
         $formBuilder->add($group);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
         $defaultOperator = $options['default_operator'];
         $operator = $value['operator'] ?? $defaultOperator;

@@ -16,7 +16,6 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\ChainFilterHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -47,10 +46,12 @@ class PagerSearchFormBuilder
         ]);
 
         foreach ($pagerDefinition->getFilters() as $filterName => $filter) {
-            $aggregationResult = $aggregationResultCollection->has($filterName) ?
-                $aggregationResultCollection->get($filterName) : null;
-
-            $this->resolveFilter($formFilters, $filterName, $filter, $aggregationResult);
+            $this->resolveFilter(
+                $formFilters,
+                $filterName,
+                $filter,
+                $aggregationResultCollection
+            );
         }
 
         $builder->add($formFilters);
@@ -71,19 +72,24 @@ class PagerSearchFormBuilder
         FormBuilderInterface $formFilters,
         string $filterName,
         PagerFilterDefinition $filterDefinition,
-        ?AggregationResult $aggregationResult = null
+        AggregationResultCollection $aggregationResultCollection
     ): void {
         $this->filterHandler->addForm(
             $filterDefinition->getType(),
             $formFilters,
             $filterName,
             $filterDefinition->getOptions(),
-            $aggregationResult,
+            $aggregationResultCollection,
         );
 
         if (!empty($filterDefinition->getNestedFilters())) {
             foreach ($filterDefinition->getNestedFilters() as $filterName => $filterDefinition) {
-                $this->resolveFilter($formFilters, $filterName, $filterDefinition, $aggregationResult);
+                $this->resolveFilter(
+                    $formFilters,
+                    $filterName,
+                    $filterDefinition,
+                    $aggregationResultCollection
+                );
             }
         }
     }

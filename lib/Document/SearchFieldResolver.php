@@ -29,19 +29,27 @@ class SearchFieldResolver
 
     public function __invoke(string $fieldIdentifier, mixed $value): ?Field
     {
+        $suffixes = array_values($this->fieldNameGeneratorMap);
+        $regex = sprintf('/^(.*)_(%s)$/', implode('|', $suffixes));
+        if (preg_match($regex, $fieldIdentifier, $matches)) {
+            $fieldName = $matches[1];
+            $fieldSuffix = $matches[2];
+        } else {
+            $fieldName = $fieldIdentifier;
+            $fieldSuffix = 'doc';
+        }
         foreach ($this->fieldNameGeneratorMap as $type => $suffix) {
-            if (str_ends_with($fieldIdentifier, "_$suffix")) {
+            if ($suffix === $fieldSuffix) {
                 $fieldType = $this->searchFieldTypesMap[$type] ?? null;
                 if (!$fieldType) {
-                    return null;
+                    break;
                 }
                 if ($fieldType === FieldType\StringField::class && !is_scalar($value)) {
                     $value = serialize($value);
                 }
 
-                $name = substr($fieldIdentifier, 0, -strlen("_$suffix"));
                 return new Field(
-                    $name,
+                    $fieldName,
                     $value,
                     new $fieldType()
                 );

@@ -14,7 +14,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\MultipleFieldsFullText;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -27,7 +27,7 @@ class FulltextFilterHandler extends AbstractFilterHandler
         FormBuilderInterface $formBuilder,
         string $filterName,
         DefinitionOptions $options,
-        ?AggregationResult $aggregationResult = null,
+        AggregationResultCollection $aggregationResultCollection
     ): void {
         $options = [];
         $options['label'] = sprintf('searchform.%s', $filterName);
@@ -36,7 +36,7 @@ class FulltextFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, TextType::class, $options);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
         return new MultipleFieldsFullText($value, $options->toArray());
     }

@@ -40,11 +40,19 @@ class PagerActiveFiltersListBuilder
         SearchData $searchData
     ): array {
         $links = [];
+        $flattenedFiltersList = $this->filterHandler->getFlattenedFiltersList($pagerDefinition);
         foreach ($searchData->filters as $filter => $filterValue) {
             if (empty($filterValue)) {
                 continue;
             }
-            $pagerFilterDefinition = $pagerDefinition->getFilter($filter);
+            $pagerFilterDefinition = $flattenedFiltersList[$filter] ?? null;
+            if (!$pagerFilterDefinition) {
+                continue;
+            }
+
+            if (!$filtersFormBuilder->get('filters')->has($filter)) {
+                continue;
+            }
 
             $labels = $this->filterHandler->getValuesLabels(
                 $pagerFilterDefinition->getType(),

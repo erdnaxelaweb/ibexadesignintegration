@@ -18,9 +18,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Sort\ChainSortHandler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class PagerBuildSubscriber implements EventSubscriberInterface
@@ -85,9 +83,13 @@ class PagerBuildSubscriber implements EventSubscriberInterface
             }
         }
 
-        ['criterions' => $criterions, 'aggregations' => $aggregations] = $this->resolveFilters(
+        $criterions = $this->filterHandler->resolveCriterions(
             $pagerDefinition->getFilters(),
-            $event
+            $searchData->filters
+        );
+        $aggregations = $this->filterHandler->resolveAggregations(
+            $pagerDefinition->getFilters(),
+            $searchData->filters
         );
 
         foreach ($criterions as $criterionType => $typeCriterions) {
@@ -108,56 +110,5 @@ class PagerBuildSubscriber implements EventSubscriberInterface
                 $sortDefinition->getOptions()
             );
         }
-    }
-
-    /**
-     * @param array<string, \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition> $filterDefinitions
-     *
-     * @return array{criterions: array<string, array<string, CriterionInterface>>, aggregations: array<string, Aggregation>}
-     */
-    protected function resolveFilters(array $filterDefinitions, PagerBuildEvent $event): array
-    {
-        $searchData = $event->searchData;
-        $criterions = [];
-        $aggregations = [];
-        foreach ($filterDefinitions as $filterName => $filterDefinition) {
-            ['criterions' => $nestedCriterions, 'aggregations' => $nestedAggregations] = $this->resolveFilters(
-                $filterDefinition->getNestedFilters(),
-                $event
-            );
-
-            // Criterion
-            $criterionType = $filterDefinition->getCriterionType() === 'query' ? 'queryCriterions' : 'filtersCriterions';
-            if (isset($searchData->filters[$filterName]) && !empty($searchData->filters[$filterName])) {
-                $criterions[$criterionType][$filterName] = $this->filterHandler->getCriterion(
-                    $filterDefinition->getType(),
-                    $filterName,
-                    $searchData->filters[$filterName],
-                    $filterDefinition->getOptions()
-                );
-            }
-            $criterions += $nestedCriterions;
-
-            // Aggregation
-            $aggregation = $this->filterHandler->getAggregation(
-                $filterDefinition->getType(),
-                $filterName,
-                $filterDefinition->getOptions()
-            );
-            if ($aggregation) {
-                $aggregations[$filterName] = $aggregation;
-            }
-
-            if ($aggregation && method_exists($aggregation, 'setNestedAggregations')) {
-                $aggregation->setNestedAggregations($nestedAggregations);
-            } else {
-                $aggregations += $nestedAggregations;
-            }
-        }
-
-        return [
-            'criterions' => $criterions,
-            'aggregations' => $aggregations,
-        ];
     }
 }

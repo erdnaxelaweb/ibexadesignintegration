@@ -17,7 +17,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Exception;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use IntlDateFormatter;
 use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -30,7 +30,7 @@ class DateFilterHandler extends AbstractFilterHandler
         FormBuilderInterface $formBuilder,
         string $filterName,
         DefinitionOptions $options,
-        ?AggregationResult $aggregationResult = null,
+        AggregationResultCollection $aggregationResultCollection
     ): void {
         $formOptions['label'] = sprintf('searchform.%s', $filterName);
         $formOptions['block_prefix'] = "filter_$filterName";
@@ -42,7 +42,7 @@ class DateFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, DateType::class, $formOptions);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
         $operator = $options['operator'];
         return new CustomField($options['field'], $operator, $this->mapDate($value, $options['input_format']));

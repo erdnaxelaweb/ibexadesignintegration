@@ -19,6 +19,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Novactive\EzSolrSearchExtra\Query\Content\Criterion\RawQueryString;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -64,16 +65,27 @@ class PagerBuilder
         );
 
         $query = $searchType->getQuery();
+
+        $queryCriterions = [];
+        $filtersCriterions = [];
+        foreach ($pagerDefinition->getRawFilters() as $rawFilter) {
+            $filtersCriterions[] = new RawQueryString($rawFilter);
+        }
+        $aggregations = [];
+
         $event = new PagerBuildEvent(
             $type,
             $pagerDefinition,
             $query,
             $searchType->getSearchData(),
             $defaultSearchData,
-            $context
+            $context,
+            $queryCriterions,
+            $filtersCriterions,
+            $aggregations
         );
-        $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
+        $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
 
         if (!empty($event->queryCriterions)) {
             $query->query = count($event->queryCriterions) > 1 ? new Criterion\LogicalAnd(

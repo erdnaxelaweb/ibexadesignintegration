@@ -26,6 +26,7 @@ class PagerFilterDefinition extends NativePagerFilterDefinition
         DefinitionOptions $options,
         protected readonly string $criterionType,
         protected readonly array $nested,
+        protected readonly mixed $defaultValue,
     ) {
         parent::__construct($identifier, $type, $options);
     }
@@ -41,5 +42,20 @@ class PagerFilterDefinition extends NativePagerFilterDefinition
     public function getNestedFilters(): array
     {
         return $this->nested;
+    }
+
+    public function hasNestedFilters(): bool
+    {
+        return !empty($this->nested);
+    }
+
+    public function hasDefaultValue(): bool
+    {
+        return isset($this->defaultValue);
+    }
+
+    public function getDefaultValue(): mixed
+    {
+        return $this->defaultValue;
     }
 }

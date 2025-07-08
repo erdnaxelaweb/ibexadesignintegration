@@ -17,10 +17,12 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DocumentDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
+use Exception;
 use Ibexa\Contracts\Core\Persistence\Handler as PersistenceHandler;
 use Ibexa\Contracts\Core\Search\Document as IbexaDocument;
 use Ibexa\Contracts\Core\Search\Field;
 use Ibexa\Contracts\Core\Search\FieldType\BooleanField;
+use Ibexa\Contracts\Core\Search\FieldType\DocumentField;
 use Ibexa\Contracts\Core\Search\FieldType\IdentifierField;
 use Ibexa\Contracts\Core\Search\FieldType\StringField;
 use Ibexa\Contracts\HttpCache\PurgeClient\PurgeClientInterface;
@@ -87,10 +89,7 @@ class DocumentIndexer
 
     /**
      * @param string[]      $documentTypes
-     * @param int        $contentId
      * @param string[]|null $languageCodes
-     *
-     * @return void
      */
     public function deleteContentDocuments(array $documentTypes, int $contentId, ?array $languageCodes = null): void
     {
@@ -118,20 +117,35 @@ class DocumentIndexer
 
     protected function transformToIndexableDocument(Document $document): IbexaDocument
     {
+        $documentId = $document->id;
         $fields = [];
 
         foreach ($document->fields as $fieldIdentifier => $value) {
             if ($value === null) {
                 continue;
             }
-            $resolvedValue = $this->resolveFieldValue(
+            $resolvedField = $this->resolveFieldValue(
                 $fieldIdentifier,
                 $value
             );
-            if ($resolvedValue === null) {
+            if ($resolvedField === null) {
                 continue;
             }
-            $fields[$fieldIdentifier] = $resolvedValue;
+
+            if ($resolvedField->getType() instanceof DocumentField) {
+                $resolvedFieldValue = $resolvedField->getValue();
+                $this->setNestedDocId(
+                    $resolvedFieldValue,
+                    sprintf('%s-%s', $documentId, $fieldIdentifier)
+                );
+                $resolvedField = new Field(
+                    $resolvedField->getName(),
+                    $resolvedFieldValue,
+                    $resolvedField->getType(),
+                );
+            }
+
+            $fields[$fieldIdentifier] = $resolvedField;
         }
 
         $fields[] = new Field(
@@ -180,13 +194,33 @@ class DocumentIndexer
 
         return new IbexaDocument(
             [
-                'id' => $document->id,
+                'id' => $documentId,
                 'languageCode' => $document->languageCode,
                 'alwaysAvailable' => $document->alwaysAvailable,
                 'isMainTranslation' => $document->isMainTranslation,
                 'fields' => $fields,
             ]
         );
+    }
+
+    protected function setNestedDocId(mixed &$value, string $id): void
+    {
+        $id = preg_replace('([^A-Za-z0-9/]+)', '', $id);
+        if (is_array($value)) {
+            if (array_is_list($value)) {
+                foreach ($value as $k => $v) {
+                    $this->setNestedDocId($value[$k], sprintf('%s-%d', $id, $k));
+                }
+            } else {
+                $value['id'] = $id;
+            }
+            return;
+        } elseif (is_object($value)) {
+            $value->id = $id;
+            return;
+        }
+
+        throw new Exception('Unexpected value for a document field');
     }
 
     protected function resolveFieldValue(string $fieldIdentifier, mixed $value): ?Field

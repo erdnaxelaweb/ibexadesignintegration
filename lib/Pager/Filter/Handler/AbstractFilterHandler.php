@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Symfony\Component\Form\FormInterface;
@@ -19,7 +20,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 abstract class AbstractFilterHandler implements FilterHandlerInterface
 {
-    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
+    public function isCriterionEnabled(
+        string $filterName,
+        array $searchData,
+        PagerFilterDefinition $filterDefinition
+    ): bool {
+        return (!empty($searchData[$filterName])) ||
+               $filterDefinition->hasDefaultValue();
+    }
+
+    public function getCriterionValue(
+        string $filterName,
+        array $searchData,
+        PagerFilterDefinition $filterDefinition
+    ): mixed {
+        return (!empty($searchData[$filterName])) ?
+            $searchData[$filterName] :
+            $filterDefinition->getDefaultValue();
+    }
+
+    public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation
     {
         return null;
     }
