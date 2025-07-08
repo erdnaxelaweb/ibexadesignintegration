@@ -84,8 +84,8 @@ class PagerBuilder
             $filtersCriterions,
             $aggregations
         );
-        $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
+        $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
 
         if (!empty($event->queryCriterions)) {
             $query->query = count($event->queryCriterions) > 1 ? new Criterion\LogicalAnd(
