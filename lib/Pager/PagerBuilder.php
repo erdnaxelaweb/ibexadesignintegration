@@ -73,11 +73,12 @@ class PagerBuilder
         }
         $aggregations = [];
 
+        $searchData = $searchType->getSearchData();
         $event = new PagerBuildEvent(
             $type,
             $pagerDefinition,
             $query,
-            $searchType->getSearchData(),
+            $searchData,
             $defaultSearchData,
             $context,
             $queryCriterions,
@@ -103,8 +104,10 @@ class PagerBuilder
 
         $defaultLimit = $pagerDefinition->getMaxPerPage();
         $defaultPage = 1;
-        $requestedLimit = $request ? $request->get('limit', $defaultLimit) : $defaultLimit;
-        $requestedPage = $request ? $request->get('page', $defaultPage) : $defaultPage;
+
+        $requestedLimit = $searchData->limit ?? ($request ? $request->get('limit', $defaultLimit) : $defaultLimit);
+        $requestedPage = $searchData->page ?? ($request ? $request->get('page', $defaultPage) : $defaultPage);
+
         $pagerFanta = new Pager($type, $searchType->getAdapter());
         $pagerFanta->setMaxPerPage((int) $requestedLimit);
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());

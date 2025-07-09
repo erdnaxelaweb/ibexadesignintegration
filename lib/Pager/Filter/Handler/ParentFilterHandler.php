@@ -86,7 +86,7 @@ class ParentFilterHandler implements FilterHandlerInterface
                 throw new InvalidArgumentException('Only ' . RawTermAggregation::class . ' is supported');
             }
 
-            $childAggregation->nestedAggregations["parent_count"] = "uniqueBlock(_root_)";
+            $childAggregation->nestedAggregations["parent_count"] = "unique(_root_)";
             $childAggregation->domain['blockChildren'] = "{!v='*:* -_nest_path_:*'}";
 
             foreach ($childCriterions as $childCriterionName => $childCriterion) {

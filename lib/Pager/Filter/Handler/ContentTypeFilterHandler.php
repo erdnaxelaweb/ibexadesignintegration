@@ -45,10 +45,17 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
 
     public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation
     {
+        $sort = null;
+        $requestedSort = $options->get('sort');
+        if ($requestedSort && $requestedSort !== "label") {
+            $sort = sprintf('%s %s', $requestedSort, $options->get('sort_direction'));
+        }
+
         $aggregation = new RawTermAggregation(
             $filterName,
             'content_type_id_id',
-            [$filterName]
+            [$filterName],
+            $sort
         );
         $aggregation->setLimit($options['limit']);
         return $aggregation;

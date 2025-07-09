@@ -81,10 +81,16 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         }
         $excludeTags = $options->get('excludeTags');
         $excludeTags[] = $filterName;
+        $sort = null;
+        $requestedSort = $options->get('sort');
+        if ($requestedSort && $requestedSort !== "label") {
+            $sort = sprintf('%s %s', $requestedSort, $options->get('sort_direction'));
+        }
         $aggregation = new RawTermAggregation(
             $filterName,
             $options['field'],
             $excludeTags,
+            $sort
         );
         $aggregation->setLimit($options['limit']);
 
@@ -113,7 +119,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $optionsResolver->define('sort')
             ->default('count')
             ->allowedTypes('string')
-            ->allowedValues('count', 'label');
+            ->info('Available sorts : count, label, index, ...');
         $optionsResolver->define('sort_direction')
             ->default('asc')
             ->allowedTypes('string')

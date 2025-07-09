@@ -20,6 +20,8 @@ class SearchData
     public function __construct(
         public array $filters = [],
         public ?string $sort = null,
+        public ?int $limit = null,
+        public ?int $page = null
     ) {
     }
 
@@ -28,6 +30,11 @@ class SearchData
      */
     public static function createFromRequest(array $request): SearchData
     {
-        return new SearchData($request['filters'] ?? [], $request['sort'] ?? null);
+        return new SearchData(
+            $request['filters'] ?? [],
+            $request['sort'] ?? null,
+            isset($request['limit']) ? (int) $request['limit'] : null,
+            isset($request['page']) ? (int) $request['page'] : null,
+        );
     }
 }
