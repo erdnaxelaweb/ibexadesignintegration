@@ -54,6 +54,10 @@ class FulltextFilterHandler extends AbstractFilterHandler
             ->default(1)
             ->allowedTypes('float', 'int');
 
+        $optionsResolver->define('wildcards')
+            ->default(false)
+            ->allowedTypes('boolean');
+
         $optionsResolver->define('boost')
             ->default([])
             ->allowedTypes('array');
