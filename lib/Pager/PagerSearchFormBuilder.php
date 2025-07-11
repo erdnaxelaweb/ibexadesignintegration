@@ -55,13 +55,16 @@ class PagerSearchFormBuilder
         }
 
         $builder->add($formFilters);
-        if (count($pagerDefinition->getSorts()) > 1) {
+        $sortsDefinitions = $pagerDefinition->getSorts();
+        if (count($sortsDefinitions) > 1) {
+            $sorts = array_keys($sortsDefinitions);
             $builder->add('sort', ChoiceType::class, [
                 'choices' => array_combine(
-                    array_keys($pagerDefinition->getSorts()),
-                    array_keys($pagerDefinition->getSorts())
+                    $sorts,
+                    $sorts
                 ),
                 'block_prefix' => 'sort',
+                'empty_data' => reset($sorts),
             ]);
         }
 
