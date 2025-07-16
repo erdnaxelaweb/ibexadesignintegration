@@ -1,6 +1,4 @@
 services:
-
-
     ErdnaxelaWeb\IbexaDesignIntegration\Definition\Transformer\ContentDefinitionTransformer:
         decorates: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentDefinitionTransformer
         parent: ErdnaxelaWeb\StaticFakeDesign\Definition\Transformer\ContentDefinitionTransformer

@@ -33,7 +33,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         parent::__construct($fakerGenerator);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
         $criterion = new Criterion\ContentTypeId($value);
 
@@ -43,9 +43,20 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         return new FilterTag($filterName, $criterion);
     }
 
-    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation
+    public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation
     {
-        $aggregation = new RawTermAggregation($filterName, 'content_type_id_id', [$filterName]);
+        $sort = null;
+        $requestedSort = $options->get('sort');
+        if ($requestedSort && $requestedSort !== "label") {
+            $sort = sprintf('%s %s', $requestedSort, $options->get('sort_direction'));
+        }
+
+        $aggregation = new RawTermAggregation(
+            $filterName,
+            'content_type_id_id',
+            [$filterName],
+            $sort
+        );
         $aggregation->setLimit($options['limit']);
         return $aggregation;
     }

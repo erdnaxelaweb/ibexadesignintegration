@@ -16,3 +16,8 @@ services:
         arguments:
             $fieldNameGeneratorMap: '%ibexa.search.common.field_name_generator.map%'
             $searchFieldTypesMap: []
+
+    ErdnaxelaWeb\IbexaDesignIntegration\Document\DocumentSearchResultParser:
+        arguments:
+            $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
+            $eventDispatcher: '@event_dispatcher'

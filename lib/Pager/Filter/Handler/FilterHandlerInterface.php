@@ -12,10 +12,11 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
-use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -26,12 +27,24 @@ interface FilterHandlerInterface
         FormBuilderInterface $formBuilder,
         string $filterName,
         DefinitionOptions $options,
-        ?AggregationResult $aggregationResult = null,
+        AggregationResultCollection $aggregationResultCollection
     ): void;
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options): Criterion;
+    public function isCriterionEnabled(
+        string $filterName,
+        array $searchData,
+        PagerFilterDefinition $filterDefinition
+    ): bool;
 
-    public function getAggregation(string $filterName, DefinitionOptions $options): ?Aggregation;
+    public function getCriterionValue(
+        string $filterName,
+        array $searchData,
+        PagerFilterDefinition $filterDefinition
+    ): mixed;
+
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion;
+
+    public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation;
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
 
@@ -41,9 +54,9 @@ interface FilterHandlerInterface
     public function getFakeFormType(): array;
 
     /**
-     * @param array<string, mixed>                                 $activeValues
+     * @param array<string, mixed>|mixed                                 $activeValues
      *
-     * @return array<string, string>
+     * @return array<string, string>|string
      */
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array;
+    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed;
 }

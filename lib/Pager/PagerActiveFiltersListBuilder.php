@@ -40,15 +40,23 @@ class PagerActiveFiltersListBuilder
         SearchData $searchData
     ): array {
         $links = [];
+        $flattenedFiltersList = $this->filterHandler->getFlattenedFiltersList($pagerDefinition);
         foreach ($searchData->filters as $filter => $filterValue) {
             if (empty($filterValue)) {
                 continue;
             }
-            $pagerFilterDefinition = $pagerDefinition->getFilter($filter);
+            $pagerFilterDefinition = $flattenedFiltersList[$filter] ?? null;
+            if (!$pagerFilterDefinition) {
+                continue;
+            }
+
+            if (!$filtersFormBuilder->get('filters')->has($filter)) {
+                continue;
+            }
 
             $labels = $this->filterHandler->getValuesLabels(
                 $pagerFilterDefinition->getType(),
-                is_array($filterValue) ? $filterValue : [$filterValue],
+                $filterValue,
                 $filtersFormBuilder->get('filters')
                     ->get($filter)
             );
@@ -56,13 +64,12 @@ class PagerActiveFiltersListBuilder
             $query = $this->getRequest()
                 ->query->all();
 
-            $query[$searchFormName]['search'] = '';
-
-            if (is_array($filterValue)) {
+            if (is_array($labels)) {
                 foreach ($filterValue as $value) {
-                    $valueKey = array_search($value, $query[$searchFormName]['filters'][$filter] ?? [], true);
-                    unset($query[$searchFormName]['filters'][$filter][$valueKey]);
-                    $links[] = $this->generateLink($labels[$value] ?? $value, $query, [
+                    $iterationQuery = $query;
+                    $valueKey = array_search($value, $iterationQuery[$searchFormName]['filters'][$filter] ?? [], true);
+                    unset($iterationQuery[$searchFormName]['filters'][$filter][$valueKey]);
+                    $links[] = $this->generateLink($labels[$value] ?? $value, $iterationQuery, [
                         'extras' => [
                             'filter' => $filter,
                             'value' => $value,
@@ -72,7 +79,7 @@ class PagerActiveFiltersListBuilder
             } else {
                 unset($query[$searchFormName]['filters'][$filter]);
 
-                $links[] = $this->generateLink($labels[$filterValue] ?? $filterValue, $query, [
+                $links[] = $this->generateLink($labels ?? $filterValue, $query, [
                     'extras' => [
                         'filter' => $filter,
                         'value' => $filterValue,
@@ -94,6 +101,7 @@ class PagerActiveFiltersListBuilder
      */
     protected function generateLink(string $label, array $query, array $options): ItemInterface
     {
+        $options['extras']['query'] = urldecode(http_build_query($query));
         return $this->linkGenerator->generateLink(
             $this->linkGenerator->generateUrl(
                 $this->getRequest()

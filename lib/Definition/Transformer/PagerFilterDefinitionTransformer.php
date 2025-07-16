@@ -45,6 +45,8 @@ class PagerFilterDefinitionTransformer extends NativePagerFilterDefinitionTransf
             }
         );
 
+        $optionsResolver->define('defaultValue');
+
         $optionsResolver->define('criterionType')
                         ->default('filter')
                         ->allowedTypes('string')
@@ -93,6 +95,9 @@ class PagerFilterDefinitionTransformer extends NativePagerFilterDefinitionTransf
                 $definition->getNestedFilters()
             ),
         ];
+        if ($definition->hasDefaultValue()) {
+            $hash['hash']['defaultValue'] = $definition->getDefaultValue();
+        }
         return $hash;
     }
 

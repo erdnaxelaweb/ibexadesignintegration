@@ -33,14 +33,18 @@ class Renderer extends BaseRenderer
         Environment $environment,
         string      $id,
         string      $pagerType,
-        array $parameters = []
+        array $apiParameters = [],
+        array $appContext = [],
+        array $additionalParameters = []
     ): ?string {
         $uri = new ControllerReference(
             PagerRenderController::class,
             [
                 'id' => $id,
                 'pagerType' => $pagerType,
-                'parameters' => $parameters,
+                'apiParameters' => $apiParameters,
+                'appContext' => $appContext,
+                'additionalParameters' => $additionalParameters,
             ]
         );
 

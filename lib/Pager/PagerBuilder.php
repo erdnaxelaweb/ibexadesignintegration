@@ -19,6 +19,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Novactive\EzSolrSearchExtra\Query\Content\Criterion\RawQueryString;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -64,13 +65,25 @@ class PagerBuilder
         );
 
         $query = $searchType->getQuery();
+
+        $queryCriterions = [];
+        $filtersCriterions = [];
+        foreach ($pagerDefinition->getRawFilters() as $rawFilter) {
+            $filtersCriterions[] = new RawQueryString($rawFilter);
+        }
+        $aggregations = [];
+
+        $searchData = $searchType->getSearchData();
         $event = new PagerBuildEvent(
             $type,
             $pagerDefinition,
             $query,
-            $searchType->getSearchData(),
+            $searchData,
             $defaultSearchData,
-            $context
+            $context,
+            $queryCriterions,
+            $filtersCriterions,
+            $aggregations
         );
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::GLOBAL_PAGER_BUILD);
         $this->eventDispatcher->dispatch($event, PagerBuildEvent::getEventName($type));
@@ -89,15 +102,17 @@ class PagerBuilder
             $query->aggregations = $event->aggregations;
         }
 
+        $defaultLimit = $pagerDefinition->getMaxPerPage();
+        $defaultPage = 1;
+
+        $requestedLimit = $searchData->limit ?? ($request ? $request->get('limit', $defaultLimit) : $defaultLimit);
+        $requestedPage = $searchData->page ?? ($request ? $request->get('page', $defaultPage) : $defaultPage);
+
         $pagerFanta = new Pager($type, $searchType->getAdapter());
-        $pagerFanta->setMaxPerPage($pagerDefinition->getMaxPerPage());
+        $pagerFanta->setMaxPerPage((int) $requestedLimit);
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
-
-        $page = $request ? $request->get('page', 1) : 1;
-        $pagerFanta->setCurrentPage(
-            is_numeric($page) ? (int) $page : 1
-        );
+        $pagerFanta->setCurrentPage((int) $requestedPage);
 
         return $pagerFanta;
     }

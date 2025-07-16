@@ -39,7 +39,7 @@ class TaxonomyEntryAssignementFieldValueTransformer extends AbstractFieldValueTr
         string                 $fieldIdentifier,
         ?FieldDefinition       $ibexaFieldDefinition,
         ContentFieldDefinition $contentFieldDefinition
-    ): array|TaxonomyEntry {
+    ): array|TaxonomyEntry|null {
         $max = $contentFieldDefinition->getOption('max');
         /** @var TaxonomyEntryAssignmentValue $fieldValue */
         $fieldValue = $content->getFieldValue($fieldIdentifier);
@@ -53,6 +53,9 @@ class TaxonomyEntryAssignementFieldValueTransformer extends AbstractFieldValueTr
             $entries[] = $taxonomyEntry;
         }
 
+        if (empty($entries) && $max === 1) {
+            return null;
+        }
         return $entries;
     }
 }

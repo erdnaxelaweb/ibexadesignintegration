@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller;
 
+use Ibexa\Bundle\Core\Routing\UrlAliasRouter;
+use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -37,31 +39,30 @@ class PagerRenderController
     ) {
     }
 
-    public function __invoke(string $id, string $pagerType, array $parameters = []): Response
+    public function __invoke(string $id, string $pagerType, array $apiParameters = [], array $appContext = [], array $additionalParameters = []): Response
     {
         $request = $this->requestStack->getMainRequest();
 
+        $apiParameters['type'] = $pagerType;
         $apiUrl = $this->router->generate(
             'ibexa_design_integration.api.pager',
-            [
-                'type' => $pagerType,
-            ] + $parameters,
+            $apiParameters,
             UrlGeneratorInterface::ABSOLUTE_URL
         );
-        $context = [
+        $baseUrl = $this->getRootUrl() ?? $request->getSchemeAndHttpHost();
+        $appContext = $appContext + [
             'appId' => $id,
+            'pagerType' => $pagerType,
             'apiUrl' => $apiUrl,
+            'baseUrl' => $baseUrl,
             'pathPrefix' => $this->getRootPathPrefix(),
             'locale' => $request->getLocale(),
         ];
         $qs = http_build_query(
             [
-                'context' => json_encode($context),
-            ]
+                'context' => json_encode($appContext),
+            ] + $additionalParameters
         );
-        if (null !== $requestQs = $request->getQueryString()) {
-            $qs .= '&' . $requestQs;
-        }
 
         $searchAppUrl = $this->searchAppUrl;
         if (str_starts_with($searchAppUrl, '/')) {
@@ -108,14 +109,34 @@ class PagerRenderController
             $content = $e->getMessage();
         }
 
+        $appResponseHeaders = $appResponse->getHeaders();
+        $responseHeaders = [];
+        if (isset($appResponseHeaders['cache-control'])) {
+            $responseHeaders['cache-control'] = $appResponseHeaders['cache-control'];
+        }
         $response = new Response(
             $content,
             $appResponse->getStatusCode(),
-            $appResponse->getHeaders()
+            $responseHeaders
         );
         return $response;
     }
 
+    public function getRootUrl(): ?string
+    {
+        $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
+        try {
+            return $this->router->generate(
+                UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+                [
+                    'locationId' => $rootLocationId,
+                ],
+                UrlAliasRouter::ABSOLUTE_URL
+            );
+        } catch (NotFoundException $exception) {
+            return null;
+        }
+    }
     public function getRootPathPrefix(): string
     {
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');

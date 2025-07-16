@@ -32,6 +32,7 @@ class TaxonomyEntry extends AbstractContent
         ContentFieldsCollection $fields,
         public readonly IbexaTaxonomyEntry $innerTaxonomy,
         public readonly string $identifier,
+        public readonly bool                    $hidden,
         public readonly int $level = 0,
         public readonly ?TaxonomyEntry $parent = null,
     ) {
