@@ -109,10 +109,10 @@ class PagerBuilder
         $requestedPage = $searchData->page ?? ($request ? $request->get('page', $defaultPage) : $defaultPage);
 
         $pagerFanta = new Pager($type, $searchType->getAdapter());
-        $pagerFanta->setMaxPerPage((int) $requestedLimit);
+        $pagerFanta->setMaxPerPage(is_numeric($requestedLimit) ? (int) $requestedLimit : $defaultLimit);
         $pagerFanta->setHeadlineCount($pagerDefinition->getHeadlineCount());
         $pagerFanta->setDisablePagination($pagerDefinition->isPaginationDisabled());
-        $pagerFanta->setCurrentPage((int) $requestedPage);
+        $pagerFanta->setCurrentPage(is_numeric($requestedPage) ? (int) $requestedPage : $defaultPage);
 
         return $pagerFanta;
     }
