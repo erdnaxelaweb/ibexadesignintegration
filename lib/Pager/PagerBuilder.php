@@ -106,7 +106,10 @@ class PagerBuilder
         $defaultPage = 1;
 
         $requestedLimit = $searchData->limit ?? ($request ? $request->get('limit', $defaultLimit) : $defaultLimit);
-        $requestedPage = $searchData->page ?? ($request ? $request->get('page', $defaultPage) : $defaultPage);
+        $requestedPage = $searchData->page ?? (
+            $request && is_int($request->get('page', $defaultPage)) ?
+                $request->get('page', $defaultPage) : $defaultPage
+        );
 
         $pagerFanta = new Pager($type, $searchType->getAdapter());
         $pagerFanta->setMaxPerPage((int) $requestedLimit);
