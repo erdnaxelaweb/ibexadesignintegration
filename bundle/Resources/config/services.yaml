@@ -39,6 +39,11 @@ services:
     arguments:
       $richTextOutputConverter: '@ibexa.richtext.converter.output.xhtml5'
 
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\ContentGenerator\Field\UserAccountFieldGenerator:
+    lazy: true
+    tags:
+      - {name: 'erdnaxelaweb.static_fake_design.generator.content_field', type: 'user_account'}
+
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateDefinitionCommand:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:

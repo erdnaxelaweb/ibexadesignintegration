@@ -123,6 +123,11 @@ services:
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'content' }
 
+    ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\UserAccountFieldValueTransformer:
+        lazy: true
+        tags:
+            - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'user_account' }
+
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\UrlFieldValueTransformer:
         lazy: true
         arguments:
