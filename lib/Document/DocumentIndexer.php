@@ -29,20 +29,20 @@ use Ibexa\Contracts\HttpCache\PurgeClient\PurgeClientInterface;
 use Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields;
 use Ibexa\Solr\FieldMapper\ContentFieldMapper\ContentDocumentLocationFields;
 use Ibexa\Solr\FieldMapper\ContentTranslationFieldMapper\BlockDocumentsMetaFields;
-use Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler;
+use Novactive\EzSolrSearchExtra\Search\ExtendedSearchHandler;
 
 class DocumentIndexer
 {
     public function __construct(
-        protected SearchFieldResolver   $searchFieldResolver,
-        protected DocumentBuilder       $documentBuilder,
-        protected DocumentSearchHandler $documentSearchHandler,
-        protected DefinitionManager     $definitionManager,
-        protected ContentDocumentLocationFields $contentDocumentLocationFields,
+        protected SearchFieldResolver             $searchFieldResolver,
+        protected DocumentBuilder                 $documentBuilder,
+        protected ExtendedSearchHandler           $extendedSearchHandler,
+        protected DefinitionManager               $definitionManager,
+        protected ContentDocumentLocationFields   $contentDocumentLocationFields,
         protected BlockDocumentsBaseContentFields $blockDocumentsBaseContentFields,
-        protected BlockDocumentsMetaFields $blockDocumentsMetaFields,
-        protected PersistenceHandler $persistenceHandler,
-        protected PurgeClientInterface $purgeClient
+        protected BlockDocumentsMetaFields        $blockDocumentsMetaFields,
+        protected PersistenceHandler              $persistenceHandler,
+        protected PurgeClientInterface            $purgeClient
     ) {
     }
 
@@ -56,7 +56,7 @@ class DocumentIndexer
             $indexableDocuments[] = $this->transformToIndexableDocument($document);
         }
 
-        $this->documentSearchHandler->bulkIndexDocuments($indexableDocuments);
+        $this->extendedSearchHandler->bulkIndexDocuments($indexableDocuments);
         $cacheTags = array_map(function (Document $document) {
             return sprintf('d-%s', $document->id);
         }, $documents);
@@ -112,7 +112,7 @@ class DocumentIndexer
                 $documentIds[] = $documentId;
             }
         }
-        $this->documentSearchHandler->deleteDocuments($documentIds);
+        $this->extendedSearchHandler->deleteDocuments($documentIds);
     }
 
     protected function transformToIndexableDocument(Document $document): IbexaDocument

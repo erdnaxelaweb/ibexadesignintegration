@@ -3,7 +3,7 @@ services:
         arguments:
             $searchFieldResolver: '@ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver'
             $documentBuilder: '@ErdnaxelaWeb\StaticFakeDesign\Document\DocumentBuilder'
-            $documentSearchHandler: '@Novactive\EzSolrSearchExtra\Search\DocumentSearchHandler'
+            $extendedSearchHandler: '@Novactive\EzSolrSearchExtra\Search\ExtendedSearchHandler'
             $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
             $contentDocumentLocationFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\ContentDocumentLocationFields'
             $blockDocumentsBaseContentFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields'
