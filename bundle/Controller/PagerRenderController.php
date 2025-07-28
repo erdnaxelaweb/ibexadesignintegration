@@ -101,8 +101,8 @@ class PagerRenderController
             }
 
             $content = str_replace(
-                '<script',
-                '<script async=""',
+                '<script type="module"',
+                '<script async="" type="module"',
                 $content
             );
         } catch (ClientExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {
