@@ -47,6 +47,34 @@ class ContentTransformer
         return $this->transformContent($ibexaContent, $ibexaLocation);
     }
 
+    public function lazyTransformContentFromLocationRemoteId(string $remoteId): Content
+    {
+        $initializers = [
+            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
+                return $instance->innerLocation->contentId;
+            },
+            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
+                return $instance->innerLocation->id;
+            },
+            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+                $content = $instance->innerLocation->getContent();
+                $this->responseTagger->addContentTags([$content->id]);
+                return $content;
+            },
+            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+                $remoteId
+            ): IbexaLocation {
+                $location = $this->locationService->loadLocationByRemoteId($remoteId);
+                $this->responseTagger->addLocationTags([$location->id]);
+                return $location;
+            },
+        ];
+
+        $instance = Instantiator::instantiate(Content::class);
+        $skippedProperties = [];
+        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+    }
+
     public function lazyTransformContentFromLocationId(int $locationId): Content
     {
         $initializers = [
@@ -70,6 +98,40 @@ class ContentTransformer
         $skippedProperties = [
             'locationId' => true,
         ];
+        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+    }
+
+    public function lazyTransformContentFromContentRemoteId(string $remoteId): Content
+    {
+        $initializers = [
+            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
+                return $instance->innerContent->id;
+            },
+            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
+                return $instance->innerContent->contentInfo->mainLocationId;
+            },
+            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+                $remoteId
+            ): IbexaContent {
+                $content = $this->contentService->loadContentByRemoteId($remoteId);
+                $this->responseTagger->addContentTags([$content->id]);
+                return $content;
+            },
+            'innerLocation' => function (
+                Content $instance,
+                string $propertyName,
+                ?string $propertyScope
+            ): IbexaLocation {
+                $location = $instance->innerContent->contentInfo->getMainLocation();
+                if ($location) {
+                    $this->responseTagger->addLocationTags([$location->id]);
+                }
+                return $location;
+            },
+        ];
+
+        $instance = Instantiator::instantiate(Content::class);
+        $skippedProperties = [];
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
