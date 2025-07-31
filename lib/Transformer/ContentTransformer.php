@@ -47,8 +47,14 @@ class ContentTransformer
         return $this->transformContent($ibexaContent, $ibexaLocation);
     }
 
+    /**
+     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException
+     * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
+     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
+     */
     public function lazyTransformContentFromLocationRemoteId(string $remoteId): Content
     {
+        $location = $this->locationService->loadLocationByRemoteId($remoteId);
         $initializers = [
             'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerLocation->contentId;
@@ -62,9 +68,8 @@ class ContentTransformer
                 return $content;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $remoteId
+                $location
             ): IbexaLocation {
-                $location = $this->locationService->loadLocationByRemoteId($remoteId);
                 $this->responseTagger->addLocationTags([$location->id]);
                 return $location;
             },
@@ -101,8 +106,14 @@ class ContentTransformer
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
+    /**
+     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException
+     * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
+     * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
+     */
     public function lazyTransformContentFromContentRemoteId(string $remoteId): Content
     {
+        $content = $this->contentService->loadContentByRemoteId($remoteId);
         $initializers = [
             'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerContent->id;
@@ -111,9 +122,8 @@ class ContentTransformer
                 return $instance->innerContent->contentInfo->mainLocationId;
             },
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $remoteId
+                $content
             ): IbexaContent {
-                $content = $this->contentService->loadContentByRemoteId($remoteId);
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
