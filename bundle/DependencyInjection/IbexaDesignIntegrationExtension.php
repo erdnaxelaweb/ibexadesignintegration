@@ -181,7 +181,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                             $variationRetinaFullName
                         );
                         $ibexaVariationsConfig[$scope]['image_variations'][$webpVariationName] = [
-                            'reference' => $variationFullName,
+                            'reference' => $variationRetinaFullName,
                             'filters' => [
                                 [
                                     'name' => 'toFormat',
