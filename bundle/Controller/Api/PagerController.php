@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller\Api;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerApiResponseEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Normalizer\FormViewNormalizer;
@@ -47,7 +48,7 @@ class PagerController extends AbstractController
         }
 
         $pagerParameters = $request->get($type, null);
-        $pagerContext = $pagerParameters['ctx'] ?? [];
+        $pagerContext = new ArrayCollection($pagerParameters['ctx'] ?? []);
 
         if ($this->configResolver->getParameter('enable_fake_generation', 'ibexa_design_integration') === true) {
             $pager = ($this->pagerGenerator)($type);
@@ -73,6 +74,7 @@ class PagerController extends AbstractController
             'totalPages' => $pager->getNbPages(),
             'totalItems' => $pager->getNbResults(),
             'items' => $currentPageResults,
+            'context' => $pagerContext,
         ];
 
         $responseEvent = new PagerApiResponseEvent(

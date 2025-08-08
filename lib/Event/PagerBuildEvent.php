@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
@@ -26,7 +27,7 @@ class PagerBuildEvent extends Event
     public const PAGER_BUILD_PATTERN = 'erdnaxelaweb.ibexa_design_integration.pager.build.%s';
 
     /**
-     * @param array<string, mixed>                                                           $buildContext
+     * @param ArrayCollection<string, mixed>                                                           $buildContext
      * @param array<string, Criterion>                                                           $queryCriterions
      * @param array<string, Criterion>                                                           $filtersCriterions
      * @param array<string, Aggregation>                                                           $aggregations
@@ -37,7 +38,7 @@ class PagerBuildEvent extends Event
         public readonly Query $pagerQuery,
         public readonly SearchData $searchData,
         public readonly SearchData $defaultSearchData,
-        public array $buildContext,
+        public ArrayCollection $buildContext,
         public array $queryCriterions = [],
         public array $filtersCriterions = [],
         public array $aggregations = []

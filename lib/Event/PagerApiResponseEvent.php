@@ -12,13 +12,14 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
 
 class PagerApiResponseEvent
 {
     /**
-     * @param array<string, mixed>                                                           $context
+     * @param ArrayCollection<string, mixed>                                                           $context
      * @param array<string, mixed>                                                           $responseData
      * @param array<string, mixed>                                                           $responseHeaders
      */
@@ -26,7 +27,7 @@ class PagerApiResponseEvent
         public string $type,
         public PagerDefinition $definition,
         public Pager $pager,
-        public array $context,
+        public ArrayCollection $context,
         public array $responseData,
         public array $responseHeaders = []
     ) {

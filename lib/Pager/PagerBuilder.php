@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Event\PagerBuildEvent;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory\SearchTypeFactoryInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
@@ -49,7 +50,7 @@ class PagerBuilder
      */
     public function build(
         string $type,
-        array $context = [],
+        array|ArrayCollection $context = [],
         SearchData $defaultSearchData = new SearchData()
     ): Pager {
         $request = $this->requestStack->getCurrentRequest();
@@ -80,7 +81,7 @@ class PagerBuilder
             $query,
             $searchData,
             $defaultSearchData,
-            $context,
+            $context instanceof ArrayCollection ? $context : new ArrayCollection($context),
             $queryCriterions,
             $filtersCriterions,
             $aggregations
