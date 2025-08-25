@@ -134,7 +134,7 @@ class PagerRenderController
                 UrlAliasRouter::ABSOLUTE_URL
             );
         } catch (NotFoundException $exception) {
-            return null;
+            return '/';
         }
     }
     public function getRootPathPrefix(): string
