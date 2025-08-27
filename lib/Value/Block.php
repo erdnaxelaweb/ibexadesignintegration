@@ -21,7 +21,7 @@ class Block extends BaseBlock
         bool $isVisible,
         BlockAttributesCollection  $attributes,
         public readonly int        $contentId,
-        public readonly int        $locationId,
+        public readonly ?int       $locationId,
         public readonly int        $versionNo,
         public readonly string     $languageCode,
         public readonly BlockValue $innerValue
