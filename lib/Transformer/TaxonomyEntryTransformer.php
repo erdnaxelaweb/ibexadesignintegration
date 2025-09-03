@@ -108,7 +108,7 @@ class TaxonomyEntryTransformer
                 return $instance->innerContent->contentInfo->alwaysAvailable;
             },
             "hidden" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->isHidden;
+                return $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible();
             },
             "creationDate" => function (
                 TaxonomyEntry $instance,

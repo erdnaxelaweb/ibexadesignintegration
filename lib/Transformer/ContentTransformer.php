@@ -264,7 +264,7 @@ class ContentTransformer
                 return $instance->innerContent->contentInfo->alwaysAvailable;
             },
             "hidden" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->isHidden;
+                return $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible();
             },
             "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
                 return $instance->innerContent->contentInfo->publishedDate;
