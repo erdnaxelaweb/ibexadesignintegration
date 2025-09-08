@@ -20,6 +20,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\PagerGenerator;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
+use Ibexa\Contracts\HttpCache\Handler\ContentTagInterface;
 use Knp\Menu\ItemInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -36,7 +37,8 @@ class PagerController extends AbstractController
         protected ConfigResolverInterface $configResolver,
         protected SerializerInterface $serializer,
         protected FormViewNormalizer $formViewNormalizer,
-        protected EventDispatcherInterface $eventDispatcher
+        protected EventDispatcherInterface $eventDispatcher,
+        protected ContentTagInterface $responseTagger
     ) {
     }
 
@@ -56,7 +58,15 @@ class PagerController extends AbstractController
             $pager = $this->pagerBuilder->build($type, $pagerContext);
         }
 
+        $cacheTags = [];
+
+        /** @var \ErdnaxelaWeb\StaticFakeDesign\Value\Document[] $currentPageResults */
         $currentPageResults = $pager->getCurrentPageResults();
+        foreach ($currentPageResults as $currentPageResult) {
+            $cacheTags[] = sprintf('d-%s', $currentPageResult->getShortType());
+            $cacheTags[] = $currentPageResult->cacheTag();
+        }
+
         $form = ($this->formViewNormalizer)($pager->getFiltersForm());
         $activeFilters = array_map(function (ItemInterface $item) {
             return [
@@ -82,7 +92,9 @@ class PagerController extends AbstractController
             $pagerDefinition,
             $pager,
             $pagerContext,
-            $responseData
+            $responseData,
+            [],
+            $cacheTags
         );
 
         $this->eventDispatcher->dispatch($responseEvent);
@@ -91,6 +103,8 @@ class PagerController extends AbstractController
             $this->serializer->serialize($responseEvent->responseData, 'json'),
             json: true
         );
+
+        $this->setResponseCacheHeaders($response, $responseEvent->cacheTags);
 
         if ($request->headers->has('Origin')) {
             $response->headers->set('Access-Control-Allow-Origin', $request->headers->get('Origin'), true);
@@ -104,5 +118,23 @@ class PagerController extends AbstractController
         }
 
         return $response;
+    }
+
+    protected function setResponseCacheHeaders(
+        JsonResponse $response,
+        array $cacheTags = []
+    ): void {
+        if (!$this->configResolver->getParameter('content.view_cache')) {
+            return;
+        }
+        $response->setPublic();
+
+        if ($this->configResolver->getParameter('content.ttl_cache')) {
+            $response->setSharedMaxAge((int) $this->configResolver->getParameter('content.default_ttl'));
+        }
+        $response->headers->set('original-cache-control', $response->headers->get('cache-control'));
+        if (!empty($cacheTags)) {
+            $this->responseTagger->addTags($cacheTags);
+        }
     }
 }

@@ -57,9 +57,11 @@ class DocumentIndexer
         }
 
         $this->extendedSearchHandler->bulkIndexDocuments($indexableDocuments);
-        $cacheTags = array_map(function (Document $document) {
-            return $document->cacheTag();
-        }, $documents);
+        $cacheTags = [];
+        foreach ($documents as $document) {
+            $cacheTags[] = $document->cacheTag();
+            $cacheTags[] = sprintf('d-%s', $document->getShortType());
+        }
         $this->purgeClient->purge($cacheTags);
     }
 

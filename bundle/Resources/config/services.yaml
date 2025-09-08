@@ -23,6 +23,7 @@ services:
       $serializer: '@Symfony\Component\Serializer\SerializerInterface'
       $definitionManager: '@ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager'
       $formViewNormalizer: '@ErdnaxelaWeb\IbexaDesignIntegration\Normalizer\FormViewNormalizer'
+      $responseTagger: '@Ibexa\Contracts\HttpCache\Handler\ContentTagInterface'
     tags:
       - { name: controller.service_arguments }
 

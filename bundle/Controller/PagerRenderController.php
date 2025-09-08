@@ -114,6 +114,9 @@ class PagerRenderController
         if (isset($appResponseHeaders['cache-control'])) {
             $responseHeaders['cache-control'] = $appResponseHeaders['cache-control'];
         }
+        if (isset($appResponseHeaders['xkey'])) {
+            $responseHeaders['xkey'] = $appResponseHeaders['xkey'];
+        }
         $response = new Response(
             $content,
             $appResponse->getStatusCode(),

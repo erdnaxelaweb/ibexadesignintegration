@@ -29,7 +29,8 @@ class PagerApiResponseEvent
         public Pager $pager,
         public ArrayCollection $context,
         public array $responseData,
-        public array $responseHeaders = []
+        public array $responseHeaders = [],
+        public array $cacheTags = []
     ) {
     }
 }
