@@ -4,5 +4,8 @@ services:
     lazy: true
     arguments:
       $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
+      $permissionResolver: '@Ibexa\Contracts\Core\Repository\PermissionResolver'
+      $segmentationService: '@Ibexa\Contracts\Segmentation\SegmentationServiceInterface'
+      $userService: '@Ibexa\Contracts\Core\Repository\UserService'
     tags:
       - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'segment_content_map' }
