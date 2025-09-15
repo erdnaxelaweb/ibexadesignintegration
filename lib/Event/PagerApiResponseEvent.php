@@ -15,6 +15,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Event;
 use Doctrine\Common\Collections\ArrayCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Pager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PagerApiResponseEvent
 {
@@ -28,6 +29,7 @@ class PagerApiResponseEvent
         public PagerDefinition $definition,
         public Pager $pager,
         public ArrayCollection $context,
+        public JsonResponse $response,
         public array $responseData,
         public array $responseHeaders = [],
         public array $cacheTags = []

@@ -87,11 +87,13 @@ class PagerController extends AbstractController
             'context' => $pagerContext,
         ];
 
+        $response = new JsonResponse();
         $responseEvent = new PagerApiResponseEvent(
             $type,
             $pagerDefinition,
             $pager,
             $pagerContext,
+            $response,
             $responseData,
             [],
             $cacheTags
@@ -99,9 +101,8 @@ class PagerController extends AbstractController
 
         $this->eventDispatcher->dispatch($responseEvent);
 
-        $response = new JsonResponse(
-            $this->serializer->serialize($responseEvent->responseData, 'json'),
-            json: true
+        $response->setJson(
+            $this->serializer->serialize($responseEvent->responseData, 'json')
         );
 
         $this->setResponseCacheHeaders($response, $responseEvent->cacheTags);
