@@ -73,19 +73,7 @@ class DocumentIndexer
      */
     public function indexContent(Content $content, array $documentTypes): void
     {
-        $documents = [];
-        foreach ($documentTypes as $documentType) {
-            $configuration = $this->definitionManager->getDefinition(DocumentDefinition::class, $documentType);
-
-            foreach ($content->languageCodes as $key => $languageCode) {
-                $documents[] = ($this->documentBuilder)(
-                    $documentType,
-                    $content,
-                    $configuration->getFields(),
-                    $languageCode
-                );
-            }
-        }
+        $documents = $this->generateContentDocuments($content, $documentTypes);
         $this->__invoke($documents);
     }
 
@@ -115,6 +103,33 @@ class DocumentIndexer
             }
         }
         $this->extendedSearchHandler->deleteDocuments($documentIds);
+    }
+
+    /**
+     * @param string[]                                              $documentTypes
+     *
+     * @return Document[]
+     * @throws \ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException
+     */
+    public function generateContentDocuments(Content $content, array $documentTypes): array
+    {
+        $documents = [];
+        foreach ($documentTypes as $documentType) {
+            $configuration = $this->definitionManager->getDefinition(
+                DocumentDefinition::class,
+                $documentType
+            );
+
+            foreach ($content->languageCodes as $key => $languageCode) {
+                $documents[] = ($this->documentBuilder)(
+                    $documentType,
+                    $content,
+                    $configuration->getFields(),
+                    $languageCode
+                );
+            }
+        }
+        return $documents;
     }
 
     protected function transformToIndexableDocument(Document $document): IbexaDocument

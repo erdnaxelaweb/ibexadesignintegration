@@ -146,6 +146,7 @@ services:
         lazy: true
         arguments:
             $expressionResolver: '@ErdnaxelaWeb\StaticFakeDesign\Expression\ExpressionResolver'
+            $cache: '@ibexa.cache_pool'
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'expression' }
 

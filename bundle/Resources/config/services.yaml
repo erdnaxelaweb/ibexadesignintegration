@@ -45,6 +45,9 @@ services:
     tags:
       - {name: 'erdnaxelaweb.static_fake_design.generator.content_field', type: 'user_account'}
 
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\ContentGenerator\Field\ExpressionFieldGenerator:
+    decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\ContentGenerator\Field\ExpressionFieldGenerator
+
   ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command\GenerateDefinitionCommand:
 
   ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator:
