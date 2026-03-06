@@ -26,11 +26,11 @@ class SearchFieldTypesMapPass implements CompilerPassInterface
         $fieldTypeGuesserDefinition = $container->getDefinition(SearchFieldResolver::class);
         $taggedServicesIds = $container->findTaggedServiceIds(self::TAG);
         $map = [];
-        foreach ($taggedServicesIds as $id => $tags) {
+        foreach ($taggedServicesIds as $tags) {
             foreach ($tags as $tagAttributes) {
                 /** @var class-string<FieldType> $fieldTypeClass */
                 $fieldTypeClass = $tagAttributes['maps'];
-                if($fieldTypeClass === "Ibexa\Contracts\Core\Search\FieldType\EmbeddingField") {
+                if($fieldTypeClass === \Ibexa\Contracts\Core\Search\FieldType\EmbeddingField::class) {
                     continue;
                 }
                 $fieldType = new $fieldTypeClass();

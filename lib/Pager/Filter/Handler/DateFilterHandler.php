@@ -88,7 +88,7 @@ class DateFilterHandler extends AbstractFilterHandler
         } else {
             try {
                 $date = DateTime::createFromFormat($inputFormat, $value);
-            } catch (Exception $e) {
+            } catch (Exception) {
                 throw new InvalidArgumentException('Invalid date provided: ' . $value);
             }
         }

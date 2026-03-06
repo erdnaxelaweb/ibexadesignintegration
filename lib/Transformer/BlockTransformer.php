@@ -41,7 +41,7 @@ class BlockTransformer
         try {
             $blockDefinition = $this->definitionManager->getDefinition(BlockDefinition::class, $blockValue->getType());
             $blockAttributesDefinitions = $blockDefinition->getAttributes();
-        } catch (DefinitionNotFoundException|DefinitionTypeNotFoundException $e) {
+        } catch (DefinitionNotFoundException|DefinitionTypeNotFoundException) {
             $blockAttributesDefinitions = [];
         }
 
@@ -50,19 +50,12 @@ class BlockTransformer
             $blockAttributes->set(
                 $attributeIdentifier,
                 new LazyValue(
-                    function () use (
-                        $blockAttributeDefinition,
-                        $attributeIdentifier,
+                    fn() => $this->blockAttributeValueTransformer->transform(
+                        $blockValue,
                         $ibexaBlockDefinition,
-                        $blockValue
-                    ) {
-                        return $this->blockAttributeValueTransformer->transform(
-                            $blockValue,
-                            $ibexaBlockDefinition,
-                            $attributeIdentifier,
-                            $blockAttributeDefinition
-                        );
-                    }
+                        $attributeIdentifier,
+                        $blockAttributeDefinition
+                    )
                 )
             );
         }

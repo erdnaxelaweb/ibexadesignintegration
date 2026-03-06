@@ -45,7 +45,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
         try {
             return $this->taxonomyService->loadEntryById((int) $value)
                 ->getName();
-        } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
+        } catch (TaxonomyEntryNotFoundException) {
             return $value;
         }
     }
@@ -58,9 +58,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
     ): array {
         $formOptions = parent::getFormOptions($formBuilder, $filterName, $aggregationResult, $options);
         if ($options['group_by_parent']) {
-            $formOptions['group_by'] = function (FilterChoiceInterface $choice, $key, $value) {
-                return $choice instanceof TaxonomyFilterChoice ? $choice->getParent() : null;
-            };
+            $formOptions['group_by'] = (fn(FilterChoiceInterface $choice, $key, $value) => $choice instanceof TaxonomyFilterChoice ? $choice->getParent() : null);
         }
 
         return $formOptions;
@@ -105,7 +103,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
                 ],
                 $options['choice_label_format']
             );
-        } catch (TaxonomyEntryNotFoundException $entryNotFoundException) {
+        } catch (TaxonomyEntryNotFoundException) {
             return parent::buildChoiceFromAggregationResultEntry($entry, $options);
         }
     }

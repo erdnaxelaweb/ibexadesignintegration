@@ -59,7 +59,7 @@ class DocumentSearchResultParser
             }
 
             if (str_ends_with($field, '_gl')) {
-                $location = explode(',', $value);
+                $location = explode(',', (string) $value);
                 $value = [
                     'latitude' => (float) $location[0],
                     'longitude' => (float) $location[1],

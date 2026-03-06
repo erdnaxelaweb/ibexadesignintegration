@@ -54,8 +54,8 @@ class DocumentSearchType extends AbstractSearchType
             $this->query,
             $this->searchService,
             $this->documentSearchResultParser,
-            [$this, 'getFiltersForm'],
-            [$this, 'getActiveFilters'],
+            $this->getFiltersForm(...),
+            $this->getActiveFilters(...),
         );
     }
 

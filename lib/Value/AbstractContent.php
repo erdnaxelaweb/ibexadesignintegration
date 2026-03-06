@@ -61,19 +61,13 @@ class AbstractContent extends IbexaContent
      */
     public function __get($name): mixed
     {
-        switch ($name) {
-            case 'versionInfo':
-                return $this->getVersionInfo();
-
-            case 'contentInfo':
-                return $this->getVersionInfo()
-                    ->getContentInfo();
-
-            case 'thumbnail':
-                return $this->getThumbnail();
-        }
-
-        return $this->lazyGet($name);
+        return match ($name) {
+            'versionInfo' => $this->getVersionInfo(),
+            'contentInfo' => $this->getVersionInfo()
+                ->getContentInfo(),
+            'thumbnail' => $this->getThumbnail(),
+            default => $this->lazyGet($name),
+        };
     }
 
     /**

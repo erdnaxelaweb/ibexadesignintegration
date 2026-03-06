@@ -41,7 +41,7 @@ class RichtextBlockAttributeValueTransformer extends AbstractBlockAttributeValue
             ->getValue();
 
         $xml = new DOMDocument();
-        $xml->loadXML($attributeValue === null ? RichtextValue::EMPTY_VALUE : $attributeValue);
+        $xml->loadXML($attributeValue ?? RichtextValue::EMPTY_VALUE);
 
         return $this->richTextOutputConverter->convert($xml)
             ->saveHTML();

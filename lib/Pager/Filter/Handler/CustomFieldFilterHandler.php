@@ -193,15 +193,9 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
                 }, $words, range(1, count($words))),
                 'expanded' => false,
                 'multiple' => false,
-                'choice_value' => function ($entry): ?int {
-                    return is_object($entry) ? $entry->value : $entry;
-                },
-                'choice_label' => function ($entry): ?string {
-                    return is_object($entry) ? $entry->label : $entry;
-                },
-                'choice_attr' => function ($entry): array {
-                    return is_object($entry) ? $entry->attr : [];
-                },
+                'choice_value' => fn($entry): ?int => is_object($entry) ? $entry->value : $entry,
+                'choice_label' => fn($entry): ?string => is_object($entry) ? $entry->label : $entry,
+                'choice_attr' => fn($entry): array => is_object($entry) ? $entry->attr : [],
             ],
         ];
     }

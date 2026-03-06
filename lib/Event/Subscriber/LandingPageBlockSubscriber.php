@@ -45,7 +45,7 @@ class LandingPageBlockSubscriber implements EventSubscriberInterface
             $parameters = $renderRequest->getParameters();
             $parameters['block'] = ($this->blockTransformer)($blockValue);
             $renderRequest->setParameters($parameters);
-        } catch (DefinitionNotFoundException $e) {
+        } catch (DefinitionNotFoundException) {
             return;
         }
     }

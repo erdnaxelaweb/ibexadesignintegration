@@ -37,6 +37,6 @@ class SelectionBlockAttributeValueTransformer extends AbstractBlockAttributeValu
         if (empty($attributeValue)) {
             return [];
         }
-        return explode(',', $attributeValue);
+        return explode(',', (string) $attributeValue);
     }
 }

@@ -26,7 +26,7 @@ class BreadcrumbGenerator
 
     public function generateLocationBreadcrumb(Location $location): Breadcrumb
     {
-        return Breadcrumb::createLazyGhost(function (Breadcrumb $instance) use ($location) {
+        return Breadcrumb::createLazyGhost(function (Breadcrumb $instance) use ($location): void {
             $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
             $currentLocation = $location;
             $breadcrumbLinks = [$this->linkGenerator->generateLocationLink($location)];

@@ -178,7 +178,7 @@ class ParentFilterHandler implements FilterHandlerInterface
             $searchData
         );
         $criterions = $childCriterions['filtersCriterions'] ?? [];
-        foreach ($criterions as $criterionName => $criterion) {
+        foreach ($criterions as $criterion) {
             if ($criterion instanceof FilterTag) {
                 //                $criterions[$criterionName] = $criterion->criterion;
             }

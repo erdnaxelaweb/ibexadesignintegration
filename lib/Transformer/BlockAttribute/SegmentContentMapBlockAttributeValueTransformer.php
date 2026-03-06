@@ -53,7 +53,7 @@ class SegmentContentMapBlockAttributeValueTransformer extends AbstractBlockAttri
                 $this->userService->loadUser($this->permissionResolver->getCurrentUserReference() ->getUserId())
             );
             $segmentIds = array_column($segments, 'id');
-        } catch (NotFoundException $e) {
+        } catch (NotFoundException) {
             $segmentIds = [];
         }
         if (empty($segmentIds)) {
@@ -77,6 +77,6 @@ class SegmentContentMapBlockAttributeValueTransformer extends AbstractBlockAttri
     {
         $contentMapAttribute = $blockValue->getAttribute($attributeIdentifier);
 
-        return json_decode($contentMapAttribute->getValue(), true);
+        return json_decode((string) $contentMapAttribute->getValue(), true);
     }
 }

@@ -102,35 +102,15 @@ version="5.0-variant ezpublish-1.0"></section>'
     {
         $tag = $this->fakerGenerator->randomElement(!empty($allowedTags) ? $allowedTags : self::ALLOWED_TAGS);
 
-        switch ($tag) {
-            case 'a':
-                $this->addRandomA($node);
-                break;
-
-            case 'ul':
-                $this->addRandomUL($node);
-                break;
-
-            case 'h':
-                $this->addRandomH($node);
-                break;
-
-            case 'b':
-                $this->addRandomB($node);
-                break;
-
-            case 'i':
-                $this->addRandomI($node);
-                break;
-
-            case 'table':
-                $this->addRandomTable($node);
-                break;
-            case 'p':
-            default:
-                $this->addRandomP($node);
-                break;
-        }
+        match ($tag) {
+            'a' => $this->addRandomA($node),
+            'ul' => $this->addRandomUL($node),
+            'h' => $this->addRandomH($node),
+            'b' => $this->addRandomB($node),
+            'i' => $this->addRandomI($node),
+            'table' => $this->addRandomTable($node),
+            default => $this->addRandomP($node),
+        };
     }
 
     protected function addRandomP(DOMNode $element, int $maxLength = 10): void

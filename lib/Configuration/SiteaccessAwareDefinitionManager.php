@@ -38,7 +38,7 @@ class SiteaccessAwareDefinitionManager extends DefinitionManager
                 $parameterName,
                 'ibexa_design_integration'
             );
-        } catch (ParameterNotFoundException $exception) {
+        } catch (ParameterNotFoundException) {
             return $nativeDefinitions;
         }
 

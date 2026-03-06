@@ -107,7 +107,7 @@ class ImageGenerator
         if ($variationName === IORepositoryResolver::VARIATION_ORIGINAL) {
             try {
                 $variation = $this->getImageVariationIfExist($field, $versionInfo, $variationName);
-            } catch (SourceImageNotFoundException $e) {
+            } catch (SourceImageNotFoundException) {
                 return [];
             }
             return [$this->getImageVariationSource([$variation->uri], '', $variation, $variationName)];
@@ -132,7 +132,7 @@ class ImageGenerator
                     if (!$baseVariation) {
                         $baseVariation = $variation;
                     }
-                } catch (NonExistingFilterException|SourceImageNotFoundException $e) {
+                } catch (NonExistingFilterException|SourceImageNotFoundException) {
                     continue;
                 }
             }

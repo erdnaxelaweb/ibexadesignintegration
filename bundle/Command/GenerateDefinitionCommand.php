@@ -163,11 +163,11 @@ class GenerateDefinitionCommand extends Command
         $sheets = $spreadsheet->getAllSheets();
         $foundContenTypeIdentifiers = [];
         foreach ($sheets as $sheet) {
-            if (trim($sheet->getCell('A2')->getValue()) !== "Content name") {
+            if (trim((string) $sheet->getCell('A2')->getValue()) !== "Content name") {
                 continue;
             }
 
-            $identifier = trim($sheet->getCell('B3')->getValue());
+            $identifier = trim((string) $sheet->getCell('B3')->getValue());
             if (!$identifier) {
                 continue;
             }
@@ -184,7 +184,7 @@ class GenerateDefinitionCommand extends Command
             if ($response === "all") {
                 $sheetNames = $foundContenTypeIdentifiers;
             } else {
-                $sheetNames = explode(',', $response);
+                $sheetNames = explode(',', (string) $response);
             }
         }
 
@@ -193,13 +193,13 @@ class GenerateDefinitionCommand extends Command
             $sheet = $spreadsheet->getSheetByName($sheetName);
             $io->info($sheetName);
 
-            $identifier = trim($sheet->getCell('B3')->getValue());
+            $identifier = trim((string) $sheet->getCell('B3')->getValue());
 
             $fieldsStartIndex = 14;
             $fieldsConfig = [];
             do {
-                $fieldIdentifier = trim($sheet->getCell("B$fieldsStartIndex")->getValue());
-                $fieldTypeIdentifier = trim($sheet->getCell("C$fieldsStartIndex")->getValue());
+                $fieldIdentifier = trim((string) $sheet->getCell("B$fieldsStartIndex")->getValue());
+                $fieldTypeIdentifier = trim((string) $sheet->getCell("C$fieldsStartIndex")->getValue());
                 $typeConfig = static::$typesMapping[$fieldTypeIdentifier] ?? [
                     'type' => null,
                 ];
@@ -215,34 +215,34 @@ class GenerateDefinitionCommand extends Command
                 }
                 $fieldsConfig[$fieldIdentifier] = [
                     "name" => [
-                        $languageCode => trim($sheet->getCell("A$fieldsStartIndex")->getValue()),
+                        $languageCode => trim((string) $sheet->getCell("A$fieldsStartIndex")->getValue()),
                     ],
                     "description" => [
-                        $languageCode => trim($sheet->getCell("D$fieldsStartIndex")->getValue()),
+                        $languageCode => trim((string) $sheet->getCell("D$fieldsStartIndex")->getValue()),
                     ],
                     "type" => $typeConfig['type'],
                     "options" => $typeConfig['options'] ?? [],
-                    "required" => trim($sheet->getCell("E$fieldsStartIndex")->getValue()) === "Yes",
-                    "searchable" => trim($sheet->getCell("F$fieldsStartIndex")->getValue()) === "Yes",
-                    "translatable" => trim($sheet->getCell("G$fieldsStartIndex")->getValue()) === "Yes",
-                    "category" => trim($sheet->getCell("H$fieldsStartIndex")->getValue()),
+                    "required" => trim((string) $sheet->getCell("E$fieldsStartIndex")->getValue()) === "Yes",
+                    "searchable" => trim((string) $sheet->getCell("F$fieldsStartIndex")->getValue()) === "Yes",
+                    "translatable" => trim((string) $sheet->getCell("G$fieldsStartIndex")->getValue()) === "Yes",
+                    "category" => trim((string) $sheet->getCell("H$fieldsStartIndex")->getValue()),
                 ];
                 $fieldsStartIndex++;
-            } while (trim($sheet->getCell("B$fieldsStartIndex")->getValue()) !== "");
+            } while (trim((string) $sheet->getCell("B$fieldsStartIndex")->getValue()) !== "");
 
             $configs[$identifier] = [
                 "name" => [
-                    $languageCode => trim($sheet->getCell('B2')->getValue()),
+                    $languageCode => trim((string) $sheet->getCell('B2')->getValue()),
                 ],
                 "description" => [
-                    $languageCode => trim($sheet->getCell('B4')->getValue()),
+                    $languageCode => trim((string) $sheet->getCell('B4')->getValue()),
                 ],
-                "nameSchema" => trim($sheet->getCell('B5')->getValue()),
-                "urlAliasSchema" => trim($sheet->getCell('B6')->getValue()),
-                "defaultAlwaysAvailable" => trim($sheet->getCell('B9')->getValue()) === "Yes",
-                "defaultSortField" => trim($sheet->getCell('D7')->getCalculatedValue()),
-                "defaultSortOrder" => trim($sheet->getCell('D8')->getCalculatedValue()),
-                "container" => trim($sheet->getCell('B10')->getValue()) === "Yes",
+                "nameSchema" => trim((string) $sheet->getCell('B5')->getValue()),
+                "urlAliasSchema" => trim((string) $sheet->getCell('B6')->getValue()),
+                "defaultAlwaysAvailable" => trim((string) $sheet->getCell('B9')->getValue()) === "Yes",
+                "defaultSortField" => trim((string) $sheet->getCell('D7')->getCalculatedValue()),
+                "defaultSortOrder" => trim((string) $sheet->getCell('D8')->getCalculatedValue()),
+                "container" => trim((string) $sheet->getCell('B10')->getValue()) === "Yes",
                 "fields" => $fieldsConfig,
             ];
         }

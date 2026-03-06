@@ -86,7 +86,7 @@ class DocumentIndexer
         $documentIds = [];
         foreach ($documentTypes as $documentType) {
             if ($languageCodes) {
-                foreach ($languageCodes as $key => $languageCode) {
+                foreach ($languageCodes as $languageCode) {
                     $documentId = ($this->documentBuilder)->generateDocumentId(
                         $documentType,
                         $contentId,
@@ -120,7 +120,7 @@ class DocumentIndexer
                 $documentType
             );
 
-            foreach ($content->languageCodes as $key => $languageCode) {
+            foreach ($content->languageCodes as $languageCode) {
                 $documents[] = ($this->documentBuilder)(
                     $documentType,
                     $content,

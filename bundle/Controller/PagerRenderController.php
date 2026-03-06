@@ -50,7 +50,7 @@ class PagerRenderController
             UrlGeneratorInterface::ABSOLUTE_URL
         );
         $baseUrl = $this->getRootUrl() ?? $request->getSchemeAndHttpHost();
-        $appContext = $appContext + [
+        $appContext += [
             'appId' => $id,
             'pagerType' => $pagerType,
             'apiUrl' => $apiUrl,
@@ -136,7 +136,7 @@ class PagerRenderController
                 ],
                 UrlAliasRouter::ABSOLUTE_URL
             );
-        } catch (NotFoundException $exception) {
+        } catch (NotFoundException) {
             return '/';
         }
     }

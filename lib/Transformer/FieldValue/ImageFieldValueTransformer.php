@@ -45,8 +45,6 @@ class ImageFieldValueTransformer extends AbstractFieldValueTransformer
             return null;
         }
 
-        return function (string $variationName) use ($content, $fieldIdentifier): ?Image {
-            return $this->imageGenerator->generateImage($content, $fieldIdentifier, $variationName);
-        };
+        return fn(string $variationName): ?Image => $this->imageGenerator->generateImage($content, $fieldIdentifier, $variationName);
     }
 }

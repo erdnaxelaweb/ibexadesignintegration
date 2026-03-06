@@ -54,8 +54,8 @@ class ContentSearchType extends AbstractSearchType
             $this->query,
             $this->searchService,
             $this->contentTransformer,
-            [$this, 'getFiltersForm'],
-            [$this, 'getActiveFilters']
+            $this->getFiltersForm(...),
+            $this->getActiveFilters(...)
         );
     }
 

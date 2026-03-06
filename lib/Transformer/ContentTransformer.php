@@ -56,12 +56,8 @@ class ContentTransformer
     {
         $location = $this->locationService->loadLocationByRemoteId($remoteId);
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerLocation->contentId;
-            },
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerLocation->id;
-            },
+            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->contentId,
+            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->id,
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
                 $content = $instance->innerLocation->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
@@ -83,9 +79,7 @@ class ContentTransformer
     public function lazyTransformContentFromLocationId(int $locationId): Content
     {
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerLocation->contentId;
-            },
+            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->contentId,
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
                 $content = $instance->innerLocation->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
@@ -115,12 +109,8 @@ class ContentTransformer
     {
         $content = $this->contentService->loadContentByRemoteId($remoteId);
         $initializers = [
-            'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerContent->id;
-            },
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerContent->contentInfo->mainLocationId;
-            },
+            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->id,
+            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->contentInfo->mainLocationId,
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
                 $content
             ): IbexaContent {
@@ -148,9 +138,7 @@ class ContentTransformer
     public function lazyTransformContentFromContentId(int $contentId): Content
     {
         $initializers = [
-            'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerContent->contentInfo->mainLocationId;
-            },
+            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->contentInfo->mainLocationId,
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
                 $this->responseTagger->addContentTags([$instance->id]);
                 return $this->contentService->loadContent($instance->id);
@@ -234,62 +222,38 @@ class ContentTransformer
                     $contentFields->set(
                         $fieldIdentifier,
                         new LazyValue(
-                            function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
-                                return $this->fieldValueTransformers->transform(
-                                    $instance,
-                                    $fieldIdentifier,
-                                    $contentFieldDefinition
-                                );
-                            }
+                            fn() => $this->fieldValueTransformers->transform(
+                                $instance,
+                                $fieldIdentifier,
+                                $contentFieldDefinition
+                            )
                         )
                     );
                 }
 
                 return $contentFields;
             },
-            "name" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerContent->getName();
-            },
-            "type" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->getContentType()
-                    ->identifier;
-            },
-            "languageCodes" => function (Content $instance, string $propertyName, ?string $propertyScope): array {
-                return array_keys($instance->innerContent->versionInfo->getNames());
-            },
-            "mainLanguageCode" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerContent->contentInfo->mainLanguageCode;
-            },
-            "alwaysAvailable" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->alwaysAvailable;
-            },
-            "hidden" => function (Content $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible();
-            },
-            "creationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
-                return $instance->innerContent->contentInfo->publishedDate;
-            },
-            "modificationDate" => function (Content $instance, string $propertyName, ?string $propertyScope): DateTime {
-                return $instance->innerContent->contentInfo->modificationDate;
-            },
-            "url" => function (Content $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerLocation ? $this->linkGenerator->generateUrl(
-                    UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
-                    [
-                        'locationId' => $instance->innerLocation->id,
-                    ]
-                ) : '';
-            },
-            "breadcrumb" => function (Content $instance, string $propertyName, ?string $propertyScope): Breadcrumb {
-                return $instance->innerLocation ?
-                    $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
-                    new Breadcrumb();
-            },
-            "parent" => function (Content $instance, string $propertyName, ?string $propertyScope): ?Content {
-                return $instance->innerLocation ?
-                    $this->lazyTransformContentFromLocationId($instance->innerLocation->parentLocationId) :
-                    null;
-            },
+            "name" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getName(),
+            "type" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->getContentType()
+                ->identifier,
+            "languageCodes" => fn(Content $instance, string $propertyName, ?string $propertyScope): array => array_keys($instance->innerContent->versionInfo->getNames()),
+            "mainLanguageCode" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->contentInfo->mainLanguageCode,
+            "alwaysAvailable" => fn(Content $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->alwaysAvailable,
+            "hidden" => fn(Content $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
+            "creationDate" => fn(Content $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->publishedDate,
+            "modificationDate" => fn(Content $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->modificationDate,
+            "url" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerLocation ? $this->linkGenerator->generateUrl(
+                UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+                [
+                    'locationId' => $instance->innerLocation->id,
+                ]
+            ) : '',
+            "breadcrumb" => fn(Content $instance, string $propertyName, ?string $propertyScope): Breadcrumb => $instance->innerLocation ?
+                $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
+                new Breadcrumb(),
+            "parent" => fn(Content $instance, string $propertyName, ?string $propertyScope): ?Content => $instance->innerLocation ?
+                $this->lazyTransformContentFromLocationId($instance->innerLocation->parentLocationId) :
+                null,
         ];
 
         return Content::createLazyGhost($initializers, $skippedProperties, $instance);

@@ -102,7 +102,7 @@ class DocumentSearchAdapter implements PagerAdapterInterface
         $searchHits = $searchResult->searchHits;
         $list = [];
 
-        foreach ($searchHits as $key => $searchHit) {
+        foreach ($searchHits as $searchHit) {
             $list[] = ($this->documentSearchResultParser)($searchHit->valueObject);
         }
 

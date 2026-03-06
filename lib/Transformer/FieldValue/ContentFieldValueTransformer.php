@@ -61,8 +61,6 @@ class ContentFieldValueTransformer extends AbstractFieldValueTransformer
             }
             return null;
         }
-        return array_map(function (int $destinationContentId) {
-            return $this->contentTransformer->lazyTransformContentFromContentId($destinationContentId);
-        }, $destinationContentIds);
+        return array_map(fn(int $destinationContentId) => $this->contentTransformer->lazyTransformContentFromContentId($destinationContentId), $destinationContentIds);
     }
 }

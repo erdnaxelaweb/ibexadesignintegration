@@ -17,21 +17,15 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
-class Extension extends AbstractExtension
+class Extension
 {
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('getContentViewControllerParameters', [$this, 'getContentViewControllerParameters']),
-        ];
-    }
-
     /**
      * @param Content|IbexaContent|array<string, mixed>      $content
      * @param array<string, mixed> $parameters
      *
      * @return array<string, mixed>
      */
+    #[\Twig\Attribute\AsTwigFunction(name: 'getContentViewControllerParameters')]
     public function getContentViewControllerParameters(mixed $content, array $parameters): array
     {
         if ($content instanceof Content) {

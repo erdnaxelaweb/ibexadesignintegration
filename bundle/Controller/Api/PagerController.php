@@ -68,13 +68,11 @@ class PagerController extends AbstractController
         }
 
         $form = ($this->formViewNormalizer)($pager->getFiltersForm());
-        $activeFilters = array_map(function (ItemInterface $item) {
-            return [
-                'name' => $item->getName(),
-                'uri' => $item->getUri(),
-                'extras' => $item->getExtras(),
-            ];
-        }, $pager->getActiveFilters());
+        $activeFilters = array_map(fn(ItemInterface $item) => [
+            'name' => $item->getName(),
+            'uri' => $item->getUri(),
+            'extras' => $item->getExtras(),
+        ], $pager->getActiveFilters());
 
         $responseData = [
             'activeFilters' => $activeFilters,

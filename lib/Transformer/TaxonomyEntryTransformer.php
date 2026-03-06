@@ -78,58 +78,28 @@ class TaxonomyEntryTransformer
                     $contentFields->set(
                         $fieldIdentifier,
                         new LazyValue(
-                            function () use ($instance, $fieldIdentifier, $contentFieldDefinition) {
-                                return $this->fieldValueTransformers->transform(
-                                    $instance,
-                                    $fieldIdentifier,
-                                    $contentFieldDefinition
-                                );
-                            }
+                            fn() => $this->fieldValueTransformers->transform(
+                                $instance,
+                                $fieldIdentifier,
+                                $contentFieldDefinition
+                            )
                         )
                     );
                 }
 
                 return $contentFields;
             },
-            "name" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerContent->getName();
-            },
-            "type" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerContent->getContentType()
-                    ->identifier;
-            },
-            "languageCodes" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): array {
-                return array_keys($instance->innerContent->versionInfo->getNames());
-            },
-            "mainLanguageCode" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerContent->contentInfo->mainLanguageCode;
-            },
-            "alwaysAvailable" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->alwaysAvailable;
-            },
-            "hidden" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool {
-                return $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible();
-            },
-            "creationDate" => function (
-                TaxonomyEntry $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): DateTime {
-                return $instance->innerContent->contentInfo->publishedDate;
-            },
-            "modificationDate" => function (
-                TaxonomyEntry $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): DateTime {
-                return $instance->innerContent->contentInfo->modificationDate;
-            },
-            "identifier" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string {
-                return $instance->innerTaxonomy->getIdentifier();
-            },
-            "level" => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): int {
-                return $instance->innerTaxonomy->getLevel();
-            },
+            "name" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getName(),
+            "type" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getContentType()
+                ->identifier,
+            "languageCodes" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): array => array_keys($instance->innerContent->versionInfo->getNames()),
+            "mainLanguageCode" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->contentInfo->mainLanguageCode,
+            "alwaysAvailable" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->alwaysAvailable,
+            "hidden" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
+            "creationDate" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->publishedDate,
+            "modificationDate" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->modificationDate,
+            "identifier" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerTaxonomy->getIdentifier(),
+            "level" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): int => $instance->innerTaxonomy->getLevel(),
             "parent" => function (
                 TaxonomyEntry $instance,
                 string $propertyName,

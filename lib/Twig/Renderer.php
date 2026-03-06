@@ -54,7 +54,7 @@ class Renderer extends BaseRenderer
     protected function getDisplayFunctions(): array
     {
         $displayFunction = parent::getDisplayFunctions();
-        $displayFunction['render_pager'] = [$this, 'renderPager'];
+        $displayFunction['render_pager'] = $this->renderPager(...);
         return $displayFunction;
     }
 }

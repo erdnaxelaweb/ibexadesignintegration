@@ -32,7 +32,7 @@ class SiteaccessAwareImageConfiguration extends ImageConfiguration
             $saBreakpoints = $this->getSaConfig(
                 'breakpoints'
             );
-        } catch (ParameterNotFoundException $exception) {
+        } catch (ParameterNotFoundException) {
             return $nativeBreakpoints;
         }
         return $saBreakpoints;
@@ -45,7 +45,7 @@ class SiteaccessAwareImageConfiguration extends ImageConfiguration
             $saVariations = $this->getSaConfig(
                 'variations'
             );
-        } catch (ParameterNotFoundException $exception) {
+        } catch (ParameterNotFoundException) {
             return $nativeVariations;
         }
         return array_merge($nativeVariations, $saVariations);
