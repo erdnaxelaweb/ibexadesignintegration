@@ -3,18 +3,18 @@ type: php
 docroot: web/public
 working_dir:
     web: /var/www/html/web
-php_version: "8.1"
+php_version: "8.3"
 webserver_type: nginx-fpm
 xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
 database:
     type: mariadb
-    version: "10.4"
+    version: "11.4"
 use_dns_when_possible: true
 composer_version: "2"
 web_environment:
-    - DATABASE_URL=mysql://db:db@db:3306/db?serverVersion=mariadb-10.4.28&charset=utf8mb4
+    - DATABASE_URL=mysql://db:db@db:3306/db?serverVersion=mariadb-11.4.0&charset=utf8mb4
     - SEARCH_ENGINE=solr
     - SOLR_DSN=http://solr:8983/solr
     - SOLR_GOUV_CORE=collection1
@@ -23,7 +23,7 @@ web_environment:
     - CACHE_NAMESPACE=ibx
     - SESSION_SAVE_PATH=redis:6379
     - SESSION_HANDLER_ID=Ibexa\\Bundle\\Core\\Session\\Handler\\NativeSessionHandler
-nodejs_version: "18"
+nodejs_version: "22"
 webimage_extra_packages:
     - pngquant
     - jpegoptim
