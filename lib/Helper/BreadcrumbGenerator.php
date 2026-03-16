@@ -31,7 +31,7 @@ class BreadcrumbGenerator
             $currentLocation = $location;
             $breadcrumbLinks = [$this->linkGenerator->generateLocationLink($location)];
 
-            if (in_array($rootLocationId, $location->path)) {
+            if (in_array($rootLocationId, $location->path, true)) {
                 do {
                     $parentLocation = $currentLocation->getParentLocation();
                     if ($parentLocation === null) {
@@ -39,7 +39,7 @@ class BreadcrumbGenerator
                     }
                     $breadcrumbLinks[] = $this->linkGenerator->generateLocationLink($parentLocation);
                     $currentLocation = $parentLocation;
-                } while ($parentLocation->id !== $rootLocationId);
+                } while ($parentLocation->id !== (int) $rootLocationId);
             }
 
             $breadcrumbLinks = array_reverse($breadcrumbLinks);

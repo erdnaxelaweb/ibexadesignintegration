@@ -89,7 +89,7 @@ class PagerFilterDefinitionTransformer extends NativePagerFilterDefinitionTransf
         $hash['hash'] += [
             'criterionType' => $definition->getCriterionType(),
             'nested' => array_map(
-                fn(PagerFilterDefinition $nestedFilterDefinition) => $this->toHash($nestedFilterDefinition),
+                $this->toHash(...),
                 $definition->getNestedFilters()
             ),
         ];

@@ -88,6 +88,9 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         return $container->hasParameter($name) ? $container->getParameter($name) : $default;
     }
 
+    /**
+     * @param array<string, mixed>                                                   $config
+     */
     protected function addIbexaVariationConfig(ContainerBuilder $container, array $config, bool $useWebp = false): void
     {
         $ibexaVariationsConfig = [
@@ -136,6 +139,9 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         );
     }
 
+    /**
+     * @param array<string, mixed>  $ibexaVariationsConfig
+     */
     protected function addVariations(
         mixed $variations,
         mixed $breakpoints,
@@ -202,7 +208,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
      */
     private function getVariationConfig(?float $width, ?float $height): array
     {
-        if (!$height && $width) {
+        if ($height === null && $width) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -213,7 +219,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if (!$width && $height) {
+        if ($width === null && $height) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -224,7 +230,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if (!$width && !$height) {
+        if ($width === null && $height === null) {
             return [
                 'reference' => null,
                 'filters' => [],

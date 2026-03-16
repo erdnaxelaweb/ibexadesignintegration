@@ -13,14 +13,14 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Migration\MigrationGenerator;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[AsCommand('erdnaxelaweb:ibexa_design:migration:generate')]
 class GenerateMigrationCommand extends Command
 {
-    protected static $defaultName = 'erdnaxelaweb:ibexa_design:migration:generate';
-
     public function __construct(
         protected MigrationGenerator $migrationGeneratorService,
         string $name = null

@@ -34,13 +34,13 @@ class Content extends AbstractContent implements ContentInterface
         ?DateTime $creationDate,
         ?DateTime $modificationDate,
         ContentFieldsCollection $fields,
-        public readonly array                  $languageCodes,
-        public readonly string                    $mainLanguageCode,
-        public readonly bool                    $alwaysAvailable,
-        public readonly bool                    $hidden,
-        public readonly string $url,
-        public readonly Breadcrumb $breadcrumb,
-        public readonly ?Content $parent
+        protected readonly array                  $languageCodes,
+        protected readonly string                    $mainLanguageCode,
+        protected readonly bool                    $alwaysAvailable,
+        protected readonly bool                    $hidden,
+        protected readonly string $url,
+        protected readonly Breadcrumb $breadcrumb,
+        protected readonly ?Content $parent
     ) {
         parent::__construct(
             $innerContent,
@@ -53,5 +53,43 @@ class Content extends AbstractContent implements ContentInterface
             $modificationDate,
             $fields
         );
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getLanguageCodes(): array
+    {
+        return $this->getPropertyValue('languageCodes');
+    }
+
+    public function getMainLanguageCode(): string
+    {
+        return $this->getPropertyValue('mainLanguageCode');
+    }
+
+    public function isAlwaysAvailable(): bool
+    {
+        return $this->getPropertyValue('alwaysAvailable');
+    }
+
+    public function isHidden(): bool
+    {
+        return $this->getPropertyValue('hidden');
+    }
+
+    public function getUrl(): string
+    {
+        return $this->getPropertyValue('url');
+    }
+
+    public function getBreadcrumb(): Breadcrumb
+    {
+        return $this->getPropertyValue('breadcrumb');
+    }
+
+    public function getParent(): ?Content
+    {
+        return $this->getPropertyValue('parent');
     }
 }

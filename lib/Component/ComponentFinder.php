@@ -47,7 +47,7 @@ class ComponentFinder extends BaseComponentFinder
         $designThemes = $this->designList[$this->getCurrentDesign()];
         foreach ($designThemes as $designTheme) {
             $paths = $this->templatePathsMap[$designTheme];
-            $paths = array_filter($paths, fn($path) => str_starts_with((string) $path, $this->baseDir));
+            $paths = array_filter($paths, fn ($path) => str_starts_with((string) $path, $this->baseDir));
             $finder->in($paths);
         }
 

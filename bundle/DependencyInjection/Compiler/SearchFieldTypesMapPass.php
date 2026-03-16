@@ -30,7 +30,7 @@ class SearchFieldTypesMapPass implements CompilerPassInterface
             foreach ($tags as $tagAttributes) {
                 /** @var class-string<FieldType> $fieldTypeClass */
                 $fieldTypeClass = $tagAttributes['maps'];
-                if($fieldTypeClass === \Ibexa\Contracts\Core\Search\FieldType\EmbeddingField::class) {
+                if ($fieldTypeClass === FieldType\EmbeddingField::class) {
                     continue;
                 }
                 $fieldType = new $fieldTypeClass();

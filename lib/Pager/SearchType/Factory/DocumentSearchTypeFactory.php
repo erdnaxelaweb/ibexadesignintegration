@@ -19,9 +19,13 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\DocumentSearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @implements SearchTypeFactoryInterface<Document>
+ */
 class DocumentSearchTypeFactory implements SearchTypeFactoryInterface
 {
     public function __construct(

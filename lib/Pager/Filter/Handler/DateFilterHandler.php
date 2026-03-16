@@ -14,15 +14,16 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use DateTime;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
-use Exception;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use IntlDateFormatter;
 use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use ValueError;
 
 class DateFilterHandler extends AbstractFilterHandler
 {
@@ -42,13 +43,13 @@ class DateFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, DateType::class, $formOptions);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         $operator = $options['operator'];
         return new CustomField($options['field'], $operator, $this->mapDate($value, $options['input_format']));
     }
 
-    public function getFakeFormType(): array
+    public function getFakeFormType(): ?array
     {
         return [
             'type' => DateType::class,
@@ -88,7 +89,7 @@ class DateFilterHandler extends AbstractFilterHandler
         } else {
             try {
                 $date = DateTime::createFromFormat($inputFormat, $value);
-            } catch (Exception) {
+            } catch (ValueError) {
                 throw new InvalidArgumentException('Invalid date provided: ' . $value);
             }
         }

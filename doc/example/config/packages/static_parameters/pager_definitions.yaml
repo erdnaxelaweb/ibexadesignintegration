@@ -9,7 +9,7 @@ ibexa_design_integration:
         default:
             pager_definition:
                 news_list:
-                    contentTypes: [news]
+                    resultTypes: [news]
                     filters:
                         thematic:
                             type: taxonomy_field

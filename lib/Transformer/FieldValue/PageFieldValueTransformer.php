@@ -40,6 +40,7 @@ class PageFieldValueTransformer extends AbstractFieldValueTransformer
 
     /**
      * @return array{layout: Layout, zones: array<string, LayoutZone>, parameters: array<string, mixed>}
+     * @throws \ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException
      */
     protected function transformFieldValue(
         AbstractContent        $content,
@@ -52,7 +53,6 @@ class PageFieldValueTransformer extends AbstractFieldValueTransformer
         $fieldValue = $field->value;
 
         $page = $fieldValue->getPage();
-        /** @phpstan-ignore-next-line  */
         $ibexaLayoutDefinition = $this->layoutDefinitionRegistry->getLayoutDefinitionById($page->getLayout());
         $layoutDefinition = $this->definitionManager->getDefinition(BlockLayoutDefinition::class, $page->getLayout());
 

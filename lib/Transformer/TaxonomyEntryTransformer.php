@@ -17,11 +17,10 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\TaxonomyEntryDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\TaxonomyEntry;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
-use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
+use ErdnaxelaWeb\StaticFakeDesign\LazyLoading\LazyValue;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Taxonomy\Value\TaxonomyEntry as IbexaTaxonomyEntry;
 use Ibexa\HttpCache\Handler\TagHandler;
-use Symfony\Component\VarExporter\Instantiator;
 
 class TaxonomyEntryTransformer
 {
@@ -39,34 +38,28 @@ class TaxonomyEntryTransformer
 
     public function transformTaxonomyEntry(IbexaTaxonomyEntry $ibexaTaxonomyEntry): TaxonomyEntry
     {
-        $instance = Instantiator::instantiate(TaxonomyEntry::class, [
+        $baseProperties = [
             'id' => $ibexaTaxonomyEntry->getId(),
             'innerTaxonomy' => $ibexaTaxonomyEntry,
-        ]);
-        $skippedProperties = [
-            'id' => true,
-            'innerTaxonomy' => true,
         ];
-        return $this->createLazyTaxonomyEntry([], $skippedProperties, $instance);
+        return $this->createLazyTaxonomyEntry($baseProperties);
     }
 
     /**
-     * @param array<string, callable(TaxonomyEntry, string, ?string): mixed> $initializers
-     * @param array<string, true> $skippedProperties
+     * @param array<string, mixed>    $baseProperties
+     * @param array<string, callable(TaxonomyEntry $initializers): mixed> $initializers
      */
-    protected function createLazyTaxonomyEntry(array $initializers, array $skippedProperties = [], ?TaxonomyEntry $instance = null): TaxonomyEntry
-    {
+    protected function createLazyTaxonomyEntry(
+        array $baseProperties,
+        array $initializers = []
+    ): TaxonomyEntry {
         $initializers += [
-            'innerContent' => function (TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+            'innerContent' => function (TaxonomyEntry $instance): IbexaContent {
                 $content = $instance->innerTaxonomy->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            "\0*\0fields" => function (
-                TaxonomyEntry $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): ContentFieldsCollection {
+            "fields" => function (TaxonomyEntry $instance): ContentFieldsCollection {
                 $contentType = $instance->innerContent->getContentType();
                 $taxonomyEntryDefinition = $this->definitionManager->getDefinition(
                     TaxonomyEntryDefinition::class,
@@ -78,7 +71,7 @@ class TaxonomyEntryTransformer
                     $contentFields->set(
                         $fieldIdentifier,
                         new LazyValue(
-                            fn() => $this->fieldValueTransformers->transform(
+                            fn () => $this->fieldValueTransformers->transform(
                                 $instance,
                                 $fieldIdentifier,
                                 $contentFieldDefinition
@@ -89,27 +82,23 @@ class TaxonomyEntryTransformer
 
                 return $contentFields;
             },
-            "name" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getName(),
-            "type" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getContentType()
+            "name" => fn (TaxonomyEntry $instance): string => $instance->innerContent->getName(),
+            "type" => fn (TaxonomyEntry $instance): string => $instance->innerContent->getContentType()
                 ->identifier,
-            "languageCodes" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): array => array_keys($instance->innerContent->versionInfo->getNames()),
-            "mainLanguageCode" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->contentInfo->mainLanguageCode,
-            "alwaysAvailable" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->alwaysAvailable,
-            "hidden" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
-            "creationDate" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->publishedDate,
-            "modificationDate" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->modificationDate,
-            "identifier" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): string => $instance->innerTaxonomy->getIdentifier(),
-            "level" => fn(TaxonomyEntry $instance, string $propertyName, ?string $propertyScope): int => $instance->innerTaxonomy->getLevel(),
-            "parent" => function (
-                TaxonomyEntry $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): ?TaxonomyEntry {
+            "languageCodes" => fn (TaxonomyEntry $instance): array => array_keys($instance->innerContent->versionInfo->getNames()),
+            "mainLanguageCode" => fn (TaxonomyEntry $instance): string => $instance->innerContent->contentInfo->mainLanguageCode,
+            "alwaysAvailable" => fn (TaxonomyEntry $instance): bool => $instance->innerContent->contentInfo->alwaysAvailable,
+            "hidden" => fn (TaxonomyEntry $instance): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
+            "creationDate" => fn (TaxonomyEntry $instance): DateTime => $instance->innerContent->contentInfo->publishedDate,
+            "modificationDate" => fn (TaxonomyEntry $instance): DateTime => $instance->innerContent->contentInfo->modificationDate,
+            "identifier" => fn (TaxonomyEntry $instance): string => $instance->innerTaxonomy->getIdentifier(),
+            "level" => fn (TaxonomyEntry $instance): int => $instance->innerTaxonomy->getLevel(),
+            "parent" => function (TaxonomyEntry $instance): ?TaxonomyEntry {
                 $parent = $instance->innerTaxonomy->getParent();
                 return $parent ? $this->transformTaxonomyEntry($parent) : null;
             },
         ];
 
-        return TaxonomyEntry::createLazyGhost($initializers, $skippedProperties, $instance);
+        return TaxonomyEntry::instantiate($baseProperties, $initializers);
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use DateTime;
+use ErdnaxelaWeb\StaticFakeDesign\LazyLoading\LazyObjectTrait;
 use ErdnaxelaWeb\StaticFakeDesign\Value\ContentFieldsCollection;
 use Ibexa\Contracts\Core\FieldType\Value;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaApiContent;
@@ -21,31 +22,36 @@ use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaApiLocation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Thumbnail;
 use Ibexa\Contracts\Core\Repository\Values\Content\VersionInfo as APIVersionInfo;
 use Ibexa\Contracts\Core\Repository\Values\ContentType\ContentType;
-use Ibexa\Core\Repository\Values\Content\Content as IbexaContent;
-use Symfony\Component\VarExporter\LazyGhostTrait;
 
 /**
+ * @property-read IbexaApiContent $innerContent
+ * @property-read ?IbexaApiLocation $innerLocation
+ * @property-read int $id
+ * @property-read ?int $locationId
+ * @property-read string $name
+ * @property-read string $type
+ * @property-read ?DateTime $creationDate
+ * @property-read ?DateTime $modificationDate
  * @property-read ContentFieldsCollection $fields
  */
-class AbstractContent extends IbexaContent
+class AbstractContent extends IbexaApiContent
 {
-    use LazyGhostTrait {
-        LazyGhostTrait::__get as lazyGet;
-        LazyGhostTrait::__isset as lazyIsset;
+    use LazyObjectTrait {
+        LazyObjectTrait::__get as lazyGet;
+        LazyObjectTrait::__isset as lazyIsset;
     }
 
     public function __construct(
-        public readonly IbexaApiContent $innerContent,
-        public readonly ?IbexaApiLocation $innerLocation,
-        public readonly int $id,
-        public readonly ?int $locationId,
-        public readonly string $name,
-        public readonly string $type,
-        public readonly ?DateTime $creationDate,
-        public readonly ?DateTime $modificationDate,
-        ContentFieldsCollection $fields
+        protected readonly IbexaApiContent $innerContent,
+        protected readonly ?IbexaApiLocation $innerLocation,
+        protected readonly int $id,
+        protected readonly ?int $locationId,
+        protected readonly string $name,
+        protected readonly string $type,
+        protected readonly ?DateTime $creationDate,
+        protected readonly ?DateTime $modificationDate,
+        protected ContentFieldsCollection $fields
     ) {
-        $this->fields = $fields;
     }
 
     /**
@@ -57,29 +63,74 @@ class AbstractContent extends IbexaContent
     }
 
     /**
-     * @param string $name
+     * @param string $property
      */
-    public function __get($name): mixed
+    public function __get($property): mixed
     {
-        return match ($name) {
+        return match ($property) {
             'versionInfo' => $this->getVersionInfo(),
             'contentInfo' => $this->getVersionInfo()
                 ->getContentInfo(),
             'thumbnail' => $this->getThumbnail(),
-            default => $this->lazyGet($name),
+            default => $this->lazyGet($property),
         };
     }
 
     /**
-     * @param string $name
+     * @param string $property
      */
-    public function __isset($name): bool
+    public function __isset($property): bool
     {
-        if ($name === 'contentInfo') {
+        if ($property === 'contentInfo') {
             return true;
         }
 
-        return $this->lazyIsset($name);
+        return $this->lazyIsset($property);
+    }
+
+    public function getInnerContent(): IbexaApiContent
+    {
+        return $this->getPropertyValue('innerContent');
+    }
+
+    public function getInnerLocation(): ?IbexaApiLocation
+    {
+        return $this->getPropertyValue('innerLocation');
+    }
+
+    public function getLocationId(): ?int
+    {
+        return $this->getPropertyValue('locationId');
+    }
+
+    public function getId(): int
+    {
+        return $this->getPropertyValue('id');
+    }
+
+    public function getName(?string $languageCode = null): string
+    {
+        return $this->getPropertyValue('name');
+    }
+
+    public function getType(): string
+    {
+        return $this->getPropertyValue('type');
+    }
+
+    public function getCreationDate(): DateTime
+    {
+        return $this->getPropertyValue('creationDate');
+    }
+
+    public function getModificationDate(): DateTime
+    {
+        return $this->getPropertyValue('modificationDate');
+    }
+
+    public function getFields(): ContentFieldsCollection
+    {
+        return $this->getPropertyValue('fields');
     }
 
     public function getThumbnail(): ?Thumbnail
@@ -102,11 +153,6 @@ class AbstractContent extends IbexaContent
         return $this->innerContent->getFieldValue($fieldDefIdentifier, $languageCode);
     }
 
-    public function getFields(): iterable
-    {
-        return $this->innerContent->getFields();
-    }
-
     public function getFieldsByLanguage(?string $languageCode = null): iterable
     {
         return $this->innerContent->getFieldsByLanguage($languageCode);
@@ -120,11 +166,6 @@ class AbstractContent extends IbexaContent
     public function getDefaultLanguageCode(): string
     {
         return $this->innerContent->getDefaultLanguageCode();
-    }
-
-    public function getLazyObjectState(): \Symfony\Component\VarExporter\Internal\LazyObjectState
-    {
-        return $this->lazyObjectState;
     }
 
     protected function getProperties($dynamicProperties = ['id', 'contentInfo']): array

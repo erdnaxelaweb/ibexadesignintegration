@@ -17,10 +17,16 @@ use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Ibexa\Core\Pagination\Pagerfanta\AbstractSearchResultAdapter;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+/**
+ * @template T of \Ibexa\Contracts\Core\Repository\Values\ValueObject
+ * @extends AbstractSearchResultAdapter<T>
+ * @implements PagerAdapterInterface<SearchHit<T>>
+ */
 abstract class AbstractSearchAdapter extends AbstractSearchResultAdapter implements PagerAdapterInterface
 {
     private ?FormInterface $filtersForm = null;

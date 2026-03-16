@@ -16,11 +16,17 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 
+/**
+ * @template T
+ */
 interface SearchTypeInterface
 {
     public function getQuery(): Query;
 
     public function getSearchData(): SearchData;
 
+    /**
+     * @return PagerAdapterInterface<T>
+     */
     public function getAdapter(): PagerAdapterInterface;
 }

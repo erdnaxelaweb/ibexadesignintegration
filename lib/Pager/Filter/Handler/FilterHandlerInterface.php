@@ -15,7 +15,7 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
@@ -30,33 +30,45 @@ interface FilterHandlerInterface
         AggregationResultCollection $aggregationResultCollection
     ): void;
 
+    /**
+     * @param array<string, mixed>                                                                 $searchData
+     */
     public function isCriterionEnabled(
         string $filterName,
         array $searchData,
         PagerFilterDefinition $filterDefinition
     ): bool;
 
+    /**
+     * @param array<string, mixed>                                                                 $searchData
+     */
     public function getCriterionValue(
         string $filterName,
         array $searchData,
         PagerFilterDefinition $filterDefinition
     ): mixed;
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion;
+    /**
+     * @param array<string, mixed>                                                       $searchData
+     */
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface;
 
+    /**
+     * @param array<string, mixed>                                                       $searchData
+     */
     public function getAggregation(string $filterName, DefinitionOptions $options, array $searchData): ?Aggregation;
 
     public function configureOptions(OptionsResolver $optionsResolver): void;
 
     /**
-     * @return array{type: string, options?: array<string, mixed>}
+     * @return array{type: string, options?: array<string, mixed>}|null
      */
-    public function getFakeFormType(): array;
+    public function getFakeFormType(): ?array;
 
     /**
      * @param array<string, mixed>|mixed                                 $activeValues
      *
-     * @return array<string, string>|string
+     * @return array<string, string>|string|null
      */
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed;
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): mixed;
 }

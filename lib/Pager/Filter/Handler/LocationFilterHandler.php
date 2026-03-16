@@ -13,8 +13,8 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use InvalidArgumentException;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
@@ -67,7 +67,7 @@ class LocationFilterHandler extends AbstractFilterHandler
         $formBuilder->add($group);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         $defaultOperator = $options['default_operator'];
         $operator = $value['operator'] ?? $defaultOperator;
@@ -125,14 +125,14 @@ class LocationFilterHandler extends AbstractFilterHandler
                         );
     }
 
-    public function getFakeFormType(): array
+    public function getFakeFormType(): ?array
     {
         return [
             'type' => FormType::class,
         ];
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): string
     {
         return sprintf('%s,%s', $activeValues['latitude'], $activeValues['longitude']);
     }

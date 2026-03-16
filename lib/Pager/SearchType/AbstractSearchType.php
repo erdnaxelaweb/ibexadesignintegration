@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @template Q of Query
+ * @template T
+ * @implements SearchTypeInterface<T>
  */
 abstract class AbstractSearchType implements SearchTypeInterface
 {

@@ -20,11 +20,13 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\LocationSearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @extends \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\AbstractSearchType<LocationQuery>
+ * @extends AbstractSearchType<LocationQuery, SearchHit<Location>>
  */
 class LocationSearchType extends AbstractSearchType
 {

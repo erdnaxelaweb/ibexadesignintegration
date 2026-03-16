@@ -79,7 +79,7 @@ services:
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\SvgFieldValueTransformer:
         lazy: true
         arguments:
-            $ioService: "@ibexa.field_type.ezbinaryfile.io_service"
+            $ioService: "@ibexa.field_type.ibexa_binaryfile.io_service"
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'svg' }
 

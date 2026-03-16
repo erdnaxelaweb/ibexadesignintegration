@@ -19,6 +19,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\ContentTypeService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\FilterTag;
 use Novactive\EzSolrSearchExtra\Search\AggregationResult\RawTermAggregationResultEntry;
@@ -33,7 +34,7 @@ class ContentTypeFilterHandler extends CustomFieldFilterHandler
         parent::__construct($fakerGenerator);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         $criterion = new Criterion\ContentTypeId($value);
 

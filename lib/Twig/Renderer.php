@@ -29,6 +29,11 @@ class Renderer extends BaseRenderer
         parent::__construct($renderTemplate, $definitionManager);
     }
 
+    /**
+     * @param array<string, mixed>             $apiParameters
+     * @param array<string, mixed>             $appContext
+     * @param array<string, mixed>             $additionalParameters
+     */
     public function renderPager(
         Environment $environment,
         string      $id,

@@ -27,12 +27,12 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 class PagerBuilder
 {
     /**
-     * @var SearchTypeFactoryInterface[]
+     * @var SearchTypeFactoryInterface<mixed>[]
      */
     protected array $searchTypeFactories = [];
 
     /**
-     * @param iterable<SearchTypeFactoryInterface>                                                       $searchTypeFactories
+     * @param iterable<SearchTypeFactoryInterface<mixed>> $searchTypeFactories
      */
     public function __construct(
         iterable $searchTypeFactories,
@@ -46,7 +46,8 @@ class PagerBuilder
     }
 
     /**
-     * @param array<string, mixed>                                                 $context
+     * @param array<string, mixed>|ArrayCollection<string, mixed>                                                 $context
+     * @return Pager<mixed>
      */
     public function build(
         string $type,
@@ -69,8 +70,8 @@ class PagerBuilder
 
         $queryCriterions = [];
         $filtersCriterions = [];
-        foreach ($pagerDefinition->getRawFilters() as $rawFilter) {
-            $filtersCriterions[] = new RawQueryString($rawFilter);
+        foreach ($pagerDefinition->getRawFilters() as $i => $rawFilter) {
+            $filtersCriterions["raw_filter_{$i}"] = new RawQueryString($rawFilter);
         }
         $aggregations = [];
 

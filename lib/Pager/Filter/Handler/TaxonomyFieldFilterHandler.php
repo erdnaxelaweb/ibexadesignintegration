@@ -58,7 +58,7 @@ class TaxonomyFieldFilterHandler extends CustomFieldFilterHandler
     ): array {
         $formOptions = parent::getFormOptions($formBuilder, $filterName, $aggregationResult, $options);
         if ($options['group_by_parent']) {
-            $formOptions['group_by'] = (fn(FilterChoiceInterface $choice, $key, $value) => $choice instanceof TaxonomyFilterChoice ? $choice->getParent() : null);
+            $formOptions['group_by'] = (fn (FilterChoiceInterface $choice, $key, $value) => $choice instanceof TaxonomyFilterChoice ? $choice->getParent() : null);
         }
 
         return $formOptions;

@@ -13,14 +13,19 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
 use Ibexa\Contracts\Core\Repository\Values\Content\LocationQuery;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 
+/**
+ * @extends AbstractSearchAdapter<Location>
+ */
 class LocationSearchAdapter extends AbstractSearchAdapter
 {
     /**
      * @param array<string, mixed>|array<int, string>               $languageFilter
+     * @return SearchResult<Location>
      */
     protected function executeQuery(
         SearchService $searchService,

@@ -26,16 +26,21 @@ class DocumentSearchResultParser
     ) {
     }
 
+    /**
+     * @throws \ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException
+     */
     public function __invoke(object $object): Document
     {
-        $document = new Document();
-        $document->id = $object->id;
-        $document->contentId = (int) $object->content_id_id;
-        $document->languageCode = $object->language_code_s;
-        $document->isMainTranslation = $object->is_main_translation_b;
-        $document->alwaysAvailable = $object->always_available_b;
-        $document->type = $object->type_s;
-        $document->hidden = $object->hidden_b ?? false;
+        $document = new Document(
+            $object->id,
+            (int) $object->content_id_id,
+            $object->language_code_s,
+            $object->is_main_translation_b,
+            $object->always_available_b,
+            $object->hidden_b ?? false,
+            (object) [],
+            $object->type_s,
+        );
 
         $documentDefinition = $this->definitionManager->getDefinition(
             DocumentDefinition::class,

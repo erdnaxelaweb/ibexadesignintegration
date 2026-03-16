@@ -18,11 +18,17 @@ use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SpellcheckResult;
+use Ibexa\Contracts\Core\Repository\Values\ValueObject;
 use Novactive\EzSolrSearchExtra\Query\DocumentQuery;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
+use Novactive\EzSolrSearchExtra\Search\ExtendedSearchResult;
+use Novactive\EzSolrSearchExtra\Values\DocumentHit;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 
+/**
+ * @implements PagerAdapterInterface<Document>
+ */
 class DocumentSearchAdapter implements PagerAdapterInterface
 {
     private ?AggregationResultCollection $aggregations = null;
@@ -48,7 +54,7 @@ class DocumentSearchAdapter implements PagerAdapterInterface
     ) {
     }
 
-    public function getNbResults(): ?int
+    public function getNbResults(): int
     {
         if (isset($this->totalCount)) {
             return $this->totalCount;
@@ -56,8 +62,6 @@ class DocumentSearchAdapter implements PagerAdapterInterface
 
         $countQuery = clone $this->query;
         $countQuery->limit = 0;
-        // Skip facets/aggregations & spellcheck computing
-        $countQuery->facetBuilders = [];
         $countQuery->aggregations = [];
         $countQuery->spellcheck = null;
 
@@ -185,6 +189,7 @@ class DocumentSearchAdapter implements PagerAdapterInterface
 
     /**
      * @param array<string, mixed>|array<int, string> $languageFilter
+     * @return ExtendedSearchResult<DocumentHit, ValueObject>
      */
     protected function executeQuery(
         DocumentSearchServiceInterface $searchService,

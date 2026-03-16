@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler;
 
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Novactive\EzSolrSearchExtra\Query\Content\Criterion\MultipleFieldsFullText;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,12 +36,12 @@ class FulltextFilterHandler extends AbstractFilterHandler
         $formBuilder->add($filterName, TextType::class, $options);
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         return new MultipleFieldsFullText($value, $options->toArray());
     }
 
-    public function getFakeFormType(): array
+    public function getFakeFormType(): ?array
     {
         return [
             'type' => TextType::class,
@@ -79,7 +79,7 @@ class FulltextFilterHandler extends AbstractFilterHandler
             ->allowedTypes('boolean');
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): mixed
     {
         return $activeValues;
     }

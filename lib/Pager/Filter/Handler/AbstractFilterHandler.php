@@ -48,7 +48,7 @@ abstract class AbstractFilterHandler implements FilterHandlerInterface
     {
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): mixed
     {
         $activeValues = (array) $activeValues;
         return array_combine($activeValues, $activeValues);

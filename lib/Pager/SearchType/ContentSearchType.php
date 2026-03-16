@@ -20,11 +20,13 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentSearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @extends \ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\AbstractSearchType<Query>
+ * @extends AbstractSearchType<Query, SearchHit<Content>>
  */
 class ContentSearchType extends AbstractSearchType
 {

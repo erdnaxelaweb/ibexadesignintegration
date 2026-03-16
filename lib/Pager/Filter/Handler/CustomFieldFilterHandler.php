@@ -17,9 +17,9 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\Choice\FilterChoice
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\FakerGenerator;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\CustomField;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion\Operator;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResult;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
@@ -49,6 +49,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         if (!$options->get('use_form')) {
             return;
         }
+        /** @var RawTermAggregationResult|null $aggregationResult */
         $aggregationResult = $aggregationResultCollection->has($filterName) ?
             $aggregationResultCollection->get($filterName) : null;
 
@@ -64,7 +65,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         );
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         $operator = $options->get('operator');
         if (!$operator) {
@@ -178,7 +179,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
             });
     }
 
-    public function getFakeFormType(): array
+    public function getFakeFormType(): ?array
     {
         $words = $this->fakerGenerator->words();
         return [
@@ -193,14 +194,14 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
                 }, $words, range(1, count($words))),
                 'expanded' => false,
                 'multiple' => false,
-                'choice_value' => fn($entry): ?int => is_object($entry) ? $entry->value : $entry,
-                'choice_label' => fn($entry): ?string => is_object($entry) ? $entry->label : $entry,
-                'choice_attr' => fn($entry): array => is_object($entry) ? $entry->attr : [],
+                'choice_value' => fn ($entry): ?int => is_object($entry) ? $entry->value : $entry,
+                'choice_label' => fn ($entry): ?string => is_object($entry) ? $entry->label : $entry,
+                'choice_attr' => fn ($entry): array => is_object($entry) ? $entry->attr : [],
             ],
         ];
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): mixed
     {
         /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
         $choices = $formBuilder->getConfig()

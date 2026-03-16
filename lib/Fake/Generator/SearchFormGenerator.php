@@ -33,7 +33,10 @@ class SearchFormGenerator extends BaseSearchFormGenerator
     {
         $formTypes = [];
         foreach ($this->filterHandler->getTypes() as $type) {
-            $formTypes[$type] = $this->filterHandler->getFakeFormType($type);
+            $formType = $this->filterHandler->getFakeFormType($type);
+            if ($formType) {
+                $formTypes[$type] = $formType;
+            }
         }
 
         return $formTypes;

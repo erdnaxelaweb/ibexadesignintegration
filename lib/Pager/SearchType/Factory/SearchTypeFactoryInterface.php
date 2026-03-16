@@ -17,8 +17,14 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @template T
+ */
 interface SearchTypeFactoryInterface
 {
+    /**
+     * @return SearchTypeInterface<T>
+     */
     public function __invoke(
         string $searchFormName,
         PagerDefinition $pagerDefinition,

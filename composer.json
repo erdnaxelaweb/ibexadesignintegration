@@ -13,27 +13,29 @@
     "require": {
         "php": "^8.1",
         "erdnaxelaweb/staticfakedesign": "dev-main",
-        "novactive/ezenhancedimageassetbundle": "^3.0",
-        "novactive/ezsolrsearchextrabundle": "^3.3",
-        "novactive/ezstatictemplatesbundle": "^3.0",
+        "novactive/ezenhancedimageassetbundle": "dev-master",
+        "novactive/ezsolrsearchextrabundle": "dev-master",
+        "novactive/ezstatictemplatesbundle": "dev-master",
         "http-interop/http-factory-guzzle": "^1.2",
-        "ibexa/core": "^4.0",
-        "ibexa/http-cache": "^4.0"
+        "ibexa/core": "^5.0",
+        "ibexa/http-cache": "^5.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.3",
-        "symplify/easy-coding-standard": "*",
+        "phpunit/phpunit": "^10.5",
+        "symplify/easy-coding-standard": "^13.0",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-symfony": "^2.0",
-        "ibexa/fieldtype-page": "^4.0",
-        "ibexa/form-builder": "^4.0",
-        "ibexa/fieldtype-matrix": "^4.0",
-        "ibexa/solr": "^4.0",
-        "ibexa/taxonomy": "^4.0",
-        "almaviacx/ibexaimportexportbundle": "^0.3",
-        "phpoffice/phpspreadsheet": "^4.0",
-        "ibexa/product-catalog": "^4.0",
-        "ibexa/segmentation": "^4.0"
+        "ibexa/fieldtype-page": "^5.0",
+        "ibexa/form-builder": "^5.0",
+        "ibexa/fieldtype-matrix": "^5.0",
+        "ibexa/solr": "^5.0",
+        "ibexa/taxonomy": "^5.0",
+        "phpoffice/phpspreadsheet": "^5.5",
+        "ibexa/product-catalog": "^5.0",
+        "ibexa/segmentation": "^5.0",
+        "rector/rector": "^2.3",
+        "ibexa/rector": "^5.0",
+        "symfony/debug-bundle": "^7.0"
     },
     "suggest": {
         "ext-dom": "*",
@@ -51,6 +53,10 @@
         ],
         "fix-cs": [
             "ecs --fix"
+        ],
+        "tests": [
+            "vendor/bin/phpstan",
+            "vendor/bin/phpunit tests"
         ]
     },
     "autoload": {

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Command;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,10 +23,9 @@ use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
 
+#[AsCommand('erdnaxelaweb:ibexa_design:generate_definition')]
 class GenerateDefinitionCommand extends Command
 {
-    protected static $defaultName = "erdnaxelaweb:ibexa_design:generate_definition";
-
     /**
      * @var array<string, array<string, mixed>>
      */

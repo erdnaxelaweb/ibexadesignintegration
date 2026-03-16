@@ -19,15 +19,14 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\ContentFieldsCollection;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
+use ErdnaxelaWeb\StaticFakeDesign\LazyLoading\LazyValue;
 use ErdnaxelaWeb\StaticFakeDesign\Value\Breadcrumb;
-use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
 use Ibexa\Contracts\Core\Repository\ContentService;
 use Ibexa\Contracts\Core\Repository\LocationService;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
 use Ibexa\Contracts\Core\Repository\Values\Content\Location as IbexaLocation;
 use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter;
 use Ibexa\HttpCache\Handler\TagHandler;
-use Symfony\Component\VarExporter\Instantiator;
 
 class ContentTransformer
 {
@@ -49,21 +48,20 @@ class ContentTransformer
 
     /**
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException
-     * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
      */
     public function lazyTransformContentFromLocationRemoteId(string $remoteId): Content
     {
         $location = $this->locationService->loadLocationByRemoteId($remoteId);
         $initializers = [
-            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->contentId,
-            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->id,
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+            'id' => fn (Content $instance): int => $instance->innerLocation->contentId,
+            'locationId' => fn (Content $instance): int => $instance->innerLocation->id,
+            'innerContent' => function (Content $instance): IbexaContent {
                 $content = $instance->innerLocation->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+            'innerLocation' => function (Content $instance) use (
                 $location
             ): IbexaLocation {
                 $this->responseTagger->addLocationTags([$location->id]);
@@ -71,57 +69,48 @@ class ContentTransformer
             },
         ];
 
-        $instance = Instantiator::instantiate(Content::class);
-        $skippedProperties = [];
-        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+        $baseProperties = [];
+        return $this->createLazyContent($baseProperties, $initializers);
     }
 
     public function lazyTransformContentFromLocationId(int $locationId): Content
     {
         $initializers = [
-            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerLocation->contentId,
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+            'id' => fn (Content $instance): int => $instance->innerLocation->contentId,
+            'innerContent' => function (Content $instance): IbexaContent {
                 $content = $instance->innerLocation->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaLocation {
+            'innerLocation' => function (Content $instance): IbexaLocation {
                 $this->responseTagger->addLocationTags([$instance->locationId]);
                 return $this->locationService->loadLocation($instance->locationId);
             },
         ];
 
-        $instance = Instantiator::instantiate(Content::class, [
+        $baseProperties = [
             'locationId' => $locationId,
-        ]);
-        $skippedProperties = [
-            'locationId' => true,
         ];
-        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+        return $this->createLazyContent($baseProperties, $initializers);
     }
 
     /**
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException
-     * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
      */
     public function lazyTransformContentFromContentRemoteId(string $remoteId): Content
     {
         $content = $this->contentService->loadContentByRemoteId($remoteId);
         $initializers = [
-            'id' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->id,
-            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->contentInfo->mainLocationId,
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+            'id' => fn (Content $instance): int => $instance->innerContent->id,
+            'locationId' => fn (Content $instance): int => $instance->innerContent->contentInfo->mainLocationId,
+            'innerContent' => function (Content $instance) use (
                 $content
             ): IbexaContent {
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerLocation' => function (
-                Content $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): IbexaLocation {
+            'innerLocation' => function (Content $instance): IbexaLocation {
                 $location = $instance->innerContent->contentInfo->getMainLocation();
                 if ($location) {
                     $this->responseTagger->addLocationTags([$location->id]);
@@ -130,24 +119,19 @@ class ContentTransformer
             },
         ];
 
-        $instance = Instantiator::instantiate(Content::class);
-        $skippedProperties = [];
-        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+        $baseProperties = [];
+        return $this->createLazyContent($baseProperties, $initializers);
     }
 
     public function lazyTransformContentFromContentId(int $contentId): Content
     {
         $initializers = [
-            'locationId' => fn(Content $instance, string $propertyName, ?string $propertyScope): int => $instance->innerContent->contentInfo->mainLocationId,
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+            'locationId' => fn (Content $instance): int => $instance->innerContent->contentInfo->mainLocationId,
+            'innerContent' => function (Content $instance): IbexaContent {
                 $this->responseTagger->addContentTags([$instance->id]);
                 return $this->contentService->loadContent($instance->id);
             },
-            'innerLocation' => function (
-                Content $instance,
-                string $propertyName,
-                ?string $propertyScope
-            ): IbexaLocation {
+            'innerLocation' => function (Content $instance): IbexaLocation {
                 $location = $instance->innerContent->contentInfo->getMainLocation();
                 if ($location) {
                     $this->responseTagger->addLocationTags([$location->id]);
@@ -156,13 +140,10 @@ class ContentTransformer
             },
         ];
 
-        $instance = Instantiator::instantiate(Content::class, [
+        $baseProperties = [
             'id' => $contentId,
-        ]);
-        $skippedProperties = [
-            'id' => true,
         ];
-        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+        return $this->createLazyContent($baseProperties, $initializers);
     }
 
     public function transformContent(IbexaContent $ibexaContent, ?IbexaLocation $ibexaLocation = null): Content
@@ -172,13 +153,13 @@ class ContentTransformer
         }
 
         $initializers = [
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+            'innerContent' => function (Content $instance) use (
                 $ibexaContent
             ): IbexaContent {
                 $this->responseTagger->addContentTags([$ibexaContent->id]);
                 return $ibexaContent;
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+            'innerLocation' => function (Content $instance) use (
                 $ibexaLocation
             ): IbexaLocation {
                 $location = $ibexaLocation ?? $instance->innerContent->contentInfo->getMainLocation();
@@ -188,25 +169,24 @@ class ContentTransformer
                 return $location;
             },
         ];
-        $instance = Instantiator::instantiate(Content::class, [
+
+        $baseProperties = [
             'id' => $ibexaContent->id,
             'locationId' => $ibexaLocation->id ?? $ibexaContent->contentInfo->mainLocationId,
-        ]);
-        $skippedProperties = [
-            'id' => true,
-            'locationId' => true,
         ];
-        return $this->createLazyContent($initializers, $skippedProperties, $instance);
+        return $this->createLazyContent($baseProperties, $initializers);
     }
 
     /**
-     * @param array<string, callable(Content, string, ?string): mixed> $initializers
-     * @param array<string, true> $skippedProperties
+     * @param array<string, mixed> $baseProperties
+     * @param array<string, callable(Content $initializers): mixed> $initializers
      */
-    protected function createLazyContent(array $initializers, array $skippedProperties = [], ?Content $instance = null): Content
-    {
+    protected function createLazyContent(
+        array $baseProperties,
+        array $initializers = []
+    ): Content {
         $initializers += [
-            "\0*\0fields" => function (
+            "fields" => function (
                 Content $instance,
                 string $propertyName,
                 ?string $propertyScope
@@ -222,7 +202,7 @@ class ContentTransformer
                     $contentFields->set(
                         $fieldIdentifier,
                         new LazyValue(
-                            fn() => $this->fieldValueTransformers->transform(
+                            fn () => $this->fieldValueTransformers->transform(
                                 $instance,
                                 $fieldIdentifier,
                                 $contentFieldDefinition
@@ -233,29 +213,29 @@ class ContentTransformer
 
                 return $contentFields;
             },
-            "name" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->getName(),
-            "type" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->getContentType()
+            "name" => fn (Content $instance): string => $instance->innerContent->getName(),
+            "type" => fn (Content $instance): string => $instance->getContentType()
                 ->identifier,
-            "languageCodes" => fn(Content $instance, string $propertyName, ?string $propertyScope): array => array_keys($instance->innerContent->versionInfo->getNames()),
-            "mainLanguageCode" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerContent->contentInfo->mainLanguageCode,
-            "alwaysAvailable" => fn(Content $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->alwaysAvailable,
-            "hidden" => fn(Content $instance, string $propertyName, ?string $propertyScope): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
-            "creationDate" => fn(Content $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->publishedDate,
-            "modificationDate" => fn(Content $instance, string $propertyName, ?string $propertyScope): DateTime => $instance->innerContent->contentInfo->modificationDate,
-            "url" => fn(Content $instance, string $propertyName, ?string $propertyScope): string => $instance->innerLocation ? $this->linkGenerator->generateUrl(
+            "languageCodes" => fn (Content $instance): array => array_keys($instance->innerContent->versionInfo->getNames()),
+            "mainLanguageCode" => fn (Content $instance): string => $instance->innerContent->contentInfo->mainLanguageCode,
+            "alwaysAvailable" => fn (Content $instance): bool => $instance->innerContent->contentInfo->alwaysAvailable,
+            "hidden" => fn (Content $instance): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
+            "creationDate" => fn (Content $instance): DateTime => $instance->innerContent->contentInfo->publishedDate,
+            "modificationDate" => fn (Content $instance): DateTime => $instance->innerContent->contentInfo->modificationDate,
+            "url" => fn (Content $instance): string => $instance->innerLocation ? $this->linkGenerator->generateUrl(
                 UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
                 [
                     'locationId' => $instance->innerLocation->id,
                 ]
             ) : '',
-            "breadcrumb" => fn(Content $instance, string $propertyName, ?string $propertyScope): Breadcrumb => $instance->innerLocation ?
+            "breadcrumb" => fn (Content $instance): Breadcrumb => $instance->innerLocation ?
                 $this->breadcrumbGenerator->generateLocationBreadcrumb($instance->innerLocation) :
                 new Breadcrumb(),
-            "parent" => fn(Content $instance, string $propertyName, ?string $propertyScope): ?Content => $instance->innerLocation ?
+            "parent" => fn (Content $instance): ?Content => $instance->innerLocation ?
                 $this->lazyTransformContentFromLocationId($instance->innerLocation->parentLocationId) :
                 null,
         ];
 
-        return Content::createLazyGhost($initializers, $skippedProperties, $instance);
+        return Content::instantiate($baseProperties, $initializers);
     }
 }

@@ -18,13 +18,14 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\DocumentSearchAdapter;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use ErdnaxelaWeb\StaticFakeDesign\Value\Document;
 use ErdnaxelaWeb\StaticFakeDesign\Value\PagerAdapterInterface;
 use Novactive\EzSolrSearchExtra\Query\DocumentQuery;
 use Novactive\EzSolrSearchExtra\Repository\DocumentSearchServiceInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * @extends AbstractSearchType<DocumentQuery>
+ * @extends AbstractSearchType<DocumentQuery, Document>
  */
 class DocumentSearchType extends AbstractSearchType
 {

@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegrationBundle\Controller;
 
-use Ibexa\Bundle\Core\Routing\UrlAliasRouter;
-use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
+use Ibexa\Core\MVC\Symfony\Routing\UrlAliasRouter as UrlAliasRouterAlias;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
@@ -39,8 +39,23 @@ class PagerRenderController
     ) {
     }
 
-    public function __invoke(string $id, string $pagerType, array $apiParameters = [], array $appContext = [], array $additionalParameters = []): Response
-    {
+    /**
+     * @param array<string, mixed>  $apiParameters
+     * @param array<string, mixed>  $appContext
+     * @param array<string, mixed>  $additionalParameters
+     *
+     * @throws ClientExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws TransportExceptionInterface
+     */
+    public function __invoke(
+        string $id,
+        string $pagerType,
+        array $apiParameters = [],
+        array $appContext = [],
+        array $additionalParameters = []
+    ): Response {
         $request = $this->requestStack->getMainRequest();
 
         $apiParameters['type'] = $pagerType;
@@ -130,13 +145,13 @@ class PagerRenderController
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
         try {
             return $this->router->generate(
-                UrlAliasRouter::URL_ALIAS_ROUTE_NAME,
+                UrlAliasRouterAlias::URL_ALIAS_ROUTE_NAME,
                 [
                     'locationId' => $rootLocationId,
                 ],
-                UrlAliasRouter::ABSOLUTE_URL
+                UrlGeneratorInterface::ABSOLUTE_URL
             );
-        } catch (NotFoundException) {
+        } catch (RouteNotFoundException) {
             return '/';
         }
     }

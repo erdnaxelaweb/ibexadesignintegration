@@ -20,9 +20,11 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class PagerApiResponseEvent
 {
     /**
+     * @param Pager<mixed> $pager
      * @param ArrayCollection<string, mixed>                                                           $context
      * @param array<string, mixed>                                                           $responseData
      * @param array<string, mixed>                                                           $responseHeaders
+     * @param array<string>                                                           $cacheTags
      */
     public function __construct(
         public string $type,

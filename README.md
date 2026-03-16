@@ -39,6 +39,17 @@ return [
 ];
 ```
 
+3. Add routes
+```yaml
+showroom:
+    resource: "@StaticFakeDesignBundle/Resources/config/routing/showroom.yaml"
+    defaults:
+        siteaccess_group_whitelist: 'static_group'
+
+ibexa_design_integration:
+    resource: "@IbexaDesignIntegrationBundle/Resources/config/routing/routes.yaml"
+```
+
 ## Features
 
 - **Value Transformers**: Specialized services for transforming Ibexa CMS objects (content, fields, blocks) into template-friendly objects

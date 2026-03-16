@@ -43,8 +43,7 @@ class LinkGenerator
         }
         return $this->generateLink(
             $url,
-            $location->getContent()
-                ->getName(),
+            $location->getContent()->getName(),
             [
                 'extras' => [
                     'identifier' => $location->getContentInfo()

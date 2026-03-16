@@ -17,7 +17,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
-use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PagerBuildEvent extends Event
@@ -28,8 +28,8 @@ class PagerBuildEvent extends Event
 
     /**
      * @param ArrayCollection<string, mixed>                                                           $buildContext
-     * @param array<string, Criterion>                                                           $queryCriterions
-     * @param array<string, Criterion>                                                           $filtersCriterions
+     * @param array<string, CriterionInterface>                                                           $queryCriterions
+     * @param array<string, CriterionInterface>                                                           $filtersCriterions
      * @param array<string, Aggregation>                                                           $aggregations
      */
     public function __construct(

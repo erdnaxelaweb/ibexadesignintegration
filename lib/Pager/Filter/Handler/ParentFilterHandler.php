@@ -19,6 +19,7 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Value\AggregationGroup;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DefinitionOptions;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Aggregation;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query\Criterion;
+use Ibexa\Contracts\Core\Repository\Values\Content\Query\CriterionInterface;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\AggregationResultCollection;
 use InvalidArgumentException;
 use Novactive\EzSolrSearchExtra\Query\Aggregation\RawTermAggregation;
@@ -55,7 +56,7 @@ class ParentFilterHandler implements FilterHandlerInterface
         }
     }
 
-    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
+    public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?CriterionInterface
     {
         $childCriterions = $this->getChildCriterions($filterName, $options, $searchData);
         if (empty($childCriterions)) {
@@ -123,13 +124,14 @@ class ParentFilterHandler implements FilterHandlerInterface
             });
     }
 
-    public function getFakeFormType(): array
+    public function getFakeFormType(): ?array
     {
-        return [];
+        return null;
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(mixed $activeValues, FormInterface $formBuilder): null
     {
+        return null;
     }
 
     /**
@@ -168,7 +170,9 @@ class ParentFilterHandler implements FilterHandlerInterface
     }
 
     /**
-     * @return Criterion[]
+     * @param array<string, mixed> $searchData
+     *
+     * @return CriterionInterface[]
      */
     protected function getChildCriterions(string $filterName, DefinitionOptions $options, array $searchData): array
     {

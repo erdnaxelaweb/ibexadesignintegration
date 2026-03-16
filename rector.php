@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Ibexa\Contracts\Rector\Sets\IbexaSetList;
 use Rector\Config\RectorConfig;
 use Rector\TypeDeclaration\Rector\StmtsAwareInterface\DeclareStrictTypesRector;
 
@@ -21,6 +22,11 @@ return RectorConfig::configure()
         twig: true,
         symfony: true,
         doctrine: true,
+    )
+    ->withSets(
+        [
+            IbexaSetList::IBEXA_50->value,
+        ]
     )
     ->withRules(
         [

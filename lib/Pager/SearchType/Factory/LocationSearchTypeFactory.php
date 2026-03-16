@@ -13,13 +13,30 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\Factory;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerActiveFiltersListBuilder;
+use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerSearchFormBuilder;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\LocationSearchType;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
+use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Location;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Symfony\Component\HttpFoundation\Request;
 
-class LocationSearchTypeFactory extends ContentSearchTypeFactory
+/**
+ * @implements SearchTypeFactoryInterface<SearchHit<Location>>
+ */
+class LocationSearchTypeFactory implements SearchTypeFactoryInterface
 {
+    public function __construct(
+        protected SearchService $searchService,
+        protected ContentTransformer $contentTransformer,
+        protected PagerSearchFormBuilder $pagerSearchFormBuilder,
+        protected PagerActiveFiltersListBuilder $pagerActiveFiltersListBuilder,
+    ) {
+    }
+
     public function __invoke(
         string $searchFormName,
         PagerDefinition $pagerDefinition,

@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FilterHandlerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\NestableFilterHandlerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AggregationGroup;
@@ -42,6 +43,9 @@ class ChainFilterHandler
         }
     }
 
+    /**
+     * @param array<string, mixed>                                                       $searchData
+     */
     public function getAggregation(
         string $filterType,
         string $filterName,
@@ -52,13 +56,16 @@ class ChainFilterHandler
         return $filterHandler->getAggregation($filterName, $options, $searchData);
     }
 
+    /**
+     * @param array<string, mixed>                                                       $searchData
+     */
     public function getCriterion(
         string $filterType,
         string $filterName,
         mixed $value,
         DefinitionOptions $options,
         array $searchData
-    ): Criterion {
+    ): ?CriterionInterface {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getCriterion(
             $filterName,
@@ -99,9 +106,9 @@ class ChainFilterHandler
     }
 
     /**
-     * @return array{type: string, options?: array<string, mixed>}
+     * @return array{type: string, options?: array<string, mixed>}|null
      */
-    public function getFakeFormType(string $filterType): array
+    public function getFakeFormType(string $filterType): ?array
     {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getFakeFormType();
@@ -110,9 +117,9 @@ class ChainFilterHandler
     /**
      * @param array<string, mixed>|mixed                                 $activeValues
      *
-     * @return array<string, string>|string
+     * @return array<string, string>|string|null
      */
-    public function getValuesLabels(string $filterType, $activeValues, FormInterface $formBuilder): mixed
+    public function getValuesLabels(string $filterType, mixed $activeValues, FormInterface $formBuilder): mixed
     {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getValuesLabels($activeValues, $formBuilder);
@@ -128,7 +135,8 @@ class ChainFilterHandler
 
 
     /**
-     * @param array<string, \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition> $filterDefinitions
+     * @param array<string, PagerFilterDefinition> $filterDefinitions
+     * @param array<string, mixed> $searchData
      *
      * @return array<string, Aggregation>
      */
@@ -170,7 +178,8 @@ class ChainFilterHandler
     }
 
     /**
-     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition[] $filterDefinitions
+     * @param PagerFilterDefinition[] $filterDefinitions
+     * @param array<string, mixed> $searchData
      *
      * @return array{
      *     queryCriterions?: array<string, CriterionInterface>,
@@ -218,7 +227,9 @@ class ChainFilterHandler
     }
 
 
-
+    /**
+     * @return array<string, PagerFilterDefinition>
+     */
     public function getFlattenedFiltersList(PagerDefinition $definition): array
     {
         $filters = [];

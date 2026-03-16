@@ -20,8 +20,13 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\SearchType\SearchTypeInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\SearchData;
 use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
+use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchHit;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * @implements SearchTypeFactoryInterface<SearchHit<Content>>
+ */
 class ContentSearchTypeFactory implements SearchTypeFactoryInterface
 {
     public function __construct(

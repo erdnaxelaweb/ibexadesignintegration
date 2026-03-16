@@ -14,8 +14,6 @@ namespace ErdnaxelaWeb\IbexaDesignIntegration\Templating\Twig;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Content as IbexaContent;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
 class Extension
 {
@@ -29,10 +27,10 @@ class Extension
     public function getContentViewControllerParameters(mixed $content, array $parameters): array
     {
         if ($content instanceof Content) {
-            if (array_key_exists('id', $content->getLazyObjectState()->skippedProperties)) {
+            if (in_array('id', $content->nonLazyProperties, true)) {
                 $parameters['contentId'] = $content->id;
             }
-            if (array_key_exists('locationId', $content->getLazyObjectState()->skippedProperties)) {
+            if (in_array('locationId', $content->nonLazyProperties, true)) {
                 $parameters['locationId'] = $content->locationId;
             }
         } elseif ($content instanceof IbexaContent) {

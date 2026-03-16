@@ -18,7 +18,7 @@ use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\BlockDefinition;
 use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionNotFoundException;
 use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException;
-use ErdnaxelaWeb\StaticFakeDesign\Value\LazyValue;
+use ErdnaxelaWeb\StaticFakeDesign\LazyLoading\LazyValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitionFactoryInterface;
 use Symfony\Component\VarExporter\Instantiator;
@@ -50,7 +50,7 @@ class BlockTransformer
             $blockAttributes->set(
                 $attributeIdentifier,
                 new LazyValue(
-                    fn() => $this->blockAttributeValueTransformer->transform(
+                    fn () => $this->blockAttributeValueTransformer->transform(
                         $blockValue,
                         $ibexaBlockDefinition,
                         $attributeIdentifier,

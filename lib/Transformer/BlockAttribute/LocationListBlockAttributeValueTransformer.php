@@ -45,7 +45,7 @@ class LocationListBlockAttributeValueTransformer extends AbstractBlockAttributeV
         if (empty($attributeValue)) {
             return [];
         }
-        $locationIds = array_slice(array_map(fn($locationId) => intval($locationId), explode(',', (string) $attributeValue)), 0, $max);
+        $locationIds = array_slice(array_map(intval(...), explode(',', (string) $attributeValue)), 0, $max);
 
         if ($max === 1) {
             if (!empty($locationIds)) {
@@ -53,6 +53,6 @@ class LocationListBlockAttributeValueTransformer extends AbstractBlockAttributeV
             }
             return null;
         }
-        return array_map(fn(int $locationId) => $this->contentTransformer->lazyTransformContentFromLocationId($locationId), $locationIds);
+        return array_map($this->contentTransformer->lazyTransformContentFromLocationId(...), $locationIds);
     }
 }

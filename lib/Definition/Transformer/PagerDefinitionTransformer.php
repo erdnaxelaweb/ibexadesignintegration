@@ -24,12 +24,12 @@ use Symfony\Component\VarExporter\Instantiator;
 class PagerDefinitionTransformer extends NativePagerDefinitionTransformer
 {
     /**
-     * @var array<SearchTypeFactoryInterface>
+     * @var array<SearchTypeFactoryInterface<mixed>>
      */
     protected array $availableSearchTypes;
 
     /**
-     * @param iterable<SearchTypeFactoryInterface>                                                   $searchTypeFactories
+     * @param iterable<SearchTypeFactoryInterface<mixed>>                                                   $searchTypeFactories
      */
     public function __construct(
         PagerFilterDefinitionTransformer $pagerFilterDefinitionTransformer,

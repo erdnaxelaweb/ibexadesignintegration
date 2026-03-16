@@ -20,7 +20,8 @@ use ErdnaxelaWeb\IbexaDesignIntegration\Pager\PagerBuilder;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\PagerGenerator;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
-use Ibexa\Contracts\HttpCache\Handler\ContentTagInterface;
+use Ibexa\HttpCache\Handler\TagHandler;
+use Iterator;
 use Knp\Menu\ItemInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,10 +39,14 @@ class PagerController extends AbstractController
         protected SerializerInterface $serializer,
         protected FormViewNormalizer $formViewNormalizer,
         protected EventDispatcherInterface $eventDispatcher,
-        protected ContentTagInterface $responseTagger
+        protected TagHandler $responseTagger
     ) {
     }
 
+    /**
+     * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+     * @throws \ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException
+     */
     public function getPager(string $type, Request $request): JsonResponse
     {
         $pagerDefinition = $this->definitionManager->getDefinition(PagerDefinition::class, $type);
@@ -60,7 +65,7 @@ class PagerController extends AbstractController
 
         $cacheTags = [];
 
-        /** @var \ErdnaxelaWeb\StaticFakeDesign\Value\Document[] $currentPageResults */
+        /** @var Iterator<int, \ErdnaxelaWeb\StaticFakeDesign\Value\Document> $currentPageResults */
         $currentPageResults = $pager->getCurrentPageResults();
         foreach ($currentPageResults as $currentPageResult) {
             $cacheTags[] = sprintf('d-%s', $currentPageResult->getShortType());
@@ -68,7 +73,7 @@ class PagerController extends AbstractController
         }
 
         $form = ($this->formViewNormalizer)($pager->getFiltersForm());
-        $activeFilters = array_map(fn(ItemInterface $item) => [
+        $activeFilters = array_map(fn (ItemInterface $item) => [
             'name' => $item->getName(),
             'uri' => $item->getUri(),
             'extras' => $item->getExtras(),
@@ -119,6 +124,9 @@ class PagerController extends AbstractController
         return $response;
     }
 
+    /**
+     * @param array<string>                                          $cacheTags
+     */
     protected function setResponseCacheHeaders(
         JsonResponse $response,
         array $cacheTags = []

@@ -13,13 +13,18 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Value;
 
 use Ibexa\Contracts\Core\Repository\SearchService;
+use Ibexa\Contracts\Core\Repository\Values\Content\Content;
 use Ibexa\Contracts\Core\Repository\Values\Content\Query;
 use Ibexa\Contracts\Core\Repository\Values\Content\Search\SearchResult;
 
+/**
+ * @extends AbstractSearchAdapter<Content>
+ */
 class ContentSearchAdapter extends AbstractSearchAdapter
 {
     /**
      * @param array<string, mixed>|array<int, string>               $languageFilter
+     * @return SearchResult<Content>
      */
     protected function executeQuery(SearchService $searchService, Query $query, array $languageFilter): SearchResult
     {
