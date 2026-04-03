@@ -35,7 +35,7 @@ class PageFieldValueTransformer extends AbstractFieldValueTransformer
 
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ibexa_landingpage';
+        return $ibexaFieldTypeIdentifier === 'ibexa_landing_page';
     }
 
     /**

@@ -121,7 +121,7 @@ class GenerateDefinitionCommand extends Command
                 "type" => null,
             ],
         ],
-        "ibexa_landingpage" => [
+        "ibexa_landing_page" => [
             "type" => "blocks",
             "options" => [
                 'layout' => null,

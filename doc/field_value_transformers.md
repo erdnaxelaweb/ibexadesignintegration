@@ -83,7 +83,7 @@ The Ibexa Design Integration bundle includes the following field types value tra
 - **ibexa_object_relation_list**
 - **ibexa_url**
 - **ibexa_form**
-- **ibexa_landingpage**
+- **ibexa_landing_page**
 - **ibexa_product_specification**
 - **ibexa_taxonomy_entry_assignment**
 - **ibexa_taxonomy_entry**
