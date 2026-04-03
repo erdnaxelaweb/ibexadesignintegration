@@ -6,3 +6,8 @@ services:
       $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
     tags:
       - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value', type: 'segment_content_map' }
+
+  ErdnaxelaWeb\IbexaDesignIntegration\Fake\BlockGenerator\Attribute\SegmentContentMapAttributeGenerator:
+    lazy: true
+    tags:
+      - { name: 'erdnaxelaweb.static_fake_design.generator.block_field', type: 'segment_content_map' }
