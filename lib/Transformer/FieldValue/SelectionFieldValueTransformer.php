@@ -20,7 +20,7 @@ class SelectionFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return in_array($ibexaFieldTypeIdentifier, ['ezselection'], true);
+        return in_array($ibexaFieldTypeIdentifier, ['ibexa_selection'], true);
     }
 
     /**

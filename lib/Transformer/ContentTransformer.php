@@ -179,7 +179,7 @@ class ContentTransformer
 
     /**
      * @param array<string, mixed> $baseProperties
-     * @param array<string, callable(Content $initializers): mixed> $initializers
+     * @param array<string, callable(Content): mixed> $initializers
      */
     protected function createLazyContent(
         array $baseProperties,
@@ -187,9 +187,7 @@ class ContentTransformer
     ): Content {
         $initializers += [
             "fields" => function (
-                Content $instance,
-                string $propertyName,
-                ?string $propertyScope
+                Content $instance
             ): ContentFieldsCollection {
                 $contentType = $instance->getContentType();
                 $contentDefinition = $this->definitionManager->getDefinition(

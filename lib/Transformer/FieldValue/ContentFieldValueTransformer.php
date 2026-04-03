@@ -29,7 +29,7 @@ class ContentFieldValueTransformer extends AbstractFieldValueTransformer
 
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return in_array($ibexaFieldTypeIdentifier, ['ezobjectrelation', 'ezobjectrelationlist'], true);
+        return in_array($ibexaFieldTypeIdentifier, ['ibexa_object_relation', 'ibexa_object_relation_list'], true);
     }
 
     /**

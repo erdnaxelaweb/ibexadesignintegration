@@ -32,7 +32,7 @@ class ImageFieldValueTransformer extends AbstractFieldValueTransformer
 
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return in_array($ibexaFieldTypeIdentifier, ['ezimage', 'ezimageasset'], true);
+        return in_array($ibexaFieldTypeIdentifier, ['ibexa_image', 'ibexa_image_asset'], true);
     }
 
     protected function transformFieldValue(

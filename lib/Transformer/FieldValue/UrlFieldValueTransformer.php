@@ -27,7 +27,7 @@ class UrlFieldValueTransformer extends AbstractFieldValueTransformer
 
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ezurl';
+        return $ibexaFieldTypeIdentifier === 'ibexa_url';
     }
 
     protected function transformFieldValue(

@@ -135,41 +135,41 @@ class AbstractContent extends IbexaApiContent
 
     public function getThumbnail(): ?Thumbnail
     {
-        return $this->innerContent->getThumbnail();
+        return $this->getInnerContent()->getThumbnail();
     }
 
     public function getVersionInfo(): APIVersionInfo
     {
-        return $this->innerContent->getVersionInfo();
+        return $this->getInnerContent()->getVersionInfo();
     }
 
     public function getContentType(): ContentType
     {
-        return $this->innerContent->getContentType();
+        return $this->getInnerContent()->getContentType();
     }
 
     public function getFieldValue(string $fieldDefIdentifier, ?string $languageCode = null): ?Value
     {
-        return $this->innerContent->getFieldValue($fieldDefIdentifier, $languageCode);
+        return $this->getInnerContent()->getFieldValue($fieldDefIdentifier, $languageCode);
     }
 
     public function getFieldsByLanguage(?string $languageCode = null): iterable
     {
-        return $this->innerContent->getFieldsByLanguage($languageCode);
+        return $this->getInnerContent()->getFieldsByLanguage($languageCode);
     }
 
     public function getField(string $fieldDefIdentifier, ?string $languageCode = null): ?Field
     {
-        return $this->innerContent->getField($fieldDefIdentifier, $languageCode);
+        return $this->getInnerContent()->getField($fieldDefIdentifier, $languageCode);
     }
 
     public function getDefaultLanguageCode(): string
     {
-        return $this->innerContent->getDefaultLanguageCode();
+        return $this->getInnerContent()->getDefaultLanguageCode();
     }
 
     protected function getProperties($dynamicProperties = ['id', 'contentInfo']): array
     {
-        return $this->innerContent->getProperties($dynamicProperties);
+        return $this->getInnerContent()->getProperties($dynamicProperties);
     }
 }

@@ -36,8 +36,12 @@ composer require erdnaxelaweb/ibexadesignintegration
 return [
     // ...
     ErdnaxelaWeb\IbexaDesignIntegrationBundle\IbexaDesignIntegrationBundle::class => ['all' => true],
+    // ...
+    Ibexa\Bundle\Core\IbexaCoreBundle::class => ['all' => true],
 ];
 ```
+
+**<span style="color:red">/!\ Be sure to load before the IbexaCoreBundle</span>**
 
 3. Add routes
 ```yaml
@@ -172,6 +176,13 @@ Detailed documentation is available in the `./doc` directory:
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+```
+composer config repositories.ibexadesignintegration '{"type": "path", "url": "../", "options": {"symlink": true}}' --json
+composer require erdnaxelaweb/ibexadesignintegration:*
+yarn install --cwd ../
+cp ../doc/example/* ./ -R
+```
 
 ## License
 

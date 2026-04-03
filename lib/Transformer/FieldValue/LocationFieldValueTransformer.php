@@ -21,7 +21,7 @@ class LocationFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ezgmaplocation';
+        return $ibexaFieldTypeIdentifier === 'ibexa_gmap_location';
     }
 
     protected function transformFieldValue(

@@ -20,7 +20,7 @@ class MatrixFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ezmatrix';
+        return $ibexaFieldTypeIdentifier === 'ibexa_matrix';
     }
 
     /**

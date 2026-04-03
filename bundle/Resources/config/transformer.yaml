@@ -16,48 +16,48 @@ services:
 
     ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValueTransformer:
 
-    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezboolean:
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ibexa_boolean:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'bool'
-            $supportedTypes: [ 'ezboolean' ]
+            $supportedTypes: [ 'ibexa_boolean' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'boolean' }
 
-    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezdate:
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ibexa_date:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'date'
-            $supportedTypes: [ 'ezdate' ]
+            $supportedTypes: [ 'ibexa_date' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'date' }
 
-    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezemail:
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ibexa_email:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'email'
-            $supportedTypes: [ 'ezemail' ]
+            $supportedTypes: [ 'ibexa_email' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'email' }
 
-    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ezstring:
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ibexa_string:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'text'
-            $supportedTypes: [ 'ezstring' ]
+            $supportedTypes: [ 'ibexa_string' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'string' }
 
-    erdnaxelaweb.ibexa_design_integration.transformer.field_value.eztime:
+    erdnaxelaweb.ibexa_design_integration.transformer.field_value.ibexa_time:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
             $propertyName: 'time'
-            $supportedTypes: [ 'eztime' ]
+            $supportedTypes: [ 'ibexa_time' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'time' }
 
@@ -65,7 +65,7 @@ services:
         class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\FieldValue\GenericFieldValueTransformer
         lazy: true
         arguments:
-            $supportedTypes: [ 'ezbinaryfile', 'ezfloat', 'ezinteger', 'eztext' ]
+            $supportedTypes: [ 'ibexa_binaryfile', 'ibexa_float', 'ibexa_integer', 'ibexa_text' ]
         tags:
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'datetime' }
             - { name: 'erdnaxelaweb.ibexa_design_integration.transformer.field_value', type: 'float' }

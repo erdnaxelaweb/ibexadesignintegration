@@ -29,7 +29,7 @@ class UserAccountFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ezuser';
+        return $ibexaFieldTypeIdentifier === 'ibexa_user';
     }
     /**
      * @return array{login: string, email: string, enabled: boolean}

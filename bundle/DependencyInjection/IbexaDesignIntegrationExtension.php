@@ -153,6 +153,12 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         foreach ($variations as $variationName => $variationSizes) {
             foreach ($variationSizes as $i => $variationSize) {
                 [$variationWidth, $variationHeight] = $variationSize;
+                if (!$variationWidth) {
+                    $variationWidth = 0;
+                }
+                if (!$variationHeight) {
+                    $variationHeight = 0;
+                }
                 $breakpoint = $breakpoints[$i];
                 $variationFullName = "{$variationName}_{$breakpoint['suffix']}";
                 $ibexaVariationsConfig[$scope]['image_variations'][$variationFullName] = $this->getVariationConfig(
@@ -206,9 +212,9 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
     /**
      * @return array{reference: null|string, filters: array<array{name: string, params: mixed}>}
      */
-    private function getVariationConfig(?float $width, ?float $height): array
+    private function getVariationConfig(float $width, float $height): array
     {
-        if ($height === null && $width) {
+        if ($height === 0 && $width) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -219,7 +225,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if ($width === null && $height) {
+        if ($width === 0 && $height) {
             return [
                 'reference' => null,
                 'filters' => [
@@ -230,7 +236,7 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
                 ],
             ];
         }
-        if ($width === null && $height === null) {
+        if ($width === 0 && $height === 0) {
             return [
                 'reference' => null,
                 'filters' => [],

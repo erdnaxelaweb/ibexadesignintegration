@@ -21,7 +21,7 @@ class TextFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'eztext';
+        return $ibexaFieldTypeIdentifier === 'ibexa_text';
     }
 
     protected function transformFieldValue(

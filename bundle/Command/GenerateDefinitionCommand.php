@@ -30,88 +30,88 @@ class GenerateDefinitionCommand extends Command
      * @var array<string, array<string, mixed>>
      */
     protected static array $typesMapping = [
-        "ezboolean" => [
+        "ibexa_boolean" => [
             "type" => "boolean",
             "options" => [],
         ],
-        "ezmatrix" => [
+        "ibexa_matrix" => [
             "type" => "matrix",
             "options" => [
                 "columns" => [],
             ],
         ],
-        "ezobjectrelationlist" => [
+        "ibexa_object_relation_list" => [
             "type" => "content",
             "options" => [
                 "type" => null,
             ],
         ],
-        "ezobjectrelation" => [
+        "ibexa_object_relation" => [
             "type" => "content",
             "options" => [
                 "type" => null,
                 "max" => 1,
             ],
         ],
-        "ezdate" => [
+        "ibexa_date" => [
             "type" => "date",
             "options" => [],
         ],
-        "ezdatetime" => [
+        "ibexa_datetime" => [
             "type" => "datetime",
             "options" => [],
         ],
-        "ezemail" => [
+        "ibexa_email" => [
             "type" => "email",
             "options" => [],
         ],
-        "ezbinaryfile" => [
+        "ibexa_binaryfile" => [
             "type" => "file",
             "options" => [],
         ],
-        "ezfloat" => [
+        "ibexa_float" => [
             "type" => "float",
             "options" => [],
         ],
-        "ezimage" => [
+        "ibexa_image" => [
             "type" => "image",
             "options" => [],
         ],
-        "ezimageasset" => [
+        "ibexa_image_asset" => [
             "type" => "image",
             "options" => [],
         ],
-        "ezinteger" => [
+        "ibexa_integer" => [
             "type" => "integer",
             "options" => [],
         ],
-        "ezgmaplocation" => [
+        "ibexa_gmap_location" => [
             "type" => "location",
             "options" => [],
         ],
-        "ezrichtext" => [
+        "ibexa_richtext" => [
             "type" => "richtext",
             "options" => [],
         ],
-        "ezselection" => [
+        "ibexa_selection" => [
             "type" => "selection",
             "options" => [
                 "options" => [],
             ],
         ],
-        "ezstring" => [
+        "ibexa_string" => [
             "type" => "string",
             "options" => [],
         ],
-        "eztext" => [
+        "ibexa_text" => [
             "type" => "text",
             "options" => [],
         ],
-        "eztime" => [
+        "ibexa_time" => [
             "type" => "time",
             "options" => [],
         ],
-        "ezurl" => [
+        "ibexa_url" => [
             "type" => "url",
             "options" => [],
         ],
@@ -121,7 +121,7 @@ class GenerateDefinitionCommand extends Command
                 "type" => null,
             ],
         ],
-        "ezlandingpage" => [
+        "ibexa_landingpage" => [
             "type" => "blocks",
             "options" => [
                 'layout' => null,
@@ -132,7 +132,7 @@ class GenerateDefinitionCommand extends Command
             "type" => null,
             "options" => [],
         ],
-        "ezform" => [
+        "ibexa_form" => [
             "type" => 'form',
             "options" => [],
         ],

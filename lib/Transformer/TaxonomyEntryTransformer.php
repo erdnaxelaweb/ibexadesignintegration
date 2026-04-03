@@ -47,7 +47,7 @@ class TaxonomyEntryTransformer
 
     /**
      * @param array<string, mixed>    $baseProperties
-     * @param array<string, callable(TaxonomyEntry $initializers): mixed> $initializers
+     * @param array<string, callable(TaxonomyEntry): mixed> $initializers
      */
     protected function createLazyTaxonomyEntry(
         array $baseProperties,

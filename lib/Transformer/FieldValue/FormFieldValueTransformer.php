@@ -22,7 +22,7 @@ class FormFieldValueTransformer extends AbstractFieldValueTransformer
 {
     public function support(?string $ibexaFieldTypeIdentifier): bool
     {
-        return $ibexaFieldTypeIdentifier === 'ezform';
+        return $ibexaFieldTypeIdentifier === 'ibexa_form';
     }
 
     protected function transformFieldValue(
