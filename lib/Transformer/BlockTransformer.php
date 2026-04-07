@@ -21,7 +21,6 @@ use ErdnaxelaWeb\StaticFakeDesign\Exception\DefinitionTypeNotFoundException;
 use ErdnaxelaWeb\StaticFakeDesign\LazyLoading\LazyValue;
 use Ibexa\Contracts\FieldTypePage\FieldType\LandingPage\Model\BlockValue;
 use Ibexa\FieldTypePage\FieldType\Page\Block\Definition\BlockDefinitionFactoryInterface;
-use Symfony\Component\VarExporter\Instantiator;
 
 class BlockTransformer
 {
@@ -75,6 +74,6 @@ class BlockTransformer
             'isVisible' => true,
         ];
 
-        return Instantiator::instantiate(Block::class, $properties);
+        return Block::instantiate($properties);
     }
 }

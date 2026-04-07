@@ -7,14 +7,14 @@
     }) %}
     {% if isEsi ?? false %}
         {{ render_esi(controller(
-            "ibexa_content:viewAction",
+            "ibexa_content::viewAction",
             viewParameters
         )) }}
     {% else %}
         {% if viewParameters['contentId'] is defined %}{{ fos_httpcache_tag('c'~ viewParameters['contentId']) }}{% endif %}
         {% if viewParameters['locationId'] is defined %}{{ fos_httpcache_tag('l'~ viewParameters['locationId']) }}{% endif %}
         {{ render(controller(
-            "ibexa_content:viewAction",
+            "ibexa_content::viewAction",
             viewParameters
         )) }}
     {% endif %}

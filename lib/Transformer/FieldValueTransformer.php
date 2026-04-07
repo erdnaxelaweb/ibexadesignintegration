@@ -63,7 +63,13 @@ class FieldValueTransformer
                 return null;
             }
             throw new InvalidArgumentException(
-                sprintf('[%s][%s] %s', $content->type, $fieldIdentifier, $invalidArgumentException->getMessage()),
+                sprintf(
+                    '[%s][%s (%s)] %s ',
+                    $content->type,
+                    $fieldIdentifier,
+                    $contentFieldDefinition->getType(),
+                    $invalidArgumentException->getMessage()
+                ),
                 $invalidArgumentException->getCode(),
                 $invalidArgumentException
             );

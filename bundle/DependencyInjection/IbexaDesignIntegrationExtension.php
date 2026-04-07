@@ -36,7 +36,6 @@ class IbexaDesignIntegrationExtension extends Extension implements PrependExtens
         $processor->mapConfigArray('block_layout_definition', $config);
         $processor->mapConfigArray('content_definition', $config);
         $processor->mapConfigArray('pager_definition', $config);
-        $processor->mapConfigArray('pager_definition', $config);
         $processor->mapConfigArray('document_definition', $config);
         $processor->mapConfigArray('taxonomy_entry_definition', $config);
         $processor->mapConfigArray('image', $config);

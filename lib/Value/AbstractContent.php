@@ -59,7 +59,7 @@ class AbstractContent extends IbexaApiContent
      */
     public function __call(string $name, array $arguments): mixed
     {
-        return call_user_func_array([$this->innerContent, $name], $arguments);
+        return call_user_func_array([$this->getInnerContent(), $name], $arguments);
     }
 
     /**

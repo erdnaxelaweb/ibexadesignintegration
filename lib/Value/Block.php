@@ -49,4 +49,29 @@ class Block extends BaseBlock
             $attributes
         );
     }
+
+    public function getContentId(): int
+    {
+        return $this->getPropertyValue('contentId');
+    }
+
+    public function getLocationId(): ?int
+    {
+        return $this->getPropertyValue('locationId');
+    }
+
+    public function getVersionNo(): int
+    {
+        return $this->getPropertyValue('versionNo');
+    }
+
+    public function getLanguageCode(): string
+    {
+        return $this->getPropertyValue('languageCode');
+    }
+
+    public function getInnerValue(): BlockValue
+    {
+        return $this->getPropertyValue('innerValue');
+    }
 }
