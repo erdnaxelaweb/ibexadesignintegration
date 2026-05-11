@@ -37,7 +37,7 @@ class LinkGenerator
         int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
     ): ItemInterface {
         $url = '#';
-        if ($location->id !== null) {
+        if ($location->id !== null && $location->id !== 0) {
             $parameters['locationId'] = $location->id;
             $url = $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType);
         }

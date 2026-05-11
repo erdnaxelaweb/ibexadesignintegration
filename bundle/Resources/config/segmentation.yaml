@@ -1,4 +1,9 @@
 services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
   erdnaxelaweb.ibexa_design_integration.transformer.block_attribute_value.segment_content_map:
     class: ErdnaxelaWeb\IbexaDesignIntegration\Transformer\BlockAttribute\SegmentContentMapBlockAttributeValueTransformer
     lazy: true
