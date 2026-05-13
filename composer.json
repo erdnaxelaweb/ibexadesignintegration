@@ -12,7 +12,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "erdnaxelaweb/staticfakedesign": "dev-main",
+        "erdnaxelaweb/staticfakedesign": "^2.0",
         "novactive/ezenhancedimageassetbundle": "dev-master",
         "novactive/ezsolrsearchextrabundle": "dev-master",
         "novactive/ezstatictemplatesbundle": "dev-master",
