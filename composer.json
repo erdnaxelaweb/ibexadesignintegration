@@ -13,9 +13,9 @@
     "require": {
         "php": "^8.1",
         "erdnaxelaweb/staticfakedesign": "^2.0",
-        "novactive/ezenhancedimageassetbundle": "dev-master",
-        "novactive/ezsolrsearchextrabundle": "dev-master",
-        "novactive/ezstatictemplatesbundle": "dev-master",
+        "novactive/ezenhancedimageassetbundle": "^4.0",
+        "novactive/ezsolrsearchextrabundle": "^4.0",
+        "novactive/ezstatictemplatesbundle": "^4.0",
         "http-interop/http-factory-guzzle": "^1.2",
         "ibexa/core": "^5.0",
         "ibexa/http-cache": "^5.0"
