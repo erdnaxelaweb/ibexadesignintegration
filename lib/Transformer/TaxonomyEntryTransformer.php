@@ -55,12 +55,12 @@ class TaxonomyEntryTransformer
     ): TaxonomyEntry {
         $initializers += [
             'innerContent' => function (TaxonomyEntry $instance): IbexaContent {
-                $content = $instance->getInnerTaxonomy()->getContent();
+                $content = $instance->innerTaxonomy->getContent();
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'fields' => function (TaxonomyEntry $instance): ContentFieldsCollection {
-                $contentType = $instance->getInnerContent()->getContentType();
+            "fields" => function (TaxonomyEntry $instance): ContentFieldsCollection {
+                $contentType = $instance->innerContent->getContentType();
                 $taxonomyEntryDefinition = $this->definitionManager->getDefinition(
                     TaxonomyEntryDefinition::class,
                     $contentType->identifier
@@ -82,18 +82,19 @@ class TaxonomyEntryTransformer
 
                 return $contentFields;
             },
-            'name' => fn (TaxonomyEntry $instance): string => $instance->getInnerContent()->getName(),
-            'type' => fn (TaxonomyEntry $instance): string => $instance->getInnerContent()->getContentType()->identifier,
-            'languageCodes' => fn (TaxonomyEntry $instance): array => array_keys($instance->getInnerContent()->versionInfo->getNames()),
-            'mainLanguageCode' => fn (TaxonomyEntry $instance): string => $instance->getInnerContent()->contentInfo->mainLanguageCode,
-            'alwaysAvailable' => fn (TaxonomyEntry $instance): bool => $instance->getInnerContent()->contentInfo->alwaysAvailable,
-            'hidden' => fn (TaxonomyEntry $instance): bool => $instance->getInnerContent()->contentInfo->isHidden() || $instance->getInnerLocation()?->isHidden() || $instance->getInnerLocation()?->isInvisible(),
-            'creationDate' => fn (TaxonomyEntry $instance): DateTime => $instance->getInnerContent()->contentInfo->publishedDate,
-            'modificationDate' => fn (TaxonomyEntry $instance): DateTime => $instance->getInnerContent()->contentInfo->modificationDate,
-            'identifier' => fn (TaxonomyEntry $instance): string => $instance->getInnerTaxonomy()->getIdentifier(),
-            'level' => fn (TaxonomyEntry $instance): int => $instance->getInnerTaxonomy()->getLevel(),
-            'parent' => function (TaxonomyEntry $instance): ?TaxonomyEntry {
-                $parent = $instance->getInnerTaxonomy()->getParent();
+            "name" => fn (TaxonomyEntry $instance): string => $instance->innerContent->getName(),
+            "type" => fn (TaxonomyEntry $instance): string => $instance->innerContent->getContentType()
+                ->identifier,
+            "languageCodes" => fn (TaxonomyEntry $instance): array => array_keys($instance->innerContent->versionInfo->getNames()),
+            "mainLanguageCode" => fn (TaxonomyEntry $instance): string => $instance->innerContent->contentInfo->mainLanguageCode,
+            "alwaysAvailable" => fn (TaxonomyEntry $instance): bool => $instance->innerContent->contentInfo->alwaysAvailable,
+            "hidden" => fn (TaxonomyEntry $instance): bool => $instance->innerContent->contentInfo->isHidden() || $instance->innerLocation->isHidden() || $instance->innerLocation->isInvisible(),
+            "creationDate" => fn (TaxonomyEntry $instance): DateTime => $instance->innerContent->contentInfo->publishedDate,
+            "modificationDate" => fn (TaxonomyEntry $instance): DateTime => $instance->innerContent->contentInfo->modificationDate,
+            "identifier" => fn (TaxonomyEntry $instance): string => $instance->innerTaxonomy->getIdentifier(),
+            "level" => fn (TaxonomyEntry $instance): int => $instance->innerTaxonomy->getLevel(),
+            "parent" => function (TaxonomyEntry $instance): ?TaxonomyEntry {
+                $parent = $instance->innerTaxonomy->getParent();
                 return $parent ? $this->transformTaxonomyEntry($parent) : null;
             },
         ];
