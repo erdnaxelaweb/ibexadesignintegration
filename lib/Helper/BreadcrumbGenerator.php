@@ -33,7 +33,13 @@ class BreadcrumbGenerator
 
             if (in_array($rootLocationId, array_map(intval(...), $location->path), true)) {
                 do {
-                    $parentLocation = $currentLocation->getParentLocation();
+                    try{
+                        $parentLocation = $currentLocation->getParentLocation();
+                    } catch (\Error $e) {
+                        // Virtual draft Location built for previewing the first version of an
+                        // unpublished content has an uninitialized parentLocation property.
+                        break;
+                    }
                     if ($parentLocation === null) {
                         break;
                     }
