@@ -120,7 +120,7 @@ class ChainFilterHandler
         DefinitionOptions $options
     ): mixed {
         $filterHandler = $this->getFilterHandler($filterType);
-        return $filterHandler->getValuesLabels($activeValues, $formBuilder);
+        return $filterHandler->getValuesLabels($activeValues, $formBuilder, $options);
     }
 
     public function isNestableFilter(string $filterType): bool

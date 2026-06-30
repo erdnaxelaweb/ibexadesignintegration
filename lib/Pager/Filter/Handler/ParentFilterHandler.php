@@ -62,8 +62,19 @@ class ParentFilterHandler implements FilterHandlerInterface
             return null;
         }
 
-        foreach ($childCriterions as $criterionName => $criterion) {
-            $childCriterions[$criterionName] = new ParentTag($options->get('which'), $criterion);
+        foreach ($childCriterions as $childCriterionName => $childCriterion) {
+            $criterion = $childCriterion;
+            $childTag = null;
+            if ($childCriterion instanceof FilterTag) {
+                $childTag = $childCriterion->tag;
+                $criterion = $childCriterion->criterion;
+            }
+
+            $childCriterions[$childCriterionName] = new ParentTag(
+                $options->get('which'),
+                $criterion,
+                $childTag
+            );
         }
 
 
@@ -180,12 +191,7 @@ class ParentFilterHandler implements FilterHandlerInterface
             $childFiltersDefinitions,
             $searchData
         );
-        $criterions = $childCriterions['filtersCriterions'] ?? [];
-        foreach ($criterions as $criterionName => $criterion) {
-            if ($criterion instanceof FilterTag) {
-                //                $criterions[$criterionName] = $criterion->criterion;
-            }
-        }
-        return $criterions;
+
+        return $childCriterions['filtersCriterions'] ?? [];
     }
 }
