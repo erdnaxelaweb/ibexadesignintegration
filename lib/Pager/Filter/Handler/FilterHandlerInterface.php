@@ -58,5 +58,9 @@ interface FilterHandlerInterface
      *
      * @return array<string, string>|string
      */
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed;
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed;
 }

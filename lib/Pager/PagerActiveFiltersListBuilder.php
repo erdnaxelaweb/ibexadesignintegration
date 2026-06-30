@@ -58,7 +58,8 @@ class PagerActiveFiltersListBuilder
                 $pagerFilterDefinition->getType(),
                 $filterValue,
                 $filtersFormBuilder->get('filters')
-                    ->get($filter)
+                    ->get($filter),
+                $pagerFilterDefinition->getOptions()
             );
 
             $query = $this->getRequest()

@@ -79,8 +79,11 @@ class FulltextFilterHandler extends AbstractFilterHandler
             ->allowedTypes('boolean');
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
-    {
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
         return $activeValues;
     }
 }

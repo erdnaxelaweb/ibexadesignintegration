@@ -206,8 +206,11 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         ];
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
-    {
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
         /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
         $choices = $formBuilder->getConfig()
             ->getAttribute('choice_list')

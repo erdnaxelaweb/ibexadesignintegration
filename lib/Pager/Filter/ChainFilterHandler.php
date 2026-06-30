@@ -13,6 +13,7 @@ declare(strict_types=1);
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter;
 
 use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerDefinition;
+use ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\FilterHandlerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Pager\Filter\Handler\NestableFilterHandlerInterface;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\AggregationGroup;
@@ -112,8 +113,12 @@ class ChainFilterHandler
      *
      * @return array<string, string>|string
      */
-    public function getValuesLabels(string $filterType, $activeValues, FormInterface $formBuilder): mixed
-    {
+    public function getValuesLabels(
+        string $filterType,
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
         $filterHandler = $this->getFilterHandler($filterType);
         return $filterHandler->getValuesLabels($activeValues, $formBuilder);
     }
@@ -128,7 +133,7 @@ class ChainFilterHandler
 
 
     /**
-     * @param array<string, \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition> $filterDefinitions
+     * @param array<string, PagerFilterDefinition> $filterDefinitions
      *
      * @return array<string, Aggregation>
      */
@@ -170,7 +175,7 @@ class ChainFilterHandler
     }
 
     /**
-     * @param \ErdnaxelaWeb\IbexaDesignIntegration\Definition\PagerFilterDefinition[] $filterDefinitions
+     * @param PagerFilterDefinition[] $filterDefinitions
      *
      * @return array{
      *     queryCriterions?: array<string, CriterionInterface>,
@@ -218,7 +223,9 @@ class ChainFilterHandler
     }
 
 
-
+    /**
+     * @return array<string, PagerFilterDefinition>
+     */
     public function getFlattenedFiltersList(PagerDefinition $definition): array
     {
         $filters = [];

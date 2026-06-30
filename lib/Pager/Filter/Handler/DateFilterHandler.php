@@ -22,6 +22,7 @@ use IntlDateFormatter;
 use InvalidArgumentException;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DateFilterHandler extends AbstractFilterHandler
@@ -45,7 +46,11 @@ class DateFilterHandler extends AbstractFilterHandler
     public function getCriterion(string $filterName, mixed $value, DefinitionOptions $options, array $searchData): ?Criterion
     {
         $operator = $options['operator'];
-        return new CustomField($options['field'], $operator, $this->mapDate($value, $options['input_format']));
+        return new CustomField(
+            $options['field'],
+            $operator,
+            $this->mapDate($value, $options['input_format'])->format('Y-m-d\\TH:i:s\\Z')
+        );
     }
 
     public function getFakeFormType(): array
@@ -81,7 +86,17 @@ class DateFilterHandler extends AbstractFilterHandler
             ->allowedTypes('boolean');
     }
 
-    protected function mapDate(mixed $value, string $inputFormat): string
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
+        return array_combine($activeValues, array_map(function ($value) use ($options) {
+            return $this->mapDate($value, $options['input_format'])->format($options['input_format']);
+        }, $activeValues));
+    }
+
+    protected function mapDate(mixed $value, string $inputFormat): DateTime
     {
         if (is_numeric($value)) {
             $date = new DateTime("@{$value}");
@@ -93,6 +108,6 @@ class DateFilterHandler extends AbstractFilterHandler
             }
         }
 
-        return $date->format('Y-m-d\\TH:i:s\\Z');
+        return $date;
     }
 }

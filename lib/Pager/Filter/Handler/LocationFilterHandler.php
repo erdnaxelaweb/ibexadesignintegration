@@ -132,8 +132,11 @@ class LocationFilterHandler extends AbstractFilterHandler
         ];
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
-    {
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
         return sprintf('%s,%s', $activeValues['latitude'], $activeValues['longitude']);
     }
 }

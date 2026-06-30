@@ -128,8 +128,11 @@ class ParentFilterHandler implements FilterHandlerInterface
         return [];
     }
 
-    public function getValuesLabels($activeValues, FormInterface $formBuilder): mixed
-    {
+    public function getValuesLabels(
+        $activeValues,
+        FormInterface $formBuilder,
+        DefinitionOptions $options
+    ): mixed {
     }
 
     /**
