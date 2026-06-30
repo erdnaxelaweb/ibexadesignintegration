@@ -83,6 +83,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
         $excludeTags[] = $filterName;
         $sort = null;
         $requestedSort = $options->get('sort');
+        $aggregationFilters = $options->get('aggregation_filters');
         if ($requestedSort && $requestedSort !== "label") {
             $sort = sprintf('%s %s', $requestedSort, $options->get('sort_direction'));
         }
@@ -90,7 +91,10 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
             $filterName,
             $options['field'],
             $excludeTags,
-            $sort
+            $sort,
+            [
+                'filter' => $aggregationFilters,
+            ]
         );
         $aggregation->setLimit($options['limit']);
 
@@ -176,6 +180,10 @@ class CustomFieldFilterHandler extends AbstractFilterHandler implements Nestable
 
                 return $choices;
             });
+
+        $optionsResolver->define('aggregation_filters')
+            ->default([])
+            ->allowedTypes('string[]');
     }
 
     public function getFakeFormType(): array
