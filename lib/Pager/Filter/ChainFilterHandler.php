@@ -73,9 +73,9 @@ class ChainFilterHandler
         return $filterHandler->getFakeFormType();
     }
 
-    public function getValuesLabels(string $filterType, array $activeValues, FormInterface $formBuilder): array
+    public function getValuesLabels(string $filterType, array $activeValues, FormInterface $formBuilder, array $options = []): array
     {
         $filterHandler = $this->filtersHandler[$filterType];
-        return $filterHandler->getValuesLabels($activeValues, $formBuilder);
+        return $filterHandler->getValuesLabels($activeValues, $formBuilder, $options);
     }
 }

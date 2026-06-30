@@ -235,7 +235,7 @@ class CustomFieldFilterHandler extends AbstractFilterHandler
         ];
     }
 
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array
+    public function getValuesLabels(array $activeValues, FormInterface $formBuilder, array $options = []): array
     {
         /** @var \Symfony\Component\Form\ChoiceList\ArrayChoiceList $choices */
         $choices = $formBuilder->getConfig()

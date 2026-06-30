@@ -35,5 +35,5 @@ interface FilterHandlerInterface
 
     public function getFakeFormType(): array;
 
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array;
+    public function getValuesLabels(array $activeValues, FormInterface $formBuilder, array $options = []): array;
 }

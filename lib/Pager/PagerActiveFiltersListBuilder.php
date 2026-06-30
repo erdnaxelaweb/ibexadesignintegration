@@ -45,7 +45,8 @@ class PagerActiveFiltersListBuilder
                 $filterConfiguration['type'],
                 is_array($filterValue) ? $filterValue : [$filterValue],
                 $filtersFormBuilder->get('filters')
-                    ->get($filter)
+                    ->get($filter),
+                $filterConfiguration['options']
             );
 
             $query = $this->getRequest()

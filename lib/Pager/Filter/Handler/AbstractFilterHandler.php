@@ -34,7 +34,7 @@ abstract class AbstractFilterHandler implements FilterHandlerInterface
     {
     }
 
-    public function getValuesLabels(array $activeValues, FormInterface $formBuilder): array
+    public function getValuesLabels(array $activeValues, FormInterface $formBuilder, array $options = []): array
     {
         return array_combine($activeValues, $activeValues);
     }
