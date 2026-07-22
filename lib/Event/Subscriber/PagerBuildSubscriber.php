@@ -45,11 +45,14 @@ class PagerBuildSubscriber implements EventSubscriberInterface
 
         if (in_array($pagerDefinition->getSearchType(), ['content', 'location'], true)) {
             if (isset($event->buildContext['location'])) {
-                $parentLocationId = $event->buildContext['location'] instanceof Location && $event->buildContext['location']->id ?
-                    $event->buildContext['location']->id :
-                    $event->buildContext['location'];
-
-                $event->filtersCriterions['location'] = new Criterion\ParentLocationId($parentLocationId);
+                if($event->buildContext['location'] instanceof Location) {
+                    $locationId = $event->buildContext['location']->getId();
+                    if ($locationId !== 0) {
+                        $event->filtersCriterions['location'] = new Criterion\ParentLocationId($locationId);
+                    }
+                }else{
+                    $event->filtersCriterions['location'] = new Criterion\ParentLocationId($event->buildContext['location']);
+                }
             }
 
             if (isset($event->buildContext['content'])) {
