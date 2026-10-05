@@ -16,6 +16,7 @@ use Ibexa\Bundle\Core\Routing\UrlAliasRouter;
 use Ibexa\Contracts\Core\Repository\Exceptions\NotFoundException;
 use Ibexa\Contracts\Core\SiteAccess\ConfigResolverInterface;
 use Ibexa\Core\MVC\Symfony\Routing\Generator\UrlAliasGenerator;
+use Ibexa\Core\MVC\Symfony\Templating\GlobalHelper;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -34,6 +35,7 @@ class PagerRenderController
         protected HttpClientInterface $httpClient,
         protected RequestStack    $requestStack,
         protected RouterInterface $router,
+        protected GlobalHelper $globalHelper,
         protected string $searchAppUrl,
         protected string $searchAppDevUrl,
     ) {
@@ -54,8 +56,8 @@ class PagerRenderController
             'appId' => $id,
             'pagerType' => $pagerType,
             'apiUrl' => $apiUrl,
-            'baseUrl' => $baseUrl,
-            'pathPrefix' => $this->getRootPathPrefix(),
+            'baseUrl' => trim($baseUrl, '/') . '/',
+            'pathPrefixes' => $this->getRootPathPrefixes(),
             'locale' => $request->getLocale(),
         ];
         $qs = http_build_query(
@@ -140,11 +142,23 @@ class PagerRenderController
             return '/';
         }
     }
-    public function getRootPathPrefix(): string
+
+    /**
+     * @return string[]
+     * @throws NotFoundException
+     */
+    public function getRootPathPrefixes(): array
     {
         $rootLocationId = $this->configResolver->getParameter('content.tree_root.location_id');
-        return $this->urlAliasGenerator->getPathPrefixByRootLocationId(
-            $rootLocationId
-        );
+        $pathPrefixes = [];
+        foreach ($this->globalHelper->getAvailableLanguages() as $availableLanguage) {
+            $siteaccess = $this->globalHelper->getTranslationSiteAccess($availableLanguage);
+            $pathPrefixes[] = $this->urlAliasGenerator->getPathPrefixByRootLocationId(
+                $rootLocationId,
+                [$availableLanguage],
+                $siteaccess
+            );
+        }
+        return $pathPrefixes;
     }
 }

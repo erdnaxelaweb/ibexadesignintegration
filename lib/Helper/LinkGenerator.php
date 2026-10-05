@@ -24,7 +24,8 @@ class LinkGenerator
 {
     public function __construct(
         protected FactoryInterface $factory,
-        protected RouterInterface $router
+        protected RouterInterface $router,
+        protected SiteaccessHelper $siteaccessHelper
     ) {
     }
 
@@ -34,11 +35,20 @@ class LinkGenerator
     public function generateLocationLink(
         Location $location,
         array $parameters = [],
-        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH,
+        string $languageCode = null
     ): ItemInterface {
         $url = '#';
         if ($location->id !== null) {
             $parameters['locationId'] = $location->id;
+
+            if ($languageCode !== null) {
+                $siteAccess = $this->siteaccessHelper->getSiteAccesseForLocation($location, $languageCode);
+                if ($siteAccess !== null) {
+                    $parameters['siteaccess'] = $siteAccess;
+                }
+            }
+
             $url = $this->generateUrl(UrlAliasRouter::URL_ALIAS_ROUTE_NAME, $parameters, $referenceType);
         }
         return $this->generateLink(
@@ -61,7 +71,8 @@ class LinkGenerator
     public function generateContentLink(
         Content $content,
         array $parameters = [],
-        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH
+        int $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH,
+        string $languageCode = null
     ): ItemInterface {
         return $this->generateLocationLink($content->contentInfo->getMainLocation(), $parameters, $referenceType);
     }

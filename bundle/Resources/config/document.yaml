@@ -9,6 +9,8 @@ services:
             $blockDocumentsBaseContentFields: '@Ibexa\Solr\FieldMapper\ContentFieldMapper\BlockDocumentsBaseContentFields'
             $blockDocumentsMetaFields: '@Ibexa\Solr\FieldMapper\ContentTranslationFieldMapper\BlockDocumentsMetaFields'
             $persistenceHandler: '@Ibexa\Contracts\Core\Persistence\Handler'
+            $contentTransformer: '@ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer'
+            $siteaccessHelper: '@ErdnaxelaWeb\IbexaDesignIntegration\Helper\SiteaccessHelper'
             $purgeClient: '@ibexa.http_cache.purge_client'
 
     ErdnaxelaWeb\IbexaDesignIntegration\Document\SearchFieldResolver:

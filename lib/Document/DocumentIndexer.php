@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace ErdnaxelaWeb\IbexaDesignIntegration\Document;
 
+use ErdnaxelaWeb\IbexaDesignIntegration\Helper\SiteaccessHelper;
+use ErdnaxelaWeb\IbexaDesignIntegration\Transformer\ContentTransformer;
 use ErdnaxelaWeb\IbexaDesignIntegration\Value\Content;
 use ErdnaxelaWeb\StaticFakeDesign\Configuration\DefinitionManager;
 use ErdnaxelaWeb\StaticFakeDesign\Definition\DocumentDefinition;
@@ -42,6 +44,8 @@ class DocumentIndexer
         protected BlockDocumentsBaseContentFields $blockDocumentsBaseContentFields,
         protected BlockDocumentsMetaFields        $blockDocumentsMetaFields,
         protected PersistenceHandler              $persistenceHandler,
+        protected ContentTransformer           $contentTransformer,
+        protected SiteaccessHelper                     $siteaccessHelper,
         protected PurgeClientInterface            $purgeClient
     ) {
     }
@@ -121,12 +125,37 @@ class DocumentIndexer
             );
 
             foreach ($content->languageCodes as $key => $languageCode) {
-                $documents[] = ($this->documentBuilder)(
+                $orinalSiteAccess = null;
+                if ($content->mainLanguageCode === $languageCode) {
+                    $translatedContent = $content;
+                } else {
+                    $translatedContent = $this->contentTransformer->lazyTransformContentFromContentId(
+                        $content->id,
+                        [$languageCode]
+                    );
+
+                    $siteaccess = $this->siteaccessHelper->getSiteAccesseForLocation(
+                        $content->innerLocation,
+                        $languageCode
+                    );
+
+                    $orinalSiteAccess = $this->siteaccessHelper->getOriginalSiteAccess();
+                    if ($siteaccess !== null && $siteaccess->name !== $orinalSiteAccess->name) {
+                        $this->siteaccessHelper->changeConfigScope($siteaccess->name);
+                    }
+                }
+                $document = ($this->documentBuilder)(
                     $documentType,
-                    $content,
+                    $translatedContent,
                     $configuration->getFields(),
                     $languageCode
                 );
+
+                if ($orinalSiteAccess !== null) {
+                    $this->siteaccessHelper->restoreConfigScope();
+                }
+
+                $documents[] = $document;
             }
         }
         return $documents;

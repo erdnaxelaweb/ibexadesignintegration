@@ -30,6 +30,12 @@ services:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\BreadcrumbGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\LinkGenerator:
   ErdnaxelaWeb\IbexaDesignIntegration\Helper\ImageGenerator:
+  ErdnaxelaWeb\IbexaDesignIntegration\Helper\SiteaccessHelper:
+    arguments:
+      $siteAccessRouter: '@Ibexa\Core\MVC\Symfony\SiteAccess\Router'
+      $siteAccessResolver: '@Ibexa\CorporateAccount\PageBuilder\SiteAccess\NonCorporateSiteAccessResolver'
+    calls:
+      - [ setSiteAccess, [ '@Ibexa\Core\MVC\Symfony\SiteAccess' ] ]
 
   ErdnaxelaWeb\IbexaDesignIntegration\Fake\Generator\SearchFormGenerator:
     decorates: ErdnaxelaWeb\StaticFakeDesign\Fake\Generator\SearchFormGenerator
