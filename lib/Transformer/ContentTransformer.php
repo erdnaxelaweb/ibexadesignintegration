@@ -52,9 +52,12 @@ class ContentTransformer
      * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
      */
-    public function lazyTransformContentFromLocationRemoteId(string $remoteId): Content
+    public function lazyTransformContentFromLocationRemoteId(
+        string $remoteId,
+        ?array $prioritizedLanguages = null,
+        ?bool $useAlwaysAvailable = null
+    ): Content
     {
-        $location = $this->locationService->loadLocationByRemoteId($remoteId);
         $initializers = [
             'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerLocation->contentId;
@@ -68,8 +71,13 @@ class ContentTransformer
                 return $content;
             },
             'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $location
+                $remoteId, $prioritizedLanguages, $useAlwaysAvailable
             ): IbexaLocation {
+                $location = $this->locationService->loadLocationByRemoteId(
+                    $remoteId,
+                                                                           $prioritizedLanguages,
+                    $useAlwaysAvailable
+                );
                 $this->responseTagger->addLocationTags([$location->id]);
                 return $location;
             },
@@ -80,7 +88,11 @@ class ContentTransformer
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
-    public function lazyTransformContentFromLocationId(int $locationId): Content
+    public function lazyTransformContentFromLocationId(
+        int $locationId,
+        ?array $prioritizedLanguages = null,
+        ?bool $useAlwaysAvailable = null
+    ): Content
     {
         $initializers = [
             'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
@@ -91,9 +103,15 @@ class ContentTransformer
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
-            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaLocation {
+            'innerLocation' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+                $prioritizedLanguages, $useAlwaysAvailable
+            ): IbexaLocation {
                 $this->responseTagger->addLocationTags([$instance->locationId]);
-                return $this->locationService->loadLocation($instance->locationId);
+                return $this->locationService->loadLocation(
+                    $instance->locationId,
+                    $prioritizedLanguages,
+                    $useAlwaysAvailable
+                );
             },
         ];
 
@@ -111,9 +129,13 @@ class ContentTransformer
      * @throws \Symfony\Component\VarExporter\Exception\ExceptionInterface
      * @throws \Ibexa\Contracts\Core\Repository\Exceptions\UnauthorizedException
      */
-    public function lazyTransformContentFromContentRemoteId(string $remoteId): Content
+    public function lazyTransformContentFromContentRemoteId(
+        string $remoteId,
+        array $languages = null,
+        ?int $versionNo = null,
+        bool $useAlwaysAvailable = true
+    ): Content
     {
-        $content = $this->contentService->loadContentByRemoteId($remoteId);
         $initializers = [
             'id' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerContent->id;
@@ -122,8 +144,14 @@ class ContentTransformer
                 return $instance->innerContent->contentInfo->mainLocationId;
             },
             'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
-                $content
+                $remoteId, $languages, $versionNo, $useAlwaysAvailable
             ): IbexaContent {
+                $content = $this->contentService->loadContentByRemoteId(
+                    $remoteId,
+                    $languages,
+                    $versionNo,
+                    $useAlwaysAvailable
+                );
                 $this->responseTagger->addContentTags([$content->id]);
                 return $content;
             },
@@ -145,15 +173,27 @@ class ContentTransformer
         return $this->createLazyContent($initializers, $skippedProperties, $instance);
     }
 
-    public function lazyTransformContentFromContentId(int $contentId): Content
+    public function lazyTransformContentFromContentId(
+        int $contentId,
+        array $languages = null,
+        ?int $versionNo = null,
+        bool $useAlwaysAvailable = true
+    ): Content
     {
         $initializers = [
             'locationId' => function (Content $instance, string $propertyName, ?string $propertyScope): int {
                 return $instance->innerContent->contentInfo->mainLocationId;
             },
-            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope): IbexaContent {
+            'innerContent' => function (Content $instance, string $propertyName, ?string $propertyScope) use (
+                $languages, $versionNo, $useAlwaysAvailable
+            ): IbexaContent {
                 $this->responseTagger->addContentTags([$instance->id]);
-                return $this->contentService->loadContent($instance->id);
+                return $this->contentService->loadContent(
+                    $instance->id,
+                  $languages,
+                  $versionNo,
+                  $useAlwaysAvailable
+                );
             },
             'innerLocation' => function (
                 Content $instance,
